@@ -17,7 +17,8 @@
         <thead><tr>
           <th>Timbrado</th><th>Serie</th><th>Tipo</th><th>Terminal</th>
           <th>Inicio Timb.</th><th>Fin Timb.</th><th>Nro Inicio</th><th>Nro Fin</th>
-          <th>Último Nro</th><th>Activo</th><th class="th-acciones">Acciones</th>
+          <th>Último Nro</th><th>Máx. Ítems</th><th>Impresión</th><th>Auto Imp.</th>
+          <th>Activo</th><th class="th-acciones">Acciones</th>
         </tr></thead>
         <tbody>
           @for (item of itemsFiltrados; track item.codNumeracion) {
@@ -31,6 +32,12 @@
               <td class="text-right">{{ item.numeroInicio }}</td>
               <td class="text-right">{{ item.numeroFin }}</td>
               <td class="text-right"><strong>{{ item.ultimoNumero }}</strong></td>
+              <td class="text-right">{{ item.maxItems ?? '—' }}</td>
+              <td>{{ item.tipoImpresion ?? '—' }}</td>
+              <td class="text-center">
+                @if (item.autoImpresor) { <span class="badge badge-success">Sí</span> }
+                @else { <span class="badge badge-secondary">No</span> }
+              </td>
               <td class="text-center">
                 @if (item.activo) { <span class="badge badge-success">Activo</span> }
                 @else { <span class="badge badge-secondary">Inactivo</span> }

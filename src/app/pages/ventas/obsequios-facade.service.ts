@@ -375,7 +375,6 @@ export class ObsequiosFacadeService {
       },
       error: (err: any) => {
         this.st.guardando.set(false);
-        console.error('[Obsequio] guardar error:', err.status, err.message);
         const m = err.status === 504 ? 'Timeout. Verificá si el obsequio fue guardado.'
                 : err.status === 0   ? 'Sin conexión.'
                 :                      'Error al guardar.';

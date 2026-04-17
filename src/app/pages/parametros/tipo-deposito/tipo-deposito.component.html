@@ -33,7 +33,6 @@
       <table class="tabla-parametros">
         <thead>
           <tr>
-            <th>Cód. ERP</th>
             <th>Tipo Depósito</th>
             <th class="th-acciones">Acciones</th>
           </tr>
@@ -41,8 +40,7 @@
         <tbody>
           @for (item of itemsFiltrados; track item.codTipoDeposito) {
             <tr>
-              <td><code>{{ item.descripcion }}</code></td>
-              <td>{{item.descripcion }}</td>
+              <td>{{ item.descripcion }}</td>
               <td>
                 <div class="td-acciones">
                   <button class="btn-accion btn-editar" title="Editar"

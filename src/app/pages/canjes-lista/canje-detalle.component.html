@@ -78,7 +78,7 @@
               <tr>
                 <td style="padding:.25rem .5rem;text-align:center;vertical-align:middle">
                   @if (d.premio?.img) {
-                    <img [src]="d.premio.img | imagen : 'premios' | async" style="width:40px;height:40px;object-fit:contain;border-radius:4px"/>
+                    <img [src]="d.premio.img | imagen : 'premios' | async" loading="lazy" style="width:40px;height:40px;object-fit:contain;border-radius:4px"/>
                   } @else {
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="opacity:.4">
                       <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/>

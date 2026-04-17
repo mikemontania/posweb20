@@ -115,8 +115,8 @@ export class VentaDraftService {
       const db = await this._db;
       await db.put(STORE_DRAFT, { savedAt: Date.now(), codTerminal: this.codTerminal, ...data }, this.draftKey);
       this.broadcastDraftChange();
-    } catch (e) {
-      console.warn('[VentaDraft] saveDraft error:', e);
+    } catch {
+      // Error al guardar draft en IDB — puede ocurrir en modo privado o si el storage está lleno
     }
   }
 
@@ -131,12 +131,12 @@ export class VentaDraftService {
       if (!draft || draft.codTerminal !== this.codTerminal) return null;
       if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) { await this.clearDraft(); return null; }
       return draft;
-    } catch (e) { console.warn('[VentaDraft] loadDraft error:', e); return null; }
+    } catch { /* Error al leer draft de IDB — se devuelve null para no bloquear el flujo */ return null; }
   }
 
   async clearDraft(): Promise<void> {
     try { const db = await this._db; await db.delete(STORE_DRAFT, this.draftKey); }
-    catch (e) { console.warn('[VentaDraft] clearDraft error:', e); }
+    catch { /* Error al borrar draft de IDB — no es crítico, se sobrescribirá en el próximo ciclo */ }
   }
 
   // ── CAPA 2: PENDING (payload al momento de guardar) ───────────────────────
@@ -161,11 +161,9 @@ export class VentaDraftService {
       await db.put(STORE_PENDING, {
         savedAt: Date.now(), codTerminal: this.codTerminal, payload, estadoUI
       }, this.pendingKey);
-      console.log('[VentaDraft] pending guardado — terminal:', this.codTerminal,
-        '| detalles:', estadoUI.detalles?.length,
-        '| cliente:', estadoUI.cliente?.razonSocial);
-    } catch (e) {
-      console.error('[VentaDraft] savePending error:', e);
+    } catch {
+      // Error al guardar pending en IDB — si falla aquí, una pérdida de conexión no será recuperable;
+      // verificar storage disponible y que el browser no esté en modo privado
     }
   }
 
@@ -175,13 +173,13 @@ export class VentaDraftService {
       const pending = await db.get(STORE_PENDING, this.pendingKey) as VentaPending | undefined;
       if (!pending || pending.codTerminal !== this.codTerminal) return null;
       return pending;
-    } catch (e) { console.warn('[VentaDraft] loadPending error:', e); return null; }
+    } catch { /* Error al leer pending de IDB — se devuelve null */ return null; }
   }
 
   /** Llamar cuando el servidor confirma el guardado exitoso */
   async clearPending(): Promise<void> {
     try { const db = await this._db; await db.delete(STORE_PENDING, this.pendingKey); }
-    catch (e) { console.warn('[VentaDraft] clearPending error:', e); }
+    catch { /* Error al borrar pending de IDB — podría persistir en la próxima sesión */ }
   }
 
   // ── Helpers async ─────────────────────────────────────────────────────────

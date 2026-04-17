@@ -94,7 +94,7 @@
               <tr>
                 <td class="td-img text-center">
                   @if (item._imgProducto) {
-                    <img [src]="item._imgProducto | imagen:'productos' | async" class="img-tabla" alt=""/>
+                    <img [src]="item._imgProducto | imagen:'productos' | async" loading="lazy" class="img-tabla" alt=""/>
                   } @else {
                     <div class="img-placeholder">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

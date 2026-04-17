@@ -81,6 +81,18 @@ export class DescuentosComponent implements OnInit {
     this.cargar(page);
   }
 
+  toggleActivo(item: any): void {
+    this.svc.toggleEstado(item.codDescuento).subscribe({
+      next: (r: any) => {
+        this.items.update(list =>
+          list.map(d => d.codDescuento === item.codDescuento ? { ...d, activo: r.activo } : d)
+        );
+        this.toast.success(`Descuento ${r.activo ? 'activado' : 'desactivado'}`);
+      },
+      error: (err: any) => this.toast.apiError(err),
+    });
+  }
+
   solicitarEliminar(item: any): void { this.itemAEliminar.set(item); this.showDelModal.set(true); }
 
   confirmarEliminar(): void {

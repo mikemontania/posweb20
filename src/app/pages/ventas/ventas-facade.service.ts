@@ -209,7 +209,7 @@ export class VentasFacadeService {
     const savedDraft = await this.draft.loadDraft();
     if (savedDraft?.detalles?.length) {
       this.st.ventaDetalles.set(savedDraft.detalles);
-      console.log('[seleccionarCliente] detalles recuperados del draft:', savedDraft.detalles.length, 'items');
+      // Draft recuperado al cambiar de cliente — los detalles del carrito se preservan entre cambios
       await this.draft.clearDraft();
     }
 
@@ -253,7 +253,6 @@ export class VentasFacadeService {
       cuponPromo:          this.st.cuponPromo(),
       pedido:              this.st.pedido(),
     });
-    console.log('[guardarDetallesTemporal] guardados', this.st.ventaDetalles().length, 'items en IDB');
     this.cambiarCliente();
   }
 
@@ -625,10 +624,7 @@ export class VentasFacadeService {
     // ── Bonificaciones (ng12: solo si lista != EMPLEADOS) ──────────────────
     const lp = this.st.listaPrecio();
     if (lp?.descripcion !== 'EMPLEADOS') {
-      console.log('[Bonif] Iniciando carga de bonificaciones...');
-
       const grupos = await this._buildGrupoMaterialDetal();
-      console.log('[Bonif] Grupos de material:', grupos);
 
       // CLN tiene prioridad — se intenta primero
       await this._loadBonificacionClnKit(grupos);
@@ -639,11 +635,8 @@ export class VentasFacadeService {
         d => d.tipoDescuento === 'BONIF_CLN-PRODUCTO' || d.tipoDescuento === 'BONIF_CLN-KIT'
       );
       if (!tieneCln) {
-        console.log('[Bonif] Sin CLN — cargando bonificaciones genéricas...');
         await this._loadBonificacionProducto();
         await this._loadBonificacionKit(grupos);
-      } else {
-        console.log('[Bonif] CLN encontradas — omitiendo genéricas');
       }
     }
 
@@ -742,7 +735,9 @@ export class VentasFacadeService {
           if (cli) {
             await firstValueFrom(
               this.cuponSvc.invalidarCupon(cupon.cupon, cli.docNro ?? '', cli.razonSocial ?? '')
-            ).catch(() => console.warn('[Cupón] No se pudo invalidar el cupón alianza'));
+            // TODO: si falla la invalidación el cupón alianza queda activo en el servidor —
+            // considerar reintentar o notificar al operador para invalidarlo manualmente
+            ).catch(() => {});
           }
         }
         const v = resp.venta ?? resp;
@@ -759,13 +754,9 @@ export class VentasFacadeService {
       },
       error: (err: any) => {
         this.st.guardando.set(false);
-        // Log completo para diagnóstico
-        console.error('[VentaDraft] cerrarVenta falló — status:', err.status, '| message:', err.message);
-        console.error('[VentaDraft] error completo:', err);
-        console.error('[VentaDraft] pending guardado en:', `m2pos_pending_${this.auth.terminal?.codTerminalVenta}`);
-        console.log('[VentaDraft] pending guardado en IDB para terminal:', this.auth.terminal?.codTerminalVenta);
-
-        // El pending queda guardado — el componente puede ofrecer reintento
+        // La venta quedó guardada en IDB como pending (clave: m2pos_pending_<codTerminal>)
+        // El vendedor puede restaurarla con restaurarPending() y reintentar el guardado
+        // El pending se borra solo cuando el servidor confirma el guardado exitoso
         if (err.status === 504) {
           this.toast.error('Timeout al guardar. Verificá en la lista de ventas antes de reintentar.', { timeOut: 8000 });
         } else if (err.status === 0) {
@@ -796,10 +787,6 @@ export class VentasFacadeService {
     if (!pending) return false;
 
     const { estadoUI } = pending;
-
-    console.log('[VentaDraft] restaurando pending',
-      '| detalles:', estadoUI.detalles?.length,
-      '| cliente:', estadoUI.cliente?.razonSocial);
 
     // Restaurar cada signal desde estadoUI — datos completos y tipados correctamente
     this.st.ventaDetalles.set(estadoUI.detalles ?? []);
@@ -1148,7 +1135,6 @@ export class VentasFacadeService {
     const grupos: { grpMaterial: string; cantidad: number }[] = [];
     for (const det of this.st.ventaDetalles()) {
       if (!det.producto.grpMaterial) {
-        console.log('[Bonif] Material ' + det.producto.codProductoErp + ' sin grupo');
         continue;
       }
       const idx = grupos.findIndex(g => g.grpMaterial === det.producto.grpMaterial);
@@ -1175,8 +1161,7 @@ export class VentasFacadeService {
       const bonif = await firstValueFrom(
         this.bonifSvc.getBonificacionProducto(det.cantidad, lp.codListaPrecio, det.producto.codProducto)
       ).catch(() => null);
-      if (!bonif) { console.log('[Bonif] PRODUCTO no encontrada para', det.producto.codProductoErp); continue; }
-      console.log('[Bonif] BONIF_PRODUCTO encontrada:', bonif);
+      if (!bonif) continue;
       const precio = await firstValueFrom(
         this.precSvc.getPrecio(bonif.cantBonif, bonif.materialBonif.codProducto, lp.codListaPrecio, cli.codCliente)
       ).catch(() => null);
@@ -1206,8 +1191,7 @@ export class VentasFacadeService {
       const bonif = await firstValueFrom(
         this.bonifSvc.getBonificacionClnProducto(det.cantidad, lp.codListaPrecio, det.producto.codProducto, cli.codCliente)
       ).catch(() => null);
-      if (!bonif) { console.log('[Bonif] CLN-PRODUCTO no encontrada para', det.producto.codProductoErp); continue; }
-      console.log('[Bonif] BONIF_CLN-PRODUCTO encontrada:', bonif);
+      if (!bonif) continue;
       const precio = await firstValueFrom(
         this.precSvc.getPrecio(bonif.cantBonif, bonif.materialBonif.codProducto, lp.codListaPrecio, cli.codCliente)
       ).catch(() => null);
@@ -1235,9 +1219,7 @@ export class VentasFacadeService {
       const bonif = await firstValueFrom(
         this.bonifSvc.getBonificacionKit(grp.cantidad, lp.codListaPrecio, grp.grpMaterial)
       ).catch(() => null);
-      console.log('[Bonif] KIT para grp', grp.grpMaterial, ':', bonif);
       if (!bonif) continue;
-      console.log('[Bonif] BONIF_KIT encontrada:', bonif);
       const precio = await firstValueFrom(
         this.precSvc.getPrecio(bonif.cantBonif, bonif.materialBonif.codProducto, lp.codListaPrecio, cli.codCliente)
       ).catch(() => null);
@@ -1266,8 +1248,7 @@ export class VentasFacadeService {
       const bonif = await firstValueFrom(
         this.bonifSvc.getBonificacionClnKit(grp.cantidad, lp.codListaPrecio, grp.grpMaterial, cli.codCliente)
       ).catch(() => null);
-      if (!bonif) { console.log('[Bonif] CLN-KIT no encontrada para grp', grp.grpMaterial); continue; }
-      console.log('[Bonif] BONIF_CLN-KIT encontrada:', bonif);
+      if (!bonif) continue;
       const precio = await firstValueFrom(
         this.precSvc.getPrecio(bonif.cantBonif, bonif.materialBonif.codProducto, lp.codListaPrecio, cli.codCliente)
       ).catch(() => null);
@@ -1290,7 +1271,8 @@ export class VentasFacadeService {
     // Si no tiene grupoDescuento: solo avisar, NO redirigir
     // (redirigir destruye el componente y pierde los detalles del IDB)
     if (!cli.grupoDescuento) {
-      console.log('[Descuento] Cliente sin grupoDescuento — sin descuentos aplicados');
+      // Cliente sin grupoDescuento — no se aplican descuentos de grupo
+      // Verificar que el cliente tenga grupoDescuento asignado en el ERP
       return;
     }
 

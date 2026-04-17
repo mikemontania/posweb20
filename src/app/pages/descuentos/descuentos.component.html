@@ -50,8 +50,9 @@
               <th>Cant. Hasta</th>
               <th>F. Desde</th>
               <th>F. Hasta</th>
+              <th>Tipo</th>
               <th>Activo</th>
-                            <th class="th-acciones">Acciones</th>
+              <th class="th-acciones">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -66,11 +67,25 @@
                 <td class="text-right">{{ item.cantHasta }}</td>
                 <td>{{ item.fechaDesde }}</td>
                 <td>{{ item.fechaHasta }}</td>
+                <td><span class="badge badge-info">{{ item.tipo ?? '—' }}</span></td>
                 <td class="text-center">
                   @if (item.activo) { <span class="badge badge-success">Sí</span> }
                   @else { <span class="badge badge-secondary">No</span> }
                 </td>
-                                <td class="td-acciones">
+                <td class="td-acciones">
+                  <button class="btn-accion" [title]="item.activo ? 'Desactivar' : 'Activar'"
+                          [style.color]="item.activo ? 'var(--color-success)' : 'var(--text-muted)'"
+                          (click)="toggleActivo(item)">
+                    @if (item.activo) {
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="5" width="22" height="14" rx="7"/><circle cx="16" cy="12" r="3" fill="currentColor"/>
+                      </svg>
+                    } @else {
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="5" width="22" height="14" rx="7"/><circle cx="8" cy="12" r="3"/>
+                      </svg>
+                    }
+                  </button>
                   <a [routerLink]="['/descuentos/formulario', item.codDescuento]"
                      class="btn-accion btn-editar" title="Editar">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"

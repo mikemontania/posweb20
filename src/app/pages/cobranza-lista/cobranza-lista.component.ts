@@ -11,6 +11,7 @@ import { SucursalService }   from '../../core/services/domain/sucursal.service';
 import { UsuariosService }   from '../../core/services/domain/usuarios.service';
 import { MedioPagoService }  from '../../core/services/domain/medio-pago.service';
 import { ToastService }      from '../../shared/components/toast/toast.service';
+import { SearchStateService } from '../../core/services/search-state.service';
 import { SelectSearchComponent } from '../../shared/components/select-search/select-search.component';
 
 @Component({
@@ -28,6 +29,7 @@ export class CobranzaListaComponent implements OnInit {
   private readonly usSvc   = inject(UsuariosService);
   private readonly mpSvc   = inject(MedioPagoService);
   private readonly toast   = inject(ToastService);
+  private readonly stateSvc  = inject(SearchStateService);
 
   // ── Lista paginada ─────────────────────────────────────
   items         = signal<any[]>([]);
@@ -66,11 +68,26 @@ export class CobranzaListaComponent implements OnInit {
     this.sucSvc.getAll({ codempresa: codEmp }).subscribe({ next: (r: any) => this.sucursales.set(Array.isArray(r) ? r : (r.content ?? [])) });
     this.usSvc.getAll({ codempresa: codEmp }).subscribe({ next: (r: any) => this.usuarios.set(Array.isArray(r) ? r : (r.content ?? [])) });
     this.mpSvc.getAll({ codempresa: codEmp }).subscribe({ next: (r: any) => this.mediosPago.set(Array.isArray(r) ? r : []) });
-    if (codSuc > 0) this.sucSvc.getById(codSuc).subscribe({ next: (s: any) => this.selSucursal.set(s) });
-    this.buscar();
+    const saved = this.stateSvc.get('cobranza-lista');
+    if (saved) {
+      this.fechaDesde.set(saved.fechaDesde);
+      this.fechaHasta.set(saved.fechaHasta);
+      this.selSucursal.set(saved.selSucursal);
+      this.selUsuario.set(saved.selUsuario);
+      this.selMedioPago.set(saved.selMedioPago);
+      this.buscar(saved.page ?? 0);
+    } else {
+      if (codSuc > 0) this.sucSvc.getById(codSuc).subscribe({ next: (s: any) => this.selSucursal.set(s) });
+      this.buscar();
+    }
   }
 
   buscar(page = 0): void {
+    this.stateSvc.save('cobranza-lista', {
+      fechaDesde: this.fechaDesde(), fechaHasta: this.fechaHasta(),
+      selSucursal: this.selSucursal(), selUsuario: this.selUsuario(),
+      selMedioPago: this.selMedioPago(), page,
+    });
     this.loading.set(true);
     const codSuc = this.selSucursal()?.codSucursal ?? 0;
     const codUsr = this.selUsuario()?.codUsuario   ?? 0;
@@ -96,6 +113,7 @@ export class CobranzaListaComponent implements OnInit {
   }
 
   limpiar(): void {
+    this.stateSvc.clear('cobranza-lista');
     this.fechaDesde.set(this._today()); this.fechaHasta.set(this._today());
     this.selSucursal.set(null); this.selUsuario.set(null); this.selMedioPago.set(null);
     this.buscar(0);

@@ -43,6 +43,14 @@ export class DescuentoService {
     );
   }
 
+  /** Alterna el estado activo/inactivo sin eliminar — endpoint cajero_sup */
+  toggleEstado(id: number): Observable<any> {
+    return this.http.put<any>(
+      `${this.config.apiBaseUrl}cajero_sup/descuentos/estado?coddescuento=${id}`,
+      null
+    ).pipe(catchError(e => throwError(() => e)));
+  }
+
   /** Búsqueda paginada — responde con Page<T> de Spring */
   getPage(page: number, termino: string, codEmpresa: number, extraParams?: Record<string, any>): Observable<any> {
     let p = new HttpParams()

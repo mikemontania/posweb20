@@ -35,6 +35,8 @@
           <tr>
             <th>Cód. ERP</th>
             <th>Descripción</th>
+            <th>F. Creación</th>
+            <th>F. Modificación</th>
             <th class="th-acciones">Acciones</th>
           </tr>
         </thead>
@@ -43,6 +45,8 @@
             <tr>
               <td><code>{{ item.codGrupoErp }}</code></td>
               <td>{{ item.descripcion }}</td>
+              <td>{{ item.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+              <td>{{ item.fechaModificacion | date:'dd/MM/yyyy' }}</td>
               <td>
                 <div class="td-acciones">
                   <button class="btn-accion btn-editar" title="Editar"

@@ -15,7 +15,7 @@ import { VentasFacadeService } from './ventas-facade.service';
 import { PosCatalogoComponent } from '../../shared/components/pos/pos-catalogo.component';
 import { PosDetalleComponent }  from '../../shared/components/pos/pos-detalle.component';
 import { PosTotalesComponent }  from '../../shared/components/pos/pos-totales.component';
-import { PosClienteComponent }  from '../../shared/components/pos/pos-cliente.component';
+import { PosClienteVentaComponent } from '../../shared/components/pos/pos-cliente-venta.component';
 import { SelectSearchComponent } from '../../shared/components/select-search/select-search.component';
 import { PosCobranzaComponent } from '../../shared/components/pos/pos-cobranza.component';
 
@@ -26,7 +26,7 @@ import { PosCobranzaComponent } from '../../shared/components/pos/pos-cobranza.c
   imports: [
     DatePipe, DecimalPipe, FormsModule, SelectSearchComponent,
     PosCatalogoComponent, PosDetalleComponent,
-    PosTotalesComponent, PosClienteComponent, PosCobranzaComponent,
+    PosTotalesComponent, PosClienteVentaComponent, PosCobranzaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ventas.component.html',

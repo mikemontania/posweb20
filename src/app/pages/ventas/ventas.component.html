@@ -56,7 +56,7 @@
     </div>
 
     <!-- Zona cliente -->
-    <app-pos-cliente
+    <app-pos-cliente-venta
       [cliente]="st.cliente()"
       [razonSocial]="st.razonSocial()"
       [mostrar]="st.mostrarCliente()"
@@ -68,7 +68,7 @@
       (clienteSeleccionado)="onClienteSeleccionado($event)"
       (buscarChange)="onBuscarCliente($event)"
       (cancelarBusqueda)="onCancelarBusqueda()"
-      (crearClienteClick)="onCrearCliente()"/>
+      (nuevoClienteClick)="onCrearCliente()"/>
 
     <!-- Selectores modo/forma/canal en grilla horizontal -->
     @if (st.mostrarCliente() && st.venta()) {

@@ -57,6 +57,8 @@
               <th>Producto</th>
               <th>Categoría</th>
               <th>Unidad</th>
+              <th>Grp. Material</th>
+              <th>Peso</th>
               <th>IVA</th>
               <th>Activo</th>
               <th>Sin Desc.</th>
@@ -68,7 +70,7 @@
               <tr>
                 <td class="td-img text-center">
                   @if (item.img) {
-                    <img [src]="item.img | imagen:'productos' | async" class="img-tabla" alt=""/>
+                    <img [src]="item.img | imagen:'productos' | async" loading="lazy" class="img-tabla" alt=""/>
                   } @else {
                     <div class="img-placeholder">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -85,6 +87,8 @@
                 <td><strong>{{ item.nombreProducto }}</strong></td>
                 <td>{{ item._categoria }}</td>
                 <td>{{ item._unidad }}</td>
+                <td>{{ item.grpMaterial ?? '—' }}</td>
+                <td class="text-right">{{ item.peso ?? '—' }}</td>
                 <td class="text-center">{{ item.iva }}%</td>
                 <td class="text-center">
                   @if (item.activo) { <span class="badge badge-success">Sí</span> }

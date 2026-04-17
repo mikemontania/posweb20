@@ -5,4 +5,5 @@ export interface Terminales {
   codSucursal: number;
   codEmpresa: number;
   disponible: boolean;
+  sucursal?: { nombreSucursal?: string };
 }

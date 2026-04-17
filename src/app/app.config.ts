@@ -11,6 +11,7 @@ import { routes } from './app.routes';
 import { authInterceptor }    from './core/interceptors/auth.interceptor';
 import { loadingInterceptor } from './core/interceptors/auth.interceptor';
 import { timeoutInterceptor } from './core/interceptors/timeout.interceptor';
+import { errorInterceptor }   from './core/interceptors/error.interceptor';
 import { APP_CONFIG }         from './core/tokens/app-config.token';
 import { environment }        from '../environments/environment';
 
@@ -34,6 +35,7 @@ export const appConfig: ApplicationConfig = {
         // 3. loading  → contador global de requests activas
         timeoutInterceptor,
         authInterceptor,
+        errorInterceptor,
         loadingInterceptor,
       ])
     ),

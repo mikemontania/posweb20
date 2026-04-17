@@ -24,16 +24,11 @@
          pedidoClick  = mostrarModalPedidos (lápiz / cargar pedido)
          cuponClick / influencerClick no aplica en pedidos, ignorados
     -->
-    <app-pos-cliente
+    <app-pos-cliente-pedido
       [cliente]="st.cliente()"
       [razonSocial]="st.razonSocial()"
       [mostrar]="st.mostrarCliente()"
       [clientes]="st.clientes()"
-      [mostrarCargarPedido]="true"
-      [mostrarCupon]="false"
-      [mostrarInfluencer]="false"
-      [mostrarNuevoCliente]="true"
-      [mostrarObservacion]="true"
       (buscarClick)="onBuscarClick()"
       (pedidoClick)="onPedidoClick()"
       (nuevoClienteClick)="onNuevoCliente()"

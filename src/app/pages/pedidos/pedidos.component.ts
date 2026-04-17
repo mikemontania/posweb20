@@ -10,7 +10,7 @@ import { PedidosStateService }   from './pedidos-state.service';
 import { PosCatalogoComponent }  from '../../shared/components/pos/pos-catalogo.component';
 import { PosDetalleComponent }   from '../../shared/components/pos/pos-detalle.component';
 import { PosTotalesComponent }   from '../../shared/components/pos/pos-totales.component';
-import { PosClienteComponent }   from '../../shared/components/pos/pos-cliente.component';
+import { PosClientePedidoComponent } from '../../shared/components/pos/pos-cliente-pedido.component';
 import { PosCobranzaComponent }  from '../../shared/components/pos/pos-cobranza.component';
 import { ClientesForm }          from '../clientes/clientes-form.component';
 
@@ -21,7 +21,7 @@ import { ClientesForm }          from '../clientes/clientes-form.component';
   imports: [
     DatePipe, DecimalPipe, FormsModule, SelectSearchComponent,
     PosCatalogoComponent, PosDetalleComponent,
-    PosTotalesComponent, PosClienteComponent, PosCobranzaComponent,
+    PosTotalesComponent, PosClientePedidoComponent, PosCobranzaComponent,
     ClientesForm,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

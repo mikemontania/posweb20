@@ -18,7 +18,8 @@
       "Bash(python3 process_common_module.py)",
       "Bash(node process_common_module.mjs)",
       "Bash(find \"c:/Users/miguel.montania/Downloads/m2pos-ng20-v9/src/app/pages\" -name \"*.ts\" -exec grep -l \"takeUntilDestroyed\" {} \\\\;)",
-      "Bash(find \"c:/Users/miguel.montania/Downloads/m2pos-ng20-v9/src/app/pages\" -name \"*.ts\" -exec grep -l \"subscribe\" {} \\\\;)"
+      "Bash(find \"c:/Users/miguel.montania/Downloads/m2pos-ng20-v9/src/app/pages\" -name \"*.ts\" -exec grep -l \"subscribe\" {} \\\\;)",
+      "Bash(ls -d \"c:/Users/miguel.montania/Downloads/m2pos-ng20-v9/src/app/pages\"/*)"
     ]
   }
 }

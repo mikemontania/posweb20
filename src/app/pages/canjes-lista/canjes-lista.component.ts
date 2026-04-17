@@ -11,6 +11,7 @@ import { SucursalService } from '../../core/services/domain/sucursal.service';
 import { UsuariosService } from '../../core/services/domain/usuarios.service';
 import { ClienteService }  from '../../core/services/domain/cliente.service';
 import { ToastService }    from '../../shared/components/toast/toast.service';
+import { SearchStateService } from '../../core/services/search-state.service';
 import { SelectSearchComponent } from '../../shared/components/select-search/select-search.component';
 
 @Component({
@@ -28,6 +29,7 @@ export class CanjesListaComponent implements OnInit {
   private readonly usSvc  = inject(UsuariosService);
   private readonly cliSvc = inject(ClienteService);
   private readonly toast  = inject(ToastService);
+  private readonly stateSvc  = inject(SearchStateService);
 
   items         = signal<any[]>([]);
   loading       = signal(false);
@@ -71,11 +73,30 @@ export class CanjesListaComponent implements OnInit {
     const codSuc = this.auth.session?.codSucursal ?? 0;
     this.sucSvc.getAll({ codempresa: codEmp }).subscribe({ next: (r:any) => this.sucursales.set(Array.isArray(r) ? r : (r.content ?? [])) });
     this.usSvc.getAll({ codempresa: codEmp }).subscribe({ next: (r:any) => this.usuarios.set(Array.isArray(r) ? r : (r.content ?? [])) });
-    if (codSuc > 0) this.sucSvc.getById(codSuc).subscribe({ next: (s:any) => this.selSucursal.set(s) });
-    this.buscar();
+    const saved = this.stateSvc.get('canjes-lista');
+    if (saved) {
+      this.fechaDesde.set(saved.fechaDesde);
+      this.fechaHasta.set(saved.fechaHasta);
+      this.estado.set(saved.estado);
+      this.nroCanje.set(saved.nroCanje);
+      this.selSucursal.set(saved.selSucursal);
+      this.selUsuario.set(saved.selUsuario);
+      this.selCliente.set(saved.selCliente);
+      if (saved.selCliente) this.clientes.set([saved.selCliente]);
+      this.buscar(saved.page ?? 0);
+    } else {
+      if (codSuc > 0) this.sucSvc.getById(codSuc).subscribe({ next: (s:any) => this.selSucursal.set(s) });
+      this.buscar();
+    }
   }
 
   buscar(page = 0): void {
+    this.stateSvc.save('canjes-lista', {
+      fechaDesde: this.fechaDesde(), fechaHasta: this.fechaHasta(),
+      estado: this.estado(), nroCanje: this.nroCanje(),
+      selSucursal: this.selSucursal(), selUsuario: this.selUsuario(),
+      selCliente: this.selCliente(), page,
+    });
     this.loading.set(true);
     const codSuc = this.selSucursal()?.codSucursal ?? 0;
     this.svc.findByFecha(
@@ -95,6 +116,7 @@ export class CanjesListaComponent implements OnInit {
   }
 
   limpiar(): void {
+    this.stateSvc.clear('canjes-lista');
     this.fechaDesde.set(this._today()); this.fechaHasta.set(this._today());
     this.estado.set(''); this.nroCanje.set(0);
     this.selSucursal.set(null); this.selUsuario.set(null); this.selCliente.set(null);
