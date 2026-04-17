@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, HostListener,
-  inject, signal, computed, ChangeDetectionStrategy,
+  inject, signal, computed, ChangeDetectionStrategy, ViewChild,
 } from '@angular/core';
 import { DecimalPipe, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +30,8 @@ import { StockPremio } from '../../core/models/domain/stock-premio.model';
   styleUrl: './canjes.component.css',
 })
 export class CanjesComponent implements OnInit, OnDestroy {
+  @ViewChild(SelectSearchComponent) private sel?: SelectSearchComponent;
+
   private readonly auth      = inject(AuthService);
   private readonly svc       = inject(CanjeService);
   private readonly premioSvc = inject(PremioService);
@@ -304,7 +306,16 @@ export class CanjesComponent implements OnInit, OnDestroy {
 
   private activarBusquedaCliente(): void {
     this.mostrandoBusquedaCliente.set(true);
-    this.clientesBusqueda.set([]);
+    this.cargarClientesIniciales();
+    setTimeout(() => this.sel?.open(), 50);
+  }
+
+  private cargarClientesIniciales(): void {
+    const codEmpresa = this.auth.session?.codEmpresa ?? 1;
+    this.cliSvc.getPage(0, '', codEmpresa).subscribe({
+      next: (r: any) => this.clientesBusqueda.set(Array.isArray(r) ? r : (r?.content ?? [])),
+      error: () => {},
+    });
   }
 
   // ── Guardar canje ─────────────────────────────────────────
