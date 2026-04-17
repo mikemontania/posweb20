@@ -1,0 +1,92 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de choferes( {{ totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/choferes/formulario']">
+                    <i class="fa fa-plus"></i>
+                    Nuevo
+                </button>
+            </div>
+            <div class="col-6">
+                <input-debounce delay="500" id="inputChofer" height="15px" type="text"
+                    placeholder="Ingrese la razon social o ruc" required="" aria-invalid="false"
+                    (value)="buscarChofer($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div *ngIf="choferes?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-6 col-md-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="choferes?.length>0">
+                <thead>
+                    <tr>
+                        <th>codChofer.</th>
+                        <th>codChoferErp</th>
+                        <th>chofer</th>
+                        <th>Nro Documento</th>
+                        <th>TipoLicencia</th>
+                        <th>Licencia</th>
+
+                        <th>activo</th>
+                        <th>F. Creación</th>
+                        <th>F. Modificación</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let chofer of choferes">
+                        <td>{{ chofer.codChofer }}</td>
+                        <td *ngIf="chofer.codChoferErp">{{ chofer.codChoferErp }}</td>
+                        <td *ngIf="!chofer.codChoferErp">-</td>
+                        <td>{{ chofer.chofer | uppercase }}</td>
+                        <td>{{ chofer.docNro | uppercase }}</td>
+                        <td>{{ chofer.tipoLicencia | uppercase }}</td>
+                        <td>{{ chofer.licencia | uppercase }}</td>
+                        <td>{{ chofer.fechaCreacion | date:'dd/MM/y'}}</td>
+                        <td>{{ chofer.fechaModificacion | date:'dd/MM/y'}}</td>
+                        <td *ngIf="chofer.activo === true">Si</td>
+                        <td *ngIf="chofer.activo === false">NO</td>
+                        <td>
+                            <button class="btn btn-info btn-circle "
+                                [routerLink]="['/choferes/formulario', chofer.codChofer]" type="button">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(chofer)' type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag"
+            [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+            [maxSize]="7" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

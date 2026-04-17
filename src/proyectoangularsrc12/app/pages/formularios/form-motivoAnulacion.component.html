@@ -1,0 +1,60 @@
+<!-- <ul class="alert alert-danger" *ngIf="errores?.length > 0">
+  <li *ngFor="let err of errores">
+      {{ err.field +" "+ err.defaultMessage}}
+  </li>
+</ul> -->
+
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!motivoAnulacion.codMotivoAnulacion" class="m-b-0 text-white">Crear motivo de anulacion</h4>
+        <h4 *ngIf="motivoAnulacion.codMotivoAnulacion" class="m-b-0 text-white">Actualizar motivo de anulacion</h4>
+    </div>
+    <div class="card-body">
+
+        <form #motivoAnulacionForm="ngForm">
+
+            <div class="form-group row">
+                <label for="codMotivoAnulacionErp" class="col-form-label col-sm-2">Codigo Erp <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="motivoAnulacion.codMotivoAnulacionErp" (ngModelChange)="motivoAnulacion.codMotivoAnulacionErp =  toUpeCaseEvent($event)" name="codMotivoAnulacion" #codMotivoAnulacionErp="ngModel" required minlength="1">
+                    <div class="alert alert-danger" *ngIf="codMotivoAnulacionErp.invalid && (codMotivoAnulacionErp.dirty || codMotivoAnulacionErp.touched)">
+                        <div *ngIf="!!codMotivoAnulacionErp.errors.required">
+                            codMotivoAnulacionErp es requerido
+                        </div>
+                        <div *ngIf="!!codMotivoAnulacionErp.errors.minlength">
+                            codMotivoAnulacionErp debe tener al menos 1 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="descripcion" class="col-form-label col-sm-2">Motivo <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="motivoAnulacion.descripcion" (ngModelChange)="motivoAnulacion.descripcion =  toUpeCaseEvent($event)" name="descripcion" #descripcion="ngModel" required minlength="5">
+                    <div class="alert alert-danger" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                        <div *ngIf="!!descripcion.errors.required">
+                            descripcion es requerido
+                        </div>
+                        <div *ngIf="!!descripcion.errors.minlength">
+                            descripcion debe tener al menos 5 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/motivoAnulacion']" class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i> Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()' *ngIf="!motivoAnulacion.codMotivoAnulacion else elseBlock" [disabled]="!motivoAnulacionForm.form.valid"><i class="fa   fa-floppy-o"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='update()' [disabled]="!motivoAnulacionForm.form.valid"><i class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+
+
+        </form>
+
+    </div>
+</div>

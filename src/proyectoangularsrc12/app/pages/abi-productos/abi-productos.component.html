@@ -1,0 +1,95 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de productos( {{totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button type="button" class="btn btn-outline-success mb-3" ngbTooltip="Agregar" [routerLink]="['/abi-productos/formulario']">
+                    <i class="feather icon-plus-circle"></i>
+                    Agregar </button>
+
+                <button type="button" (click)='export()' class="btn btn-outline-success mb-3">
+                  Exportar Actuales</button>
+            </div>
+            <div class="col-6">
+                <input-debounce #inputProducto delay="500" id="inputProductos" height="15px" type="text" placeholder="Buscar productos..." required="" aria-invalid="false" (value)="buscarProductos($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div *ngIf="productos?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive" [hidden]="cargando">
+            <div *ngIf="productos?.length>0">
+                <table class="table table-sm table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>ID</th>
+                            <th>Codigo Ref.</th>
+                            <th>Producto</th>
+                            <th>Descripcion</th>
+                            <th>Cant dispo</th>
+                            <th>Cant mayorista</th>
+                            <th>Categoria</th>
+                            <th>Precio</th>
+                            <th>Precio mayo</th>
+                            <th>Activo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let producto of productos">
+                            <td class="wh90" align="center" style="background: white">
+                                <img *ngIf="producto.imagenes.length >0" [src]="producto.imagenes[0].imagen" class="img-producto80" />
+                                <img *ngIf="producto.imagenes.length ==0" [src]="sinImagen" class="img-producto80">
+                            </td>
+
+                            <td>{{ producto.id }}</td>
+                            <td>{{ producto.api_extra_data }}</td>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.descripcion}}</td>
+                            <td>{{ producto.cantidad_disponible}}</td>
+                            <td>{{ producto.cantidad_mayorista}}</td>
+                            <td>{{ producto.categoria}}</td>
+                            <td>{{ producto.precio}}</td>
+                            <td>{{ producto.precio_mayorista}}</td>
+                            <td>{{ producto.activo}}</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-success ml-1" ngbTooltip="Guardar" ngbTooltip="Editar" [routerLink]="[ '/abi-productos/formulario', producto.id] " type="button ">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-outline-danger ml-1" ngbTooltip="Eliminar" (click)='delete(producto)' type="button ">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center " *ngIf="productos?.length> 0" [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="7" [boundaryLinks]="true"
+            (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

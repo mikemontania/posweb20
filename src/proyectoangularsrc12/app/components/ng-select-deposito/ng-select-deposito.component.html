@@ -1,0 +1,5 @@
+<ng-select [items]="depositos" notFoundText="No se ha encontrado deposito" [disabled]="disabled" placeholder="Seleccione deposito" [(ngModel)]="cargadorDeposito" bindLabel="nombreDeposito" (change)="selectedItem($event)">
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <b [ngOptionHighlight]="search">{{item.nombreDeposito}}</b>
+    </ng-template>
+</ng-select>

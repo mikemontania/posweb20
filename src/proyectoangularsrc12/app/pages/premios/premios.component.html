@@ -1,0 +1,99 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de premios( {{totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/premios/formulario']">
+                    <i class="fa fa-plus"></i>
+                    Nuevo
+                </button>
+            </div>
+            <div class="col-6">
+                <input-debounce #inputPremio delay="500" id="inputPremios" height="15px" type="text"
+                    placeholder="Buscar premios..." required="" aria-invalid="false"
+                    (value)="buscarPremios($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div *ngIf="premios?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive" [hidden]="cargando">
+            <div *ngIf="premios?.length>0">
+                <table class="table  table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Codigo Ref.</th>
+                            <th>Codigo barra</th>
+                            <th>Premio</th>
+                           
+                            <th>Puntos</th>
+                            <th>Inventariable</th>
+                            <th>Activo</th>
+                            
+                            <th>Editar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let premio of premios">
+                            <td class="wh90" align="center" style="background: white">
+                                <img *ngIf="premio.img" [attr.src]="premio.img | imagen:'premios' | async"
+                                    class="img-producto80" />
+                                <img *ngIf="!premio.img" [src]="sinImagen" class="img-producto80">
+                            </td>
+                            <td>{{ premio.codPremioErp }}</td>
+                            <td>{{ premio.codBarra }}</td>
+                            <td>{{ premio.descripcion }}</td>
+                            
+                          
+                            <td>{{ premio.puntos }}</td>
+                            <td *ngIf="premio.inventariable == true">SI</td>
+                            <td *ngIf="premio.inventariable == false">NO</td>
+                            <td *ngIf="premio.activo == true">SI</td>
+                            <td *ngIf="premio.activo == false">NO</td>
+                          
+
+                            <td>
+                                <button class="btn btn-info btn-circle "
+                                    [routerLink]="['/premios/formulario', premio.codPremio]" type="button">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-circle " (click)='delete(premio)' type="button">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="premios?.length > 0"
+            [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos"
+            [(page)]="pagina" [maxSize]="7" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

@@ -1,0 +1,146 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="stocks" class="m-b-0 text-white">Listado de stock( {{ totalElementos}})</h4>
+        <h4 *ngIf="!stocks" class="m-b-0 text-white">Listado de stock( 0)</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/stock/formulario']">
+                    <i class="fa fa-plus"></i>
+                    Nuevo
+                </button>
+            </div>
+            <div class="col-9">
+                <div class="row col-12 form-group">
+                    <label for="listaPrecio" class="col-form-label col-sm-2">Deposito</label>
+                    <div class="col-sm-8">
+                        <ng-select-deposito #searchDepositos id="selectdeposito" [cargadorDeposito]="cargadorDeposito"
+                            style="width: 100%" name="deposito" (retornoObjeto)="seleccionarDeposito($event)">
+                        </ng-select-deposito>
+                    </div>
+                </div>
+                <div class="row col-12 form-group">
+                    <label for="listaPrecio" class="col-form-label col-sm-2">Producto</label>
+                    <div class="col-sm-8">
+                        <ng-select-producto #searchProductos id="selectproducto" [cargadorProducto]="cargadorProducto"
+                            style="width: 100%" name="producto" (retornoObjeto)="seleccionarProducto($event)">
+                        </ng-select-producto>
+                    </div>
+                </div>
+                <div class="row col-12 form-group">
+                    <label for="listaPrecio" class="col-form-label col-sm-2">Unidad</label>
+                    <div class="col-sm-8">
+                        <ng-select-unidad #searchUnidades id="selectunidad" [cargadorUnidad]="cargadorUnidad"
+                            style="width: 100%" name="unidad" (retornoObjeto)="seleccionarUnidad($event)">
+                        </ng-select-unidad>
+                    </div>
+                </div>
+
+                <div class=" form-group button-group col-6">
+                    <button class="btn btn-info waves-effect waves-light" (click)='buscar()' type="button">
+                        <i class="fa fa-search"></i>
+                        Buscar
+                    </button>
+                    <button class="btn btn-secondary waves-effect waves-light" (click)='ngOnInit()' type="button">
+                        <i class="fa fa-close"></i>
+                        Cancelar
+                    </button>
+                    <button class="btn btn-success waves-light" (click)='actualizarStock()' type="button"   *ngIf="mostrarBoton == true" >
+                        <i class="fa fa-close"></i>
+                        Actualizar Stock
+                    </button>
+                    <button type="button" (click)='getReporteStock()'
+                        class="btn  btn-success   waves-effect waves-light">
+                        <i class="fa  fa-download"></i>Stock Actual
+                    </button>
+
+                    <button type="button" (click)='getReporteStockMinimo()'
+                        class="btn  btn-success   waves-effect waves-light">
+                        <i class="fa  fa-download"></i> Stock Limite
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="stocks?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="stocks?.length>0">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <!--   <th>Codigo</th> -->
+                        <th>Producto </th>
+                        <th>Deposito</th>
+                        <th>Unidad</th>
+                        <th>Existencia</th>
+                        <th>Minimo</th>
+                        <th>Comprometido</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of stocks">
+                        <!--  <td>{{ precio.codPrecio }}</td> -->
+                        <td class="wh70" align="center" style="background: white">
+                            <img *ngIf="s.producto.img" [attr.src]="s.producto.img | imagen:'productos' | async"
+                                class="img-producto60" />
+                            <img *ngIf="!s.producto.img" [src]="sinImagen" class="img-producto60">
+                        </td>
+                        <td>{{ s.producto.nombreProducto }}</td>
+                        <td>{{ s.deposito.nombreDeposito }}</td>
+                        <td>{{ s.unidadMedida.nombreUnidad }}</td>
+                        <td>{{ s.existencia | number }}</td>
+                        <td>{{ s.minimo | number }}</td>
+                        <td>{{ s.comprometido | number }}</td>
+
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/stock/formulario', s.codStock]"
+                                type="button">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(s)' type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </td>
+
+                        <!--  <td>
+                  <button type="button" name="eliminar" (click)='delete(descuento)' class="btn btn-danger btn-sm">Eliminar</button>
+                </td> -->
+                        <!-- <td>
+                <button type="button" name="editar" [routerLink]="['/clientes/formulario', cliente.codCliente]" class="btn btn-dropbox btn-sm">editar</button>
+              </td>
+              -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag"
+            [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+            [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

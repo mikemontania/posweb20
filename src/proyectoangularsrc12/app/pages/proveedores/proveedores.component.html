@@ -1,0 +1,87 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de proveedores( {{ totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/proveedores/formulario']">
+            <i class="fa fa-plus"></i>
+            Nuevo
+          </button>
+            </div>
+            <div class="col-6">
+                <input-debounce delay="500" id="inputProveedores" height="15px" type="text" placeholder="Ingrese la razon social o ruc" required="" aria-invalid="false" (value)="buscar($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div *ngIf="proveedores?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-6 col-md-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="proveedores?.length>0">
+                <thead>
+                    <tr>
+                        <!--               <th>Codigo.</th>
+ -->
+                        <th>Cod Ref.</th>
+                    
+                        <th>Razon Social</th>
+                        <th>Ruc</th>
+                        <th>activo</th>
+                        <th>F. Creación</th>
+                        <th>H. Creación</th>
+                        <th>F. Modificación</th>
+                        <th>H. Modificación</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of proveedores">
+                         <td *ngIf="p.codProveedorErp">{{ p.codProveedorErp }}</td>
+                        <td *ngIf="!p.codProveedorErp">-</td> 
+                        <td>{{ p.razonSocial | uppercase }}</td>
+                        <td>{{ p.docNro }}</td>
+                        <td *ngIf="p.activo === true">Si</td>
+                        <td *ngIf="p.activo === false">NO</td>
+                        <td>{{ p.fechaCreacion | date:'dd/MM/y'}}</td>
+                        <td>{{ p.fechaCreacion | date:'h:mm a'}}</td>
+                        <td>{{ p.fechaModificacion | date:'dd/MM/y'}}</td>
+                        <td>{{ p.fechaModificacion | date:' h:mm a'}}</td>
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/proveedores/formulario', p.codProveedor]" type="button">
+                      <i class="fa fa-pencil"></i>
+                 </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(p)' type="button">
+                      <i class="fa fa-trash-o"></i>
+                 </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="7" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

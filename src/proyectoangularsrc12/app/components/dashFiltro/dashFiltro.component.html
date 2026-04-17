@@ -1,0 +1,71 @@
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex row">
+            <div class="col-12">
+                <h3 align="left" class="card-title m-b-5 center"><span class="lstick"></span>Dashboard</h3>
+                <div class="col-12" style="width: 100%;" style="text-align-last: right;">
+                    <span>
+                        <label>Tema </label><i class="mdi mdi-brush"></i>                    
+                    </span>
+
+                    <select class="selectpicker form-control-sm" [(ngModel)]="tema" name="seleccionTema" (ngModelChange)="cambioTema($event)">
+                        <option value="vivid">vivid</option>
+                    <option value="natural">natural</option>
+                    <option value="cool">cool</option>
+                    <option value="fire">fire</option>
+                    <option value="solar">solar</option>
+                    <option value="air">air</option>
+                    <option value="aqua">aqua</option>
+                    <option value="flame">flame</option>
+                    <option value="ocean">ocean</option>
+                    <option value="forest">forest</option>
+                    <option value="horizon">horizon</option>
+                    <option value="neons">neons</option>
+                    <option value="picnic">picnic</option>
+                    <option value="night">night</option>
+                    <option value="nightLights">nightLights</option>
+                    </select>
+
+                </div>
+            </div>
+            <!-- <div class="form-group input-group col-12 primary" style="margin-bottom: 0.5rem">
+                        <select id="tema" style="text-align: right;" align="rigth" class="form-control form-control-sm custom-select primary" [(ngModel)]="tema" style="font-size: 90%;width: 100%; " name="seleccionTema" (ngModelChange)="cambioTema($event)">
+                                <option  style="font-size: 90%; "   *ngFor="let i of temas" [value]="i">
+                                        {{i}}
+                                </option>
+                        </select>
+                    </div>&nbsp; -->
+        </div>
+        <div class="col-lg-12 card">
+            <div class="row form-inline card-body">
+                <div class="form-group input-group col-sm-12 col-md-6 col-lg-4 col-xs-12" style="margin-bottom: 0.5rem" data-toggle="tooltip" title="Ingrese fecha desde">
+                    <label> F.Desde:  &nbsp; </label>
+                    <input type="date" class="form-control  form-control-sm form-group" [(ngModel)]="fechaDesde" name="fechaDesde" required="">
+                </div>&nbsp;
+                <div class="form-group input-group col-sm-12 col-md-6 col-lg-4 col-xs-12" style="margin-bottom: 0.5rem" data-toggle="tooltip" title="Ingrese fecha hasta">
+                    <label>F.Hasta: &nbsp; &nbsp;  </label>
+                    <input type="date" class="form-control  form-control-sm form-group" [(ngModel)]="fechaHasta" name="fechaHasta" required="">
+                </div>&nbsp;
+                <div class="form-group col-sm-12 col-md-4 col-lg-3 col-xs-12" style="margin-bottom: 0.5rem">
+                    <select id="seleccionSucursales" class="form-control form-control-sm custom-select" [(ngModel)]="seleccionSucursal" style="font-size: 90%;width: 100%; " name="seleccionSucursales" (ngModelChange)="cambioSucursal($event)">
+                            <option  style="font-size: 90%; "   *ngFor="let s of sucursales" [value]="s.codSucursal">
+                                    {{s.nombreSucursal}}
+                            </option>
+                    </select>
+                </div>&nbsp;
+                <div class="form-group col-sm-12 col-md-4 col-lg-3 col-xs-12" style="margin-bottom: 0.5rem" data-toggle="tooltip" title="Seleccione usuario" *ngIf="seleccionSucursal > 0">
+                    <select id="seleccionUsuario" class="form-control form-control-sm custom-select" [(ngModel)]="seleccionUsuario" style="font-size: 90%;width: 100%; " name="seleccionUsuario" (ngModelChange)="cambioUsuario($event)">
+                                <option  style="font-size: 90%; "   *ngFor="let u of usuarios" [value]="u.codUsuario">
+                                        {{u.nombrePersona}}
+                                </option>
+                    </select>
+                </div>&nbsp;
+                <div class="form-group col-sm-12 col-md-4 col-lg-3 col-xs-12 button-group">
+                    <button class="btn btn-themecolor btn-rounded  waves-effect waves-light" (click)='refresh()' type="button ">
+                                <i class="fa fa-search "></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

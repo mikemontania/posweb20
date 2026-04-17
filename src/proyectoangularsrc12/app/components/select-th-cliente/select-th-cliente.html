@@ -1,0 +1,56 @@
+<ng-template #rt let-r="result" let-t="term">
+  <ngb-highlight [result]="r.concatDocNombre" [term]="t"></ngb-highlight>
+</ng-template>  
+<div class="form-group"> 
+
+
+
+
+  <div class="row form-inline card-body"   [hidden]="mostrarCliente" >
+    <div class="form-group col-sm-12" style="margin-bottom: 0.5rem">
+       
+
+     </div>
+</div>
+
+
+<div class="form-group input-group form-inline" [hidden]="mostrarCliente">
+    <input id="typeahead-clientes"    
+    (selectItem)="selectedItem($event.item)" 
+    class="form-control form-control-sm input-group-sm"
+    [inputFormatter]="formatter"  
+    [resultTemplate]="rt"
+    type="text"  
+    [class.is-invalid]="searchFailed" 
+    [(ngModel)]="cargadorCliente" 
+    (focus)="onFocus($event)" 
+    [ngbTypeahead]="search" 
+    placeholder="Ingrese razon social o doc." />
+    <span class="input-group-btn">
+      <button class="btn btn-info  "   type="button" (click)="limpiar()">
+        <i class="fa fa-trash"></i>
+      </button>
+    </span>
+ </div>
+
+ <div class="  input-group" [hidden]="!mostrarCliente">
+  <input type="text" class="form-control form-group" [(ngModel)]="razonSocial"   [disabled]="mostrarCliente" type="text"  >
+  <span class="input-group-btn">
+    <button class="btn btn-info  "    type="button" (click)="limpiar()">
+      <i class="fa fa-trash"></i>
+    </button>
+  </span>
+  <span class="input-group-btn">
+    <button class="btn btn-info  "   type="button" [routerLink]="['/clientes/formulario']" >
+      <i class="fa fa-plus"></i>
+    </button>
+  </span>
+ 
+</div>
+<br [hidden]="!mostrarCliente"> 
+
+
+
+
+<span *ngIf="searching">Buscando...</span>
+<div class="invalid-feedback" *ngIf="searchFailed">No se ha encontrado cliente</div>

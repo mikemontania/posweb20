@@ -1,0 +1,176 @@
+<!-- ============================================================== -->
+<!-- Topbar header - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<header class="topbar" >
+    <nav class="navbar top-navbar navbar-expand-md navbar-light">
+        <!-- ============================================================== -->
+        <!-- Logo -->
+        <!-- ============================================================== -->
+        <div class="navbar-header">
+            <a class="navbar-brand" routerLink="/dashboard">
+                <!-- Logo icon --><b>
+                            <!--Cavallaro-->
+                            <!-- Dark Logo icon -->
+                            <!-- Light Logo icon -->
+                            <!-- <img src="assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
+                            <img src="assets/images/logo-icon.png" alt="homepage" class="light-logo" /> -->
+                                  <!--Mobile-->
+                              <!-- Dark Logo icon -->
+                            <!-- Light Logo icon -->
+                            <img src="assets/images/logo-icon-m.png" alt="homepage" class="dark-logo" />
+                            <img src="assets/images/logo-icon-m.png" alt="homepage" class="light-logo" />
+                        </b>
+                <!--End Logo icon -->
+                <!-- Logo text -->
+                <span>
+                         <!-- dark Logo text cavallaro -->
+                         <!-- <img src="assets/images/logo-text.png" alt="homepage" class="dark-logo" />
+                         <img src="assets/images/logo-light-text.png" class="light-logo" alt="homepage" /> -->
+
+
+                          <!-- dark Logo text mobile -->
+                          <img src="assets/images/logo-text-m.png" alt="homepage" class="dark-logo" />
+                          <img src="assets/images/logo-light-text-m.png" class="light-logo" alt="homepage" />
+                          <img src="assets/images/pos-celeste.png"   />
+
+                        <!--  <img src="assets/images/pos-celeste.png" alt="homepage" class="dark-logo" /> -->
+                         <!-- Light Logo text -->    
+<!--                          <img src="assets/images/pos-celeste.png" class="light-logo" alt="homepage" />
+ -->
+                        <!--  <img *ngIf="empresa.img" [attr.src]="empresa.img | imagen:'empresas' | async"    />
+                         <img *ngIf="!empresa.img" [src]="sinImagen"   > -->
+               </span>
+            </a>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Logo -->
+        <!-- ============================================================== -->
+        <div class="navbar-collapse">
+            <!-- ============================================================== -->
+            <!-- toggle and nav items -->
+            <!-- ============================================================== -->
+            <ul class="navbar-nav mr-auto" id="nav_nav">
+                <!-- This is  -->
+                <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                <li class="nav-item hidden-sm-down"></li>
+          
+             
+            </ul>
+            
+            <!--  <ul class="navbar-nav">
+                    <div class="labelheader-themecolor centrado-style"   >{{ _loginService.user.username }} </div> 
+            </ul>   -->
+            <!-- ============================================================== -->
+            <!-- User profile and search -->
+            <!-- ============================================================== -->
+            <ul class="navbar-nav my-lg-0 ">
+              
+                <!-- ============================================================== -->
+                <!-- Search -->
+                <!-- ============================================================== -->
+                <!--      <li class="nav-item hidden-xs-down search-box"> <a class="nav-link hidden-sm-down waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
+                    <form class="app-search">
+                        <input type="text" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i class="ti-close"></i></a> </form>
+                </li> -->
+
+                <!-- ============================================================== -->
+                <!-- Terminal -->
+                <!-- ============================================================== -->
+                <li class="nav-item pt-4 pr-4" *ngIf="_loginService.user.authorities[0] != 'ROLE_VENDEDOR'">
+                    <div class="labelheader-themecolor centrado-style"   >TERMINAL: {{ _loginService.terminal.descripcion}}</div> 
+                </li>
+                <!-- ============================================================== -->
+                <!-- Messages -->
+                <!-- ============================================================== -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark"  id="2" data-toggle="dropdown" (click)="actualizarPendientes()"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-lg fa-fw fa-shopping-cart"></i>
+                        <div class="notify" *ngIf="pendientes?.length >0" >
+                            <span class="heartbit" >  </span>
+                            <span class="point" ></span>
+                        </div>
+                    </a>
+                     
+                    <div  class="dropdown-menu mailbox dropdown-menu-right animated fadeIn" aria-labelledby="2">
+                        <ul>
+                            <li>
+                                <div class="drop-title">Tienes {{ pendientes.length}} pedidos pendientes</div>
+                            </li>
+                            <li *ngIf="pendientes?.length >0" >
+                                <div class="message-center   "  >
+                                    <a  [routerLink]="['/pedidoLista/id',pedido.codPedido]" *ngFor="let pedido of pendientes" >
+                                        <div class="user-img">
+                                            <i alt="user" class="text-themecolor fa fa-lg fa-fw fa-shopping-cart img-circle"> </i>
+                                         <!--    <span class="profile-status online pull-right"></span> -->
+                                        </div>
+                                        <div class="mail-contnet" >
+                                            <h5>{{pedido.nroPedido.toString().padStart(8,"00000000")}}</h5>
+                                            <span class="mail-desc">{{pedido.cliente.concatDocNombre}}</span>
+                                            <span class="time">{{pedido.fechaCreacion}}</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="nav-link text-center"routerLink="/pedidoLista" > 
+                                    <strong>Ver pedidos</strong>                                    <i class="fa fa-angle-right"></i> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <!-- ============================================================== -->
+                <!-- End Messages -->
+                <!-- ============================================================== -->
+                <li class="nav-item pt-4">
+                    <div class="labelheader-themecolor centrado-style"   >{{ _loginService.user.username }} </div> 
+                </li>
+                <!-- ============================================================== -->
+                <!-- Language -->
+                <!-- ============================================================== -->
+                <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="flag-icon flag-icon-us"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right animated bounceInDown"> <a class="dropdown-item" href="#"><i class="flag-icon flag-icon-in"></i> India</a> <a class="dropdown-item" href="#"><i class="flag-icon flag-icon-fr"></i> French</a> <a class="dropdown-item" href="#"><i class="flag-icon flag-icon-cn"></i> China</a>                        <a class="dropdown-item" href="#"><i class="flag-icon flag-icon-de"></i> Dutch</a> </div>
+                </li> -->
+                <!-- ============================================================== -->
+                <!-- Profile -->
+                <!-- ============================================================== -->
+                <li class="nav-item dropdown pt-1">
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img *ngIf="_loginService.user.img" [attr.src]="_loginService.user.img | imagen:'usuarios' | async" class="profile-pic img-user-60 img-circle" />
+                        <img *ngIf="!_loginService.user.img" [src]="sinImagen" class="profile-pic img-user-60 img-circle">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right animated fadeIn">
+                        <ul class="dropdown-user">
+                            <li>
+                                <div class="dw-user-box" align="center">
+                                    <div class="u-img" *ngIf="_loginService.user.img"><img [attr.src]="_loginService.user.img | imagen:'usuarios' | async" alt="user"></div>
+                                    <div class="u-img" *ngIf="!_loginService.user.img"><img [src]="sinImagen" alt="user"></div>
+
+                                    <div class="u-text">
+                                        <h4> {{ _loginService.user.nombre }} </h4>
+                                        <p class="text-muted"> {{ _loginService.user.username }} </p>
+                                        <!--   <a routerLink="/perfil" class="btn btn-rounded btn-danger btn-sm">Ver perfil</a> -->
+                                    </div>
+                                </div>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <!-- <li><a  routerLinkActive="active" routerLink="/perfil"><i class="ti-user"></i> Perfil</a></li> -->
+                            <!--   <li><a href="#"><i class="ti-wallet"></i> My Balance</a></li>
+                                <li><a href="#"><i class="ti-email"></i> Inbox</a></li>
+                                <li role="separator" class="divider"></li> -->
+                            <li><a routerLinkActive="active" routerLink="/account-settings"><i class="ti-settings"></i> Temas</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a (click)="_loginService.logout()" class="pointer"><i class="fa fa-power-off"></i> Salir</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<!-- ============================================================== -->
+<!-- End Topbar header -->
+<!-- ============================================================== -->

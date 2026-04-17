@@ -1,0 +1,149 @@
+<div class="page-content page-form">
+  @if (loading()) {
+    <div class="form-loading"><span class="spinner"></span> Cargando...</div>
+  }
+  @if (!loading()) {
+    <div class="card form-card">
+      <div class="card-header form-card-header">
+        <h2 class="form-title">{{ esEdicion() ? 'Actualizar Usuario' : 'Nuevo Usuario' }}</h2>
+        <a routerLink="/usuarios" class="btn btn-secondary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Volver
+        </a>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+
+          <div class="form-section-title">Foto de perfil</div>
+          <div style="padding:0 1.25rem .75rem">
+            <app-image-upload
+              [src]="imgSrc() ? (imgSrc() | imagen:'usuarios') : null"
+              folder="usuarios"
+              (fileSelected)="imagenFile.set($event)"/>
+          </div>
+
+          <div class="form-section-title">Datos personales</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-row">
+              <label class="form-label">Nombre Completo <span class="req">*</span></label>
+              <input type="text" class="form-control" formControlName="nombrePersona"
+                     [class.is-invalid]="hasError('nombrePersona')"
+                     (blur)="toUpper('nombrePersona')"/>
+              @if (hasError('nombrePersona','required')) {
+                <div class="field-error">Nombre es requerido</div>
+              }
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Código Persona ERP</label>
+              <input type="text" class="form-control" formControlName="codPersonaErp"
+                     (blur)="toUpper('codPersonaErp')"/>
+            </div>
+
+          </div>
+
+          <div class="form-section-title">Acceso</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-row">
+              <label class="form-label">Email (username) <span class="req">*</span></label>
+              <input type="email" class="form-control" formControlName="username"
+                     [class.is-invalid]="hasError('username')"/>
+              @if (hasError('username','required')) {
+                <div class="field-error">Email es requerido</div>
+              }
+              @if (hasError('username','email')) {
+                <div class="field-error">Email inválido</div>
+              }
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">
+                Contraseña
+                @if (!esEdicion()) { <span class="req">*</span> }
+                @else { <span style="color:var(--text-muted);font-size:.75rem">(dejar vacío para no cambiar)</span> }
+              </label>
+              <input type="password" class="form-control" formControlName="password"
+                     [class.is-invalid]="hasError('password')"
+                     autocomplete="new-password"/>
+              @if (hasError('password','required')) {
+                <div class="field-error">Contraseña es requerida</div>
+              }
+              @if (hasError('password','minlength')) {
+                <div class="field-error">Mínimo 6 caracteres</div>
+              }
+            </div>
+
+          </div>
+
+          <div class="form-section-title">Rol y Sucursal</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-row">
+              <label class="form-label">Rol <span class="req">*</span></label>
+              <app-select-search
+                [items]="roles()"
+                bindLabel="nombreRol"
+                bindValue="codRol"
+                placeholder="Seleccione rol"
+                [selected]="selRol()"
+                (changed)="selRol.set($any($event))"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Sucursal</label>
+              <app-select-search
+                [items]="sucursales()"
+                bindLabel="nombreSucursal"
+                bindValue="codSucursal"
+                placeholder="Seleccione sucursal"
+                [selected]="selSucursal()"
+                (changed)="selSucursal.set($any($event))"/>
+            </div>
+
+          </div>
+
+          <div class="form-section-title">Estado</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-row">
+              <label class="form-label">Activo</label>
+              <select class="form-control" formControlName="enabled">
+                <option [ngValue]="true">Sí</option>
+                <option [ngValue]="false">No</option>
+              </select>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Bloqueado</label>
+              <select class="form-control" formControlName="bloqueado">
+                <option [ngValue]="false">No</option>
+                <option [ngValue]="true">Sí</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <a routerLink="/usuarios" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Atrás
+            </a>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando()">
+              @if (guardando()) {
+                <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+              }
+              {{ esEdicion() ? 'Actualizar' : 'Crear' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  }
+</div>

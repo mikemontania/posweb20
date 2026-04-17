@@ -1,0 +1,145 @@
+<!-- Botones (ocultos en impresión) -->
+<div class="oculto-impresion ticket-actions">
+  <button class="btn btn-secondary" (click)="atras()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    Atrás
+  </button>
+  @if (listo()) {
+    <button class="btn btn-primary" (click)="imprimirOriginal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+        <rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      Imprimir
+    </button>
+    <button class="btn btn-danger" (click)="verPDF('Original: Cliente - Comprador')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      PDF Original
+    </button>
+    <button class="btn btn-secondary" (click)="verPDF('Duplicado: comprobante tributario')">
+      PDF Duplicado
+    </button>
+  }
+</div>
+
+<!-- Loading -->
+@if (loading()) {
+  <div class="oculto-impresion" style="display:flex;justify-content:center;padding:3rem">
+    <span class="spinner" style="width:32px;height:32px;border-width:3px"></span>
+  </div>
+}
+
+<!-- Ticket -->
+@if (listo() && venta()) {
+  <div class="ticket-wrapper">
+    <div class="ticket-card printableArea" id="documento">
+
+      <!-- Cabecera empresa -->
+      <p class="centrado">
+        <strong>{{ empresa()?.razonSocial }}</strong><br/>
+        R.U.C: {{ empresa()?.ruc }}<br/>
+        EXPRESS: {{ sucursal()?.nombreSucursal }}<br/>
+        DIR: {{ sucursal()?.direccion }}<br/>
+        CEL: {{ sucursal()?.telefono }}
+      </p>
+      <hr class="dashed"/>
+      <p class="centrado">COMPROBANTE INTERNO</p>
+      <hr class="dashed"/>
+
+      <!-- Datos venta -->
+      <p class="izquierda">
+        NRO: {{ venta()?.codVenta?.toString()?.padStart(8,'0') }}<br/>
+        FECHA: {{ venta()?.fechaVenta | date:'dd/MM/y' }}
+      </p>
+      <hr class="dashed"/>
+
+      <!-- Detalle de productos -->
+      <table class="ticket-table">
+        <thead>
+          <tr>
+            <th class="cantidad">Cant.</th>
+            <th class="producto">Descripción</th>
+            <th class="precio">Precio</th>
+            <th class="total">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of detalles(); track $index) {
+            <tr>
+              <td class="cantidad">{{ d.cantidad }}</td>
+              <td class="producto">
+                {{ d.producto?.nombreProducto }}
+                @if (d.tipoDescuento === 'UNO_DE_DOS') {
+                  <small>(2da uni) {{ d.porcDescuento }}%</small>
+                } @else if (d.tipoDescuento) {
+                  <small>{{ d.porcDescuento }}%</small>
+                }
+              </td>
+              <td class="precio">{{ d.importePrecio | number }}</td>
+              <td class="total">{{ d.importeTotal | number }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <hr class="dashed"/>
+
+      <!-- Totales -->
+      <div class="row-label"><span>ARTÍCULOS</span><span>{{ totalElementos | number }}</span></div>
+      <div class="row-label"><span>SUB TOTAL</span><span>GS. {{ venta()?.subTotal | number }}</span></div>
+      <div class="row-label"><span>DESCUENTOS</span><span>GS. {{ venta()?.importeDescuento | number }}</span></div>
+      <div class="row-label strong"><span>TOTAL A PAGAR</span><span>GS. {{ venta()?.importeTotal | number }}</span></div>
+      <div class="row-label"><span>IVA 5%</span><span>GS. {{ venta()?.importeIva5 | number }}</span></div>
+      <div class="row-label"><span>IVA 10%</span><span>GS. {{ venta()?.importeIva10 | number }}</span></div>
+      <div class="row-label"><span>EXENTA</span><span>GS. {{ venta()?.importeIvaExenta | number }}</span></div>
+      <hr class="dashed"/>
+
+      <!-- Cobranza -->
+      @if (!mostrarForma()) {
+        @if (cobranza()) {
+          <div class="row-label"><span>ABONADO</span><span>GS. {{ cobranza()?.importeAbonado | number }}</span></div>
+          <div class="row-label"><span>VUELTO</span><span>GS. {{ (cobranza()?.importeAbonado ?? 0) - (venta()?.importeTotal ?? 0) | number }}</span></div>
+        }
+        @for (d of cobranzaDet(); track $index) {
+          <div class="row-label"><span>{{ d.medioPago?.descripcion }}</span><span>GS. {{ d.importeAbonado | number }}</span></div>
+        }
+      } @else {
+        <div class="row-label"><span>ABONADO</span><span>GS. 0</span></div>
+        <div class="row-label"><span>VUELTO</span><span>GS. 0</span></div>
+      }
+      <hr class="dashed"/>
+
+      <!-- Datos cliente -->
+      <div class="izquierda">
+        RAZÓN SOCIAL: {{ venta()?.cliente?.razonSocial }}<br/>
+        C.I./R.U.C.: {{ venta()?.cliente?.docNro }}<br/>
+        TEL.: {{ venta()?.cliente?.telefono }}<br/>
+        DIR: {{ venta()?.cliente?.direccion }}<br/>
+        PUNTOS OBTENIDOS: {{ venta()?.puntosObtenidos | number }}<br/>
+        PUNTOS ACUMULADOS: {{ venta()?.totalPuntos | number }}
+      </div>
+
+      @if (venta() && (venta().importeDescuento + (venta().descuentoProducto ?? 0)) > 0) {
+        <hr class="dashed"/>
+        <p class="centrado" style="font-size:18px">
+          USTED AHORRO GS.&nbsp;{{ (venta().importeDescuento + (venta().descuentoProducto ?? 0)) | number }}
+        </p>
+      }
+
+      <hr class="dashed"/>
+      <p class="centrado">Original: Cliente - Comprador</p>
+      <hr class="dashed"/>
+      <p class="centrado" style="font-size:10px">
+        Los datos impresos requieren cuidados especiales. Evite el contacto con plásticos, sustancias químicas, calor, humedad o luz solar.
+      </p>
+      <hr class="dashed"/>
+      <p class="centrado"><strong>*** ¡GRACIAS POR SU COMPRA! ***</strong></p>
+      <hr class="dashed"/>
+
+    </div>
+  </div>
+}

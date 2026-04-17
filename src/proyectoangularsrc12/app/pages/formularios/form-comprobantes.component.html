@@ -1,0 +1,230 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err.field +" "+ err.defaultMessage}}
+
+    </li>
+</ul>
+
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!comprobante.codNumeracion" class="m-b-0 text-white">Crear comprobante</h4>
+        <h4 *ngIf="comprobante.codNumeracion" class="m-b-0 text-white">Actualizar comprobante</h4>
+    </div>
+    <div class="card-body">
+
+        <form #comprobanteForm="ngForm">
+
+            <div class="form-group row">
+                <label for="activo" class="col-form-label col-sm-2">Activo <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select class=" custom-select  form-control" name="activo" id="selectActivo"
+                        [(ngModel)]="comprobante.activo" #activo="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="autoImpresor" class="col-form-label col-sm-2">Auto impresor <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select class=" custom-select  form-control" name="autoImpresor" id="selectautoImpresor"
+                        [(ngModel)]="comprobante.autoImpresor" #autoImpresor="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="inicioTimbrado" class="col-form-label col-sm-2">Fecha inicio <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control" [(ngModel)]="comprobante.inicioTimbrado"
+                        name="inicioTimbrado" #inicioTimbrado="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="finTimbrado" class="col-form-label col-sm-2">Fecha fin <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control" [(ngModel)]="comprobante.finTimbrado" name="finTimbrado"
+                        #finTimbrado="ngModel">
+
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="selectSucursal" class="col-form-label col-sm-2">Sucursal <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select id="selectSucursal" class="custom-select" style="width: 100%; height:36px;" tabindex="-1"
+                        aria-hidden="true" [(ngModel)]="seleccionSucursal" #selectSucursal="ngModel"
+                        name="selectSucursal" (ngModelChange)="cambioSucursal($event)">
+                        <option *ngFor="let sucursal of sucursales" [value]="sucursal.codSucursal">
+                            {{sucursal.nombreSucursal}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="numeroInicio" class="col-form-label col-sm-2">Nro inicio<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="comprobante.numeroInicio" name="numeroInicio"
+                        #numeroInicio="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="numeroFin" class="col-form-label col-sm-2">Nro fin<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="comprobante.numeroFin" name="numeroFin"
+                        #numeroFin="ngModel">
+
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label for="serie" class="col-form-label col-sm-2">Serie <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" [textMask]="{mask: mask,guide: false}" guide="false" placeholder="ej: 001-001"
+                        class="form-control" [(ngModel)]="comprobante.serie" name="nroComprobante" #serie="ngModel"
+                        required minlength="7">
+                    <div class="alert alert-danger" *ngIf="serie.invalid && (serie.dirty || serie.touched)">
+                        <div *ngIf="!!serie.errors.required">
+                            serie es requerido
+                        </div>
+                        <div *ngIf="!!serie.errors.minlength">
+                            serie debe tener al menos 7 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="selectTerminal" class="col-form-label col-sm-2">Terminal <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select id="selectTerminal" class="custom-select" style="width: 100%; height:36px;" tabindex="-1"
+                        aria-hidden="true" [(ngModel)]="seleccionTerminal" #selectTerminal="ngModel"
+                        name="seleccionterminales" (ngModelChange)="cambioTerminal($event)">
+                        <option *ngFor="let terminal of terminales" [value]="terminal.codTerminalVenta">
+                            {{terminal.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="timbrado" class="col-form-label col-sm-2">Timbrado <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="comprobante.timbrado" name="timbrado"
+                        #timbrado="ngModel" required minlength="7">
+                    <div class="alert alert-danger" *ngIf="timbrado.invalid && (timbrado.dirty || timbrado.touched)">
+                        <div *ngIf="!!timbrado.errors.required">
+                            timbrado es requerido
+                        </div>
+                        <div *ngIf="!!timbrado.errors.minlength">
+                            timbrado debe tener al menos 7 caracteres
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" *ngIf="comprobanteForm.submitted && !!timbrado.errors.required">
+                        timbrado es requerido
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="tipoComprobante" class="col-form-label col-sm-2">Tipo de comprobante <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select class=" custom-select  form-control" name="tipoComprobante" id="tipoComprobante"
+                        [(ngModel)]="comprobante.tipoComprobante" #tipoComprobante="ngModel">
+                        <option value="FACTURA">FACTURA</option>
+                        <option value="TICKET">TICKET</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label for="maxItems" class="col-form-label col-sm-2">Max items<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="comprobante.maxItems" name="maxItems"
+                        #maxItems="ngModel">
+
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="tipoImpresion" class="col-form-label col-sm-2">Tipo Impresion <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="comprobante.tipoImpresion" name="tipoImpresion"
+                        #tipoImpresion="ngModel" required minlength="8">
+                    <div class="alert alert-danger"
+                        *ngIf="tipoImpresion.invalid && (tipoImpresion.dirty || tipoImpresion.touched)">
+                        <div *ngIf="!!tipoImpresion.errors.required">
+                            tipoImpresion es requerido
+                        </div>
+                        <div *ngIf="!!tipoImpresion.errors.minlength">
+                            tipoImpresion debe tener al menos 8 caracteres
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-group row">
+                <label for="ultimoNumero" class="col-form-label col-sm-2">Ultimo numero <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" [min]="numeroInicio" [max]="numeroFin" class="form-control"
+                        [(ngModel)]="comprobante.ultimoNumero" name="ultimoNumero" #ultimoNumero="ngModel">
+                    <div class="alert alert-danger"
+                        *ngIf="ultimoNumero.invalid && (ultimoNumero.dirty || ultimoNumero.touched)">
+                        <div *ngIf="!!ultimoNumero.errors.required">
+                            ultimoNumero es requerido
+                        </div>
+                        <div *ngIf="!!timbrado.errors.minlength">
+                            ultimoNumero debe tener al menos 8 caracteres
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/comprobantes']"
+                        class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i>
+                        Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()'
+                        [disabled]="!comprobanteForm.form.valid" *ngIf="!comprobante.codNumeracion else elseBlock"><i
+                            class="fa   fa-floppy-o"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button"
+                            (click)='update( )' [disabled]="!comprobanteForm.form.valid"><i
+                                class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,200 @@
+<div class="page-content page-form">
+  @if (loading()) {
+    <div class="form-loading"><span class="spinner"></span> Cargando...</div>
+  }
+  @if (!loading()) {
+    <div class="card form-card">
+      <div class="card-header form-card-header">
+        <h2 class="form-title">{{ esEdicion() ? 'Actualizar Producto' : 'Nuevo Producto' }}</h2>
+        <a routerLink="/productos" class="btn btn-secondary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Volver
+        </a>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+
+          <!-- ── Imagen ────────────────────────────────── -->
+          <div class="form-section-title">Imagen del producto</div>
+          <div style="padding:0 1.25rem .75rem">
+            <app-image-upload
+              [src]="imgSrc() ? (imgSrc() | imagen:'productos') : null"
+              folder="productos"
+              (fileSelected)="imagenFile.set($event)"/>
+          </div>
+
+          <!-- ── Identificación ─────────────────────── -->
+          <div class="form-section-title">Identificación</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-row">
+              <label class="form-label">Código ERP</label>
+              <input type="text" class="form-control" formControlName="codProductoErp"
+                     (blur)="toUpper('codProductoErp')"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Nombre Producto <span class="req">*</span></label>
+              <input type="text" class="form-control" formControlName="nombreProducto"
+                     [class.is-invalid]="hasError('nombreProducto')"
+                     (blur)="toUpper('nombreProducto')"/>
+              @if (hasError('nombreProducto','required')) {
+                <div class="field-error">Nombre es requerido</div>
+              }
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Descripción</label>
+              <input type="text" class="form-control" formControlName="descripcion"
+                     (blur)="toUpper('descripcion')"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Código de Barra</label>
+              <input type="text" class="form-control" formControlName="codBarra"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Marca</label>
+              <input type="text" class="form-control" formControlName="marca"
+                     (blur)="toUpper('marca')"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Presentación</label>
+              <input type="text" class="form-control" formControlName="presentacion"
+                     (blur)="toUpper('presentacion')"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Color</label>
+              <input type="text" class="form-control" formControlName="color"
+                     (blur)="toUpper('color')"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Grupo Material</label>
+              <input type="text" class="form-control" formControlName="grpMaterial"
+                     (blur)="toUpper('grpMaterial')"/>
+            </div>
+
+          </div>
+
+          <!-- ── Clasificación ──────────────────────── -->
+          <div class="form-section-title">Clasificación</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-row">
+              <label class="form-label">Categoría</label>
+              <app-select-search
+                [items]="categorias()"
+                bindLabel="descripcion"
+                bindValue="codCategoriaProducto"
+                placeholder="Seleccione categoría"
+                [selected]="selCategoria()"
+                (changed)="selCategoria.set($any($event))"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Unidad de Medida</label>
+              <app-select-search
+                [items]="unidades()"
+                bindLabel="nombreUnidad"
+                bindValue="codUnidad"
+                placeholder="Seleccione unidad"
+                [selected]="selUnidad()"
+                (changed)="selUnidad.set($any($event))"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Categoría ABC</label>
+              <select class="form-control" formControlName="catABC">
+                @for (c of catsABC; track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">IVA %</label>
+              <select class="form-control" formControlName="iva">
+                @for (iv of ivaOpts; track iv) {
+                  <option [value]="iv">{{ iv }}%</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Peso (kg)</label>
+              <input type="number" step="0.01" class="form-control" formControlName="peso"/>
+            </div>
+
+          </div>
+
+          <!-- ── Configuración ─────────────────────── -->
+          <div class="form-section-title">Configuración</div>
+          <div class="form-grid-3">
+
+            <div class="form-group form-row">
+              <label class="form-label">Activo</label>
+              <select class="form-control" formControlName="activo">
+                <option [ngValue]="true">Sí</option>
+                <option [ngValue]="false">No</option>
+              </select>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Sin Descuento</label>
+              <select class="form-control" formControlName="sinDescuento">
+                <option [ngValue]="false">No</option>
+                <option [ngValue]="true">Sí</option>
+              </select>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Inventariable</label>
+              <select class="form-control" formControlName="inventariable">
+                <option [ngValue]="true">Sí</option>
+                <option [ngValue]="false">No</option>
+              </select>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">IVA Especial</label>
+              <select class="form-control" formControlName="ivaEspecial">
+                <option [ngValue]="false">No</option>
+                <option [ngValue]="true">Sí</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div style="padding:0 1.25rem .75rem">
+            <div class="form-group form-row">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-control" formControlName="obs" rows="2"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a routerLink="/productos" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Atrás
+            </a>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando()">
+              @if (guardando()) {
+                <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+              }
+              {{ esEdicion() ? 'Actualizar' : 'Crear' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  }
+</div>

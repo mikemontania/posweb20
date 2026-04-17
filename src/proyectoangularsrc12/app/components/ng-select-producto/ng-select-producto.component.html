@@ -1,0 +1,12 @@
+<ng-select [items]="productos" (search)="onSearch($event)" placeholder="Seleccione producto" (change)="selectedItem($event)" notFoundText="No se ha encontrado producto" bindLabel="concatCodErpNombre" [(ngModel)]="cargadorProducto">
+    <!--    <ng-template ng-option-tmp let-item="item">
+        {{item.nombrePersona}} <br/>
+        <small>{{item.username}}</small>
+    </ng-template> -->
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <b [ngOptionHighlight]="search">{{item.concatCodErpNombre}}</b>
+
+    </ng-template>
+</ng-select>
+<!-- <span *ngIf="searching">Buscando...</span>
+<div class="invalid-feedback" *ngIf="searchFailed">No se ha encontrado usuario</div> -->

@@ -1,0 +1,528 @@
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+
+<div class="container" align="center">
+    <div class="row col-xl-4 col-lg-5 col-md-7">
+        <div class="col-xl-12 col-xl-12">
+            <div class="card card-body printableArea" style="padding: 0.2rem;">
+                <div class="ticket printableArea centrado" id="documento" *ngIf="listo">
+                    <!-- <pre  class="centrado"> 
+                                {{empresa.razonSocial}} 
+                                R.U.C: &nbsp;{{empresa.ruc}}  &nbsp; &nbsp; TEL.: &nbsp;{{empresa.telefono}}
+                                ({{sucursal.nombreSucursal}})
+  
+                        </pre> -->
+
+                    <table class="ticket">
+                        <tbody>
+                            <tr class="centrado">
+                                <td>{{empresa.razonSocial}} </td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>R.U.C: {{empresa.ruc}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>TEL: {{sucursal.telefono}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>{{sucursal.nombreSucursal}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>{{sucursal.direccion}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>I.V.A. INCLUIDO</td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>TIMBRADO: {{venta.timbrado}}</td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FECHA INICIO:{{venta.inicioTimbrado | date:'dd/MM/y'}}
+                                </td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FECHA FIN: {{venta.finTimbrado | date:'dd/MM/y'}}
+                                </td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FACTURA {{formaVenta.descripcion}}
+                                </td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>NRO: {{venta.nroComprobante}}</td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FECHA:{{venta.fechaVenta | date:'dd/MM/y'}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="col-12">
+                        <hr style="border-top: 1px none black;
+                                                            border-collapse: collapse;">
+                    </div>
+
+                    <!-- <p class="centrado" style="padding-top:0.1rem; padding-bottom:0.1rem;margin-bottom:0.1rem;" >{{empresa.razonSocial}}  
+                                             <br>R.U.C: {{empresa.ruc}} 
+                                             <br>TEL: {{sucursal.telefono}}
+                                             <br>({{sucursal.nombreSucursal}})
+                                             <br>{{sucursal.direccion}}
+                                             <br>I.V.A. INCLUIDO </p>  
+                                                  <p class="izquierda" style="padding-top:0.1rem; padding-bottom:0.1rem;margin-bottom:0.1rem;" >
+                                                <br> TIMBRADO: {{venta.timbrado}}
+                                                <br>FECHA INICIO:{{venta.inicioTimbrado | date:'dd/MM/y'}}
+                                                <br>FECHA FIN: {{venta.finTimbrado | date:'dd/MM/y'}}
+                                                <br>FACTURA CONTADO 
+                                                <br>NRO: {{venta.nroComprobante}}
+                                                <br>FECHA:{{venta.fechaVenta | date:'dd/MM/y'}} </p> -->
+
+                    <table>
+                        <thead class="centrado">
+                            <tr>
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="cantidad">Cant.</th>
+
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="producto">Descripcion</th>
+
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="precio">Precio</th>
+
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="total">Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody *ngFor="let d of detalles" class="centrado">
+                            <tr>
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="cantidad">{{d.cantidad}}</td>
+
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="producto">{{d.producto.nombreProducto}}</td>
+
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="precio">{{d.importePrecio | number}}</td>
+
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="total">{{d.importeTotal | number}}</td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td class="cantidad">&nbsp; &nbsp; &nbsp;</td>
+
+                                <td class="producto">&nbsp; &nbsp; &nbsp;</td>
+
+                                <td class="precio">&nbsp; &nbsp; &nbsp;</td>
+
+                                <td class="total">&nbsp; &nbsp; &nbsp;</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-5 izquierda">SUB TOTAL</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{ venta.subTotal | number}}
+                        </div>
+
+                        <div class="col-5 izquierda">DESCUENTOS</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{venta.importeDescuento | number}}
+                        </div>
+
+                        <div class="col-5 izquierda">TOTAL A PAGAR</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{venta.importeTotal | number}}
+                        </div>
+
+                        <div class="col-12">
+                            <hr style="border-top: 1px dashed black;
+                                                   border-collapse: collapse;">
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="!mostrarForma">
+                        <div class="col-5 izquierda">ABONADO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{cobranza.importeAbonado | number}}
+                        </div>
+
+                        <div class="col-5 izquierda">VUELTO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{cobranza.importeAbonado - venta.importeTotal | number}}
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="mostrarForma">
+                        <div class="col-5 izquierda">ABONADO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">GS.&nbsp;0</div>
+
+                        <div class="col-5 izquierda">VUELTO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">GS.&nbsp;0</div>
+                    </div>
+
+                    <div class="row" *ngFor="let d of cobranzaDetalles" [hidden]="mostrarForma">
+                        <div class="col-5 izquierda">{{d.medioPago.descripcion}}</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{d.importeAbonado | number}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5 izquierda">ARTICULOS</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">{{totalElementos | number}}</div>
+
+                        <div class="col-5 izquierda">C.I./R.U.C.</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">{{cliente.docNro}}</div>
+
+                        <div class="col-5 izquierda">RAZON SOCIAL</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">{{cliente.razonSocial}}</div>
+
+                        <div class="col-12">
+                            <hr style="border-top: 1px dashed black;
+                                                            border-collapse: collapse;">
+                        </div>
+                    </div>
+
+                    <p class="centrado">
+                        Original: Cliente - Comprador
+
+                        <br>
+                    </p>
+
+                    <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+
+                    <p class="centrado" style="border: inset 0pt;font: 90% sans-serif;">
+                        Los datos impresos requieren de cuidados especiales. Evite el contacto directo con plasticos, sustancias quimicas, calor, humedad o luz solar.
+
+                        <br>
+                    </p>
+
+                    <hr style="border-top: 1px dashed black;border-collapse: collapse;">
+                    <p class="centrado">
+                        *** ¡GRACIAS POR SU COMPRA! ***
+
+                        <br>
+                    </p>
+
+                    <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+                </div>
+
+                <div class="ticket printableArea centrado" id="documento2" [hidden]="true" *ngIf="listo">
+                    <!-- <pre  class="centrado"> 
+                                    {{empresa.razonSocial}}  
+                                    R.U.C: &nbsp;{{empresa.ruc}}  &nbsp; &nbsp; TEL.: &nbsp;{{empresa.telefono}}
+                                    ({{sucursal.nombreSucursal}})
+      
+                            </pre> -->
+
+                    <table class="ticket">
+                        <tbody>
+                            <tr class="centrado">
+                                <td>{{empresa.razonSocial}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>R.U.C: {{empresa.ruc}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>TEL: {{sucursal.telefono}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>{{sucursal.nombreSucursal}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>{{sucursal.direccion}}</td>
+                            </tr>
+
+                            <tr class="centrado">
+                                <td>I.V.A. INCLUIDO</td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>TIMBRADO: {{venta.timbrado}}</td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FECHA INICIO:{{venta.inicioTimbrado | date:'dd/MM/y'}}
+                                </td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FECHA FIN: {{venta.finTimbrado | date:'dd/MM/y'}}
+                                </td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FACTURA {{formaVenta.descripcion}}
+                                </td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>NRO: {{venta.nroComprobante}}</td>
+                            </tr>
+
+                            <tr class="izquierda">
+                                <td>
+                                    FECHA:{{venta.fechaVenta | date:'dd/MM/y'}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="col-12">
+                        <hr style="border-top: 1px none black;
+                                                                border-collapse: collapse;">
+                    </div>
+
+                    <!-- <p class="centrado" style="padding-top:0.1rem; padding-bottom:0.1rem;margin-bottom:0.1rem;" >{{empresa.razonSocial}} 
+                                                 <br>R.U.C: {{empresa.ruc}} 
+                                                 <br>TEL: {{sucursal.telefono}}
+                                                 <br>({{sucursal.nombreSucursal}})
+                                                 <br>{{sucursal.direccion}}
+                                                 <br>I.V.A. INCLUIDO </p>  
+                                                      <p class="izquierda" style="padding-top:0.1rem; padding-bottom:0.1rem;margin-bottom:0.1rem;" >
+                                                    <br> TIMBRADO: {{venta.timbrado}}
+                                                    <br>FECHA INICIO:{{venta.inicioTimbrado | date:'dd/MM/y'}}
+                                                    <br>FECHA FIN: {{venta.finTimbrado | date:'dd/MM/y'}}
+                                                    <br>FACTURA CONTADO 
+                                                    <br>NRO: {{venta.nroComprobante}}
+                                                    <br>FECHA:{{venta.fechaVenta | date:'dd/MM/y'}} </p> -->
+
+                    <table>
+                        <thead class="centrado">
+                            <tr>
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="cantidad">Cant.</th>
+
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="producto">Descripcion</th>
+
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="precio">Precio</th>
+
+                                <th style="border: inset 0pt;font: 90% sans-serif;" class="total">Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody *ngFor="let d of detalles" class="centrado">
+                            <tr>
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="cantidad">{{d.cantidad}}</td>
+
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="producto">{{d.producto.nombreProducto}}</td>
+
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="precio">{{d.importePrecio | number}}</td>
+
+                                <td style="border: inset 0pt;font: 90% sans-serif;" class="total">{{d.importeTotal | number}}</td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td class="cantidad">&nbsp; &nbsp; &nbsp;</td>
+
+                                <td class="producto">&nbsp; &nbsp; &nbsp;</td>
+
+                                <td class="precio">&nbsp; &nbsp; &nbsp;</td>
+
+                                <td class="total">&nbsp; &nbsp; &nbsp;</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-5 izquierda">SUB TOTAL</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{ venta.subTotal | number}}
+                        </div>
+
+                        <div class="col-5 izquierda">DESCUENTOS</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{venta.importeDescuento | number}}
+                        </div>
+
+                        <div class="col-5 izquierda">TOTAL A PAGAR</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{venta.importeTotal | number}}
+                        </div>
+
+                        <div class="col-12">
+                            <hr style="border-top: 1px dashed black;
+                                                       border-collapse: collapse;">
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="!mostrarForma">
+                        <div class="col-5 izquierda">ABONADO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{cobranza.importeAbonado | number}}
+                        </div>
+
+                        <div class="col-5 izquierda">VUELTO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{cobranza.importeAbonado - venta.importeTotal | number}}
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="mostrarForma">
+                        <div class="col-5 izquierda">ABONADO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">GS.&nbsp;0</div>
+
+                        <div class="col-5 izquierda">VUELTO</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">GS.&nbsp;0</div>
+                    </div>
+
+                    <div class="row" *ngFor="let d of cobranzaDetalles" [hidden]="mostrarForma">
+                        <div class="col-5 izquierda">{{d.medioPago.descripcion}}</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">
+                            GS.&nbsp;{{d.importeAbonado | number}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5 izquierda">ARTICULOS</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">{{totalElementos | number}}</div>
+
+                        <div class="col-5 izquierda">C.I./R.U.C.</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">{{cliente.docNro}}</div>
+
+                        <div class="col-5 izquierda">RAZON SOCIAL</div>
+
+                        <div class="col-2">:</div>
+
+                        <div class="col-5 izquierda">{{cliente.razonSocial}}</div>
+
+                        <div class="col-12">
+                            <hr style="border-top: 1px dashed black;
+                                                                border-collapse: collapse;">
+                        </div>
+                    </div>
+
+                    <p class="centrado">
+                        Duplicado: comprobante tributario
+
+                        <br>
+                    </p>
+
+                    <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+
+                    <p class="centrado" style="border: inset 0pt;font: 90% sans-serif;">
+                        Los datos impresos requieren de cuidados especiales. Evite el contacto directo con plasticos, sustancias quimicas, calor, humedad o luz solar.
+
+                        <br>
+                    </p>
+
+                    <hr style="border-top: 1px dashed black;border-collapse: collapse;">
+                    <p class="centrado">
+                        *** ¡GRACIAS POR SU COMPRA! ***
+
+                        <br>
+                    </p>
+
+                    <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+                </div>
+
+                <!-- <div class="button-group  oculto-impresion">
+                    <button type="button" [routerLink]="['/ventasLista']" class="btn btn-outline-secondary">Atrás</button>
+
+                    <button class="btn btn-outline-secondary" [useExistingCss]="true" styleSheetFile="ticket80.css" printSectionId="documento" ngxPrint="ngxPrint">Imprimir</button>
+                </div> -->
+                <div class="button-group  oculto-impresion">
+
+                    <button class="btn btn-secondary text-blue" [routerLink]="['/ventasLista']" class="btn btn-outline-secondary">Atrás
+                        </button>
+                    <button class="btn btn-success text-white" [useExistingCss]="true" styleSheetFile="ticket80.css" printSectionId="documento" ngxPrint> 
+                                Original
+                                </button>
+                    <button class="btn btn-info text-white" [useExistingCss]="true" styleSheetFile="ticket80.css" printSectionId="documento2" ngxPrint> 
+                                Duplicado
+                                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- ============================================================== -->
+<!-- End PAge Content -->
+<!-- ============================================================== -->

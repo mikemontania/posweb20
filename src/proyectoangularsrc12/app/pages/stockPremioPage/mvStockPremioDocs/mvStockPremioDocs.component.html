@@ -1,0 +1,227 @@
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex">
+          <div>
+            <span>
+              <h3 class="card-title m-b-5 center">
+                <span class="lstick"></span>Listado de movimientos para stock premios
+              </h3>
+            </span>
+          </div>
+        </div>
+        <div class="container py-5">
+
+          <form #repartoForm="ngForm">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="fechaInicio" class="col-form-label"> Fecha Desde:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaInicio"
+                  name="fechaInicio" />
+              </div>
+              <div class="col-sm-6">
+                <label for="fechafin" class="col-form-label"> Fecha Hasta:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechafin" name="fechafin" />
+              </div>
+            </div>
+            <div class="form-group row">
+
+              <div class="col-sm-6">
+                <label for="sucursal">Sucursal</label>
+                <ng-select-sucursal #searchSucursal id="selectsucursal"
+                  [disabled]="_loginServices.user.authorities[0] != 'ROLE_ADMIN'" [cargadorSucursal]="cargadorSucursal"
+                  style="width: 100%" name="sucursal" (retornoObjeto)="seleccionarSucursal($event)">
+                </ng-select-sucursal>
+              </div>
+              <div class="col-sm-3">
+                <label for="nroComprobante" class="col-form-label">
+                  N° Comprobante:</label>
+                <input type="text " placeholder="Ej: 008-008-0000072" [textMask]="{ mask: mask, guide: true }"
+                  guide="false " class="form-control form-control-sm " [(ngModel)]="nroComprobante"
+                  name="nroComprobante " />
+              </div>
+              <div class="col-sm-3">
+                <label for="operacion" class="col-form-label ">Movimiento:</label>
+                <ng-select [items]="operaciones" notFoundText="No se ha encontrado movimiento"
+                  placeholder="Seleccione movimiento" [(ngModel)]="operacion" name="operacion" bindLabel="descripcion"
+                  (clear)="clean()">
+                </ng-select>
+              </div>
+            </div>
+
+
+            <div class="form-group row button-group ">
+              <div class="col-sm-6  " style=" text-align: center;">
+                <button class="btn btn-info   " (click)="buscar()" type="button ">
+                  <i class="fa fa-search "></i> Buscar
+                </button>
+                <button type="button" (click)="ngOnInit()" class="btn  btn-secondary">
+                  <i class="fa  fa-close"></i> Cancelar
+                </button>
+              </div>
+              <div class="col-sm-6 " style=" text-align: center;">
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex">
+      <div>
+        <span>
+          <h3 class="card-title m-b-5 center">
+            <span class="lstick"></span>Detalles
+          </h3>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="filas" class="col-form-label col-sm-2 col-lg-1.5 col-xl-1">Filas:</label>
+      <div class="col-sm-2 col-lg-1.5 col-xl-1">
+        <select class="selectpicker form-control-sm custom-select" name="filas" [(ngModel)]="size"
+          (ngModelChange)="cambioNumero($event)">
+          <option *ngFor="let t of numeros" [value]="t.cod">
+            {{ t.descripcion }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="stockPremioDocs?.length == 0" class="alert alert-info">
+      No hay registros en la base de datos!
+    </div>
+
+    <div class="row" animated fadeIn *ngIf="cargando">
+      <div class="col-sm-6 col-md-12">
+        <div class="alert alert-info text-center">
+          <strong>Cargando ...</strong>
+          <br />
+          <i class="fa fa-refresh fa-spin fa-2x"></i>
+          <br />
+          <span>Espere por favor</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive" [hidden]="cargando">
+      <div *ngIf="stockPremioDocs?.length > 0">
+        <table class="table table-sm table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Codigo</th>
+              <th>Operacion</th>
+              <th>Sucursal</th>
+              <th>Usuario</th>
+              <th>Fecha</th>
+              <th>Items</th>
+              <th>N.Comprobante</th>
+              <th>Detalle</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stockPremioItem of stockPremioDocs;let i =index" [ngClass]="{
+
+                'alert-primary': stockPremioItem.operacion == 'OBSEQUIO',
+                'alert-success': stockPremioItem.operacion == 'ENTRADA',
+                'alert-warning': stockPremioItem.operacion == 'INVENTARIO'
+              }">
+              <td> {{i+1}}</td>
+              <td>{{ stockPremioItem.codstockPremioCab }}</td>
+              <td>{{ stockPremioItem.operacion }}</td>
+              <td>{{ stockPremioItem.sucursal.nombreSucursal }}</td>
+              <td>{{ stockPremioItem.usuario }}</td>
+              <td align="center">
+                {{ stockPremioItem.fecha | date:'dd/MM/yyyy' }}
+              </td>
+              <td align="center">
+                {{ stockPremioItem.cantidadItems | number }}
+              </td>
+              <td align="center" *ngIf="!stockPremioItem.nroComprobante">xxx-xxx-xx</td>
+              <td align="center" *ngIf="stockPremioItem.nroComprobante">{{ stockPremioItem.nroComprobante }} </td>
+              <td align="center"><button class="btn btn-success btn-circle " (click)="verDetalle(stockPremioItem)"
+                  type="button">
+                  <i class="fa fa-list"></i>
+                </button> </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="stockPremioDocs?.length > 0"
+      [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos"
+      [(page)]="pagina" [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+      <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+      <ng-template ngbPaginationNext>&raquo;</ng-template>
+      <ng-template ngbPaginationFirst>Primera</ng-template>
+      <ng-template ngbPaginationLast>Última</ng-template>
+    </ngb-pagination>
+  </div>
+</div>
+<div class="fondo-negro animated fadeIn" [ngClass]="modal">
+  <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white ">Detalle</h4>
+          <button (click)="cerrarModal()" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="scrollable-content table-responsive">
+            <table class="table table-sm table-bordered ">
+              <thead>
+                <tr>
+                  <th>###</th>
+                  <th>Premio</th>
+                  <th>Operacion</th>
+                  <th>Cantidad</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of stockPremioDetalle;let i =index">
+                  <td>{{i+1}}</td>
+                  <td>
+                    {{detail.premio.descripcion}}
+                  </td>
+                  <td>
+                    {{detail.operacion}}
+                  </td>
+                  <td>
+                    {{detail.cantidad | number}}
+                  </td>
+
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+
+            <button (click)="cerrarModal()" type="button" class="btn btn-secondary " data-dismiss="modal">
+              cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

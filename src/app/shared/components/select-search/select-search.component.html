@@ -1,0 +1,82 @@
+<div class="ss-host" [class.ss-open]="isOpen()" [class.ss-disabled]="disabled">
+
+  <!-- Trigger -->
+  <div class="ss-trigger" (click)="toggleOpen()" [attr.tabindex]="disabled ? -1 : 0"
+    (keydown.enter)="toggleOpen()" (keydown.space)="toggleOpen()" role="combobox"
+    [attr.aria-expanded]="isOpen()" [attr.aria-haspopup]="true">
+
+    <span class="ss-value" [class.ss-placeholder]="!selectedItem()">
+      {{ selectedItem() ? displayLabel() : placeholder }}
+    </span>
+
+    <span class="ss-actions">
+      @if (loading) {
+        <span class="ss-spinner"></span>
+      }
+      @if (clearable && selectedItem() && !disabled) {
+        <button class="ss-clear" type="button" (click)="clearSelection($event)" tabindex="-1" aria-label="Limpiar">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      }
+      <svg class="ss-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </span>
+  </div>
+
+  <!-- Dropdown -->
+  @if (isOpen()) {
+    <div class="ss-dropdown">
+      <!-- Búsqueda -->
+      <div class="ss-search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ss-search-icon">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          #searchInput
+          class="ss-search"
+          type="text"
+          [placeholder]="'Buscar...'"
+          [value]="searchText()"
+          (input)="onSearch($event)"
+          (click)="$event.stopPropagation()"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Lista -->
+      <ul class="ss-list" role="listbox">
+        @for (item of filteredItems(); track $index) {
+          <li
+            class="ss-option"
+            [class.ss-option--selected]="isSelected(item)"
+            (click)="selectItem(item)"
+            role="option"
+            [attr.aria-selected]="isSelected(item)"
+          >
+            <span class="ss-option-label">{{ item[bindLabel] ?? item }}</span>
+            @if (isSelected(item)) {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ss-check">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            }
+          </li>
+        }
+
+        @if (filteredItems().length === 0 && !loading) {
+          <li class="ss-empty">{{ notFoundText }}</li>
+        }
+
+        @if (loading) {
+          <li class="ss-empty">
+            <span class="ss-spinner"></span>
+            Cargando...
+          </li>
+        }
+      </ul>
+    </div>
+  }
+
+</div>

@@ -1,0 +1,186 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+  <li *ngFor="let err of errores">
+    {{ err.field + " " + err.defaultMessage }}
+  </li>
+</ul>
+
+<div class="card ">
+  <div class="card-header label-themecolor">
+    <h4 *ngIf="!vendedor.codVendedor" class="m-b-0 text-white">Crear vendedor</h4>
+    <h4 *ngIf="vendedor.codVendedor" class="m-b-0 text-white">
+      Actualizar vendedor
+    </h4>
+  </div>
+  <div class="card-body">
+    <form #vendedorForm="ngForm">
+
+
+      <div class="form-group row">
+        <label for="vendedo" class="col-form-label col-sm-2">vendedor<span style="color: red">(*)</span></label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="vendedor.vendedor"
+            (ngModelChange)="vendedor.vendedor =toUpeCaseEvent($event)" name="vendedo" #vendedo="ngModel" required
+            minlength="4" />
+          <div class="alert alert-danger"
+            *ngIf="          vendedo.invalid && (vendedo.dirty || vendedo.touched)            ">
+            <div *ngIf="!!vendedo?.errors.required">
+              vendedor es requerido
+            </div>
+            <div *ngIf="!!vendedo?.errors.minlength">
+              vendedor debe tener al menos 4 caracteres
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group row">
+        <label for="docNro" class="col-form-label col-sm-2">N° Documento <span style="color: red">(*)</span></label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="vendedor.docNro"
+            (ngModelChange)="vendedor.docNro = toUpeCaseEvent($event)" name="docNro" #docNro="ngModel" required
+            minlength="4" />
+          <div class="alert alert-danger" *ngIf="docNro.invalid && (docNro.dirty || docNro.touched)">
+            <div *ngIf="!!docNro?.errors.required">
+              Numero de Documento es requerido
+            </div>
+            <div *ngIf="!!docNro?.errors.minlength">
+              Numero de Documento debe tener al menos 4 caracteres
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="telefono" class="col-form-label col-sm-2">Telefono <span style="color: red">(*)</span></label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="vendedor.telefono"
+            (ngModelChange)="vendedor.telefono = toUpeCaseEvent($event)" name="telefono" #telefono="ngModel" required
+            minlength="6" />
+          <div class="alert alert-danger" *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)">
+            <div *ngIf="!!telefono?.errors.required">
+              telefono es requerido
+            </div>
+            <div *ngIf="!!telefono?.errors.minlength">
+              telefono debe tener al menos 6 caracteres
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="direccion" class="col-form-label col-sm-2">Direccion <span style="color: red">(*)</span></label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="vendedor.direccion"
+            (ngModelChange)="vendedor.direccion = toUpeCaseEvent($event)" name="direccion" #direccion="ngModel" required
+            minlength="3" />
+          <div class="alert alert-danger" *ngIf="direccion.invalid && (direccion.dirty || direccion.touched)">
+            <div *ngIf="!!direccion?.errors.required">
+              direccion es requerido
+            </div>
+            <div *ngIf="!!direccion?.errors.minlength">
+              direccion debe tener al menos 3 caracteres
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group row">
+        <label for="usuarios" class="col-form-label col-sm-2">Usuario <span style="color: red">(*)</span></label>
+        <div class="col-sm-6">
+          <select id="seleccionUsuario" class="custom-select" style="width: 100%; height:36px;" tabindex="-1"
+            aria-hidden="true" [(ngModel)]="seleccionUsuario" #selectUsuario="ngModel" name="seleccionUsuario"
+            (ngModelChange)="cambioUsuario($event)">
+            <option *ngFor="let u of usuarios" [value]="u.codUsuario">
+              {{ u.nombrePersona }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="activo" class="col-form-label col-sm-2">Activo <span style="color: red">(*)</span></label>
+        <div class="col-sm-6">
+          <select class=" custom-select  form-control" name="activo" id="selectActivo" [(ngModel)]="vendedor.activo"
+            #activo="ngModel">
+            <option value="true">SI</option>
+            <option value="false">NO</option>
+          </select>
+        </div>
+      </div>
+
+ 
+      <div class="form-group row">
+        <label for="email" class="col-form-label col-sm-2">Email </label>
+        <div class="col-sm-6">
+          <input type="email"
+            pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}"
+            class="form-control" [(ngModel)]="vendedor.email" name="email" #email="ngModel" />
+          <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+            <div *ngIf="!!email.errors">
+              Email debe tener un formato válido
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="codVendedorErp" class="col-form-label col-sm-2">Codigo Ref</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="vendedor.codVendedorErp"
+            (ngModelChange)="vendedor.codVendedorErp = toUpeCaseEvent($event)" name="codVendedorErp"
+            #codVendedorErp="ngModel" />
+        </div>
+      </div>
+
+ 
+
+      <div class="form-group row">
+        <label for="comision" class="col-form-label col-sm-2">Comision  </label>
+        <div class="col-sm-6">
+          <input type="number" class="form-control" [(ngModel)]="vendedor.porcentajeComision" name="comision"
+            #comision="ngModel">
+        </div>
+      </div>
+
+
+
+
+      <div class="form-group row">
+        <label for="tarjeta" class="col-form-label col-sm-2">tarjeta</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="vendedor.tarjeta" name="tarjeta" #tarjeta="ngModel" />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="obs" class="col-form-label col-sm-2">Observación</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="vendedor.obs"
+            (ngModelChange)="vendedor.obs = toUpeCaseEvent($event)" name="obs" #obs="ngModel" />
+        </div>
+      </div>
+
+      <div class="form-group row button-group">
+        <div class="col-sm-6">
+          <button type="button" [routerLink]="['/vendedores']" class="btn btn-danger waves-effect waves-light">
+            <i class="fa  fa-arrow-circle-left"></i> Atrás
+          </button>
+          <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)="create()"
+            *ngIf="!vendedor.codVendedor; else elseBlock" [disabled]="!vendedorForm.form.valid">
+            <i class="fa   fa-floppy-o"></i>Crear
+          </button>
+          <ng-template #elseBlock>
+            <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)="update()"
+              [disabled]="!vendedorForm.form.valid">
+              <i class="fa   fa-floppy-o"></i>Actualizar
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

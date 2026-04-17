@@ -1,0 +1,107 @@
+<div class="page-content page-form">
+  @if (loading()) {
+    <div class="form-loading"><span class="spinner"></span> Cargando...</div>
+  }
+  @if (!loading()) {
+    <div class="card form-card">
+      <div class="card-header form-card-header">
+        <h2 class="form-title">{{ esEdicion() ? 'Actualizar Premio' : 'Nuevo Premio' }}</h2>
+        <a routerLink="/premios" class="btn btn-secondary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Volver
+        </a>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+
+          <div class="form-section-title">Imagen del premio</div>
+          <div style="padding:0 1.25rem .75rem">
+            <app-image-upload
+              [src]="imgSrc() ? (imgSrc() | imagen:'premios') : null"
+              folder="premios"
+              (fileSelected)="imagenFile.set($event)"/>
+          </div>
+
+          <div class="form-section-title">Datos</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-row">
+              <label class="form-label">Código ERP</label>
+              <input type="text" class="form-control" formControlName="codPremioErp"
+                     (blur)="toUpper('codPremioErp')"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Descripción <span class="req">*</span></label>
+              <input type="text" class="form-control" formControlName="descripcion"
+                     [class.is-invalid]="hasError('descripcion')"
+                     (blur)="toUpper('descripcion')"/>
+              @if (hasError('descripcion','required')) {
+                <div class="field-error">Descripción es requerida</div>
+              }
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Código de Barra</label>
+              <input type="text" class="form-control" formControlName="codBarra"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Puntos <span class="req">*</span></label>
+              <input type="number" class="form-control" formControlName="puntos"
+                     [class.is-invalid]="hasError('puntos')" min="0"/>
+              @if (hasError('puntos','min')) {
+                <div class="field-error">Puntos debe ser mayor a 0</div>
+              }
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Descuento %</label>
+              <input type="number" step="0.01" class="form-control" formControlName="descuento" min="0"/>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Activo</label>
+              <select class="form-control" formControlName="activo">
+                <option [ngValue]="true">Sí</option>
+                <option [ngValue]="false">No</option>
+              </select>
+            </div>
+
+            <div class="form-group form-row">
+              <label class="form-label">Inventariable</label>
+              <select class="form-control" formControlName="inventariable">
+                <option [ngValue]="false">No</option>
+                <option [ngValue]="true">Sí</option>
+              </select>
+            </div>
+
+            <div class="form-group form-row form-col-2">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-control" formControlName="obs" rows="2"></textarea>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <a routerLink="/premios" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Atrás
+            </a>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando()">
+              @if (guardando()) {
+                <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+              }
+              {{ esEdicion() ? 'Actualizar' : 'Crear' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  }
+</div>

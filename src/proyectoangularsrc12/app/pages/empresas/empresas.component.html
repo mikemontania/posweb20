@@ -1,0 +1,134 @@
+<div class="row" *ngIf="empresa">
+    <div class="col-8">
+        <div class="card border m-3">
+            <div class="card-header label-themecolor  d-inline">
+                <h4 class="text-white">Empresa
+                </h4>
+            </div>
+            <div class="card-body">
+
+                <div class="form-group row">
+                    <label for="codEmpresa" class="col-form-label col-sm-4">Cod Empresa:</label>
+                    <div class="col-sm-6">
+                        <input type="text" disabled="true" class="form-control" [(ngModel)]="empresa.codEmpresa">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="codEmpresaErp" class="col-form-label col-sm-4">Cod Erp Empresa:</label>
+                    <div class="col-sm-6">
+                        <input type="text" [disabled]="editable" class="form-control"
+                            [(ngModel)]="empresa.codEmpresaErp">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="razonSocial" class="col-form-label col-sm-4">Razon social</label>
+                    <div class="col-sm-6">
+                        <input type="text" [disabled]="editable" class="form-control" [(ngModel)]="empresa.razonSocial">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="ruc" class="col-form-label col-sm-4">Ruc:</label>
+                    <div class="col-sm-6">
+                        <input type="text" [disabled]="editable" class="form-control" [(ngModel)]="empresa.ruc">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="tipoNegocio" class="col-form-label col-sm-4">Tipo de negocio</label>
+                    <div class="col-sm-3">
+                        <input type="text" [disabled]="editable" class="form-control"
+                            [(ngModel)]="empresa.tipoNegocio.descripcion">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="maxDescuentoImp" disabled="true" class="col-form-label col-sm-4">Maximo
+                        Descuento
+                        Importe</label>
+                    <div class="col-sm-6">
+                        <input type="number" [disabled]="editable" class="form-control"
+                            [(ngModel)]="empresa.maxDescuentoImp">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="maxDescuentoPorc" class="col-form-label col-sm-4">Maximo Descuento
+                        porcentaje</label>
+                    <div class="col-sm-6">
+                        <input type="number" [disabled]="editable" class="form-control"
+                            [(ngModel)]="empresa.maxDescuentoPorc">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="actividad1" class="col-form-label col-sm-4">Actividad 1</label>
+                    <div class="col-sm-6">
+                        <textarea type="text" [disabled]="editable" class="form-control"
+                            [(ngModel)]="empresa.actividad1"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="actividad2" class="col-form-label col-sm-4">Actividad 2</label>
+                    <div class="col-sm-6">
+                        <textarea type="text" [disabled]="editable" class="form-control"
+                            [(ngModel)]="empresa.actividad2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class=" m-3 button-group" *ngIf="user">
+                <div class="col-sm-6" *ngIf="user.authorities[0] == 'ROLE_ADMIN'  ">
+                    <button class="btn btn-secondary waves-effect waves-light" type="button" (click)='cancelar()'
+                        *ngIf="editable==false"><i class="fa  fa-edit"></i> Cancelar</button>
+                    <button class="btn btn-secondary waves-effect waves-light" type="button" (click)='editar()'
+                        *ngIf="editable==true"><i class="fa  fa-edit"></i> Editar</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='update()'
+                        *ngIf="editable==false"><i class="fa   fa-floppy-o"></i>update</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+
+
+        <div class="card border m-3">
+            <div class="card-header label-themecolor  d-inline">
+                <h4 class="text-white">LOGO
+                </h4>
+            </div>
+            <div class="card-body container" style="max-width: 18rem;">
+                <img *ngIf="!imagenTemp && !empresa.img" [src]="sinImagen" style="width:242px;height:200px;">
+                <img *ngIf="!imagenTemp && empresa.img" [attr.src]="empresa.img | imagen:'empresas' | async"
+                    style="width:242px;height:200px;">
+                <img *ngIf="imagenTemp" [src]="imagenTemp" style="width:242px;height:200px;">
+                <div class="caption">
+                    <input id="uploadedfile" [disabled]="editable" (change)="seleccionImage($event.target.files[0])"
+                        type="file">
+                </div>
+            </div>
+        </div>
+
+        <div class="card border m-3">
+            <div class="card-header label-themecolor  d-inline">
+                <h4 class="text-white">Reportes
+                </h4>
+            </div>
+            <div class="card-body   container" style="max-width: 18rem;">
+                <img *ngIf="!imagenTempReport && !empresa.logoReporte" [src]="sinImagen"
+                    style="width:242px;height:200px;">
+                <img *ngIf="!imagenTempReport && empresa.logoReporte"
+                    [attr.src]="empresa.logoReporte | imagen:'empresas' | async" style="width:242px;height:200px;">
+                <img *ngIf="imagenTempReport" [src]="imagenTempReport" style="width:242px;height:200px;">
+                <div class="caption">
+                    <input id="uploadedfileReport" [disabled]="editable"
+                        (change)="seleccionImageReport($event.target.files[0])" type="file">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+</div>

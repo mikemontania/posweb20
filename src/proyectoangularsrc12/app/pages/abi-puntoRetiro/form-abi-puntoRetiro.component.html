@@ -1,0 +1,156 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err.field +" "+ err.defaultMessage}}
+    </li>
+</ul>
+
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!puntoRetiro.id" class="m-b-0 text-white">Crear PuntoRetiro</h4>
+        <h4 *ngIf="puntoRetiro.id" class="m-b-0 text-white">Actualizar Punto Retiro</h4>
+    </div>
+    <div class="card-body">
+
+        <form #puntoRetiroForm="ngForm">
+            <div class="form-group row">
+                <div class="col-md-6 ">
+                    <div class="form-group row">
+                        <label for="nombre" class="col-form-label col-sm-2">Nombre <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="puntoRetiro.nombre" (ngModelChange)="puntoRetiro.nombre =  toUpeCaseEvent($event)" name="nombre" #nombre="ngModel" required minlength="1">
+                            <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                                <div *ngIf="!!nombre.errors.required">
+                                    nombre es requerido
+                                </div>
+                                <div *ngIf="!!nombre.errors.minlength">
+                                    nombre debe tener al menos 1 caracteres
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group row">
+                        <label for="referencia" class="col-form-label col-sm-2">Referencia <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="puntoRetiro.referencia" (ngModelChange)="puntoRetiro.referencia = toUpeCaseEvent($event)" name="referencia" #referencia="ngModel" required minlength="1">
+                            <div class="alert alert-danger" *ngIf="referencia.invalid && (referencia.dirty || referencia.touched)">
+                                <div *ngIf="!!referencia.errors.required">
+                                    referencia es requerido
+                                </div>
+                                <div *ngIf="!!referencia.errors.minlength">
+                                    referencia debe tener al menos 1 caracteres
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <agm-map name="mapas" id="mapas" (mapClick)="agregarMarcador( $event )" [latitude]="lat" [longitude]="lng" [zoom]="10">
+                                <agm-marker [latitude]="latitud" [longitude]="longitud">
+                                    <agm-info-window>
+                                        <strong>{{ puntoRetiro.nombre }}</strong>
+                                        <p>{{ puntoRetiro.calle_principal }}</p>
+                                        <p>{{ puntoRetiro.calle_secundaria }}</p>
+                                    </agm-info-window>
+                                </agm-marker>
+                            </agm-map>
+                        </div>
+                    </div>
+
+                    <div class="form-group row button-group">
+                        <div class="col-sm-6">
+                            <button type="button" [routerLink]="['/puntoRetiro']" class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i>
+                                Atrás</button>
+                            <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()' *ngIf="!puntoRetiro.id else elseBlock" [disabled]="!puntoRetiroForm.form.valid"><i class="fa   fa-floppy-o"></i>Crear</button>
+                            <ng-template #elseBlock>
+                                <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='update()' [disabled]="!puntoRetiroForm.form.valid"><i
+                                        class="fa   fa-floppy-o"></i>Actualizar</button>
+                            </ng-template>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="col-md-6 ">
+
+                    <div class="form-group row">
+                        <label for="calle_principal" class="col-form-label col-sm-2">Calle1 <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="puntoRetiro.calle_principal" (ngModelChange)="puntoRetiro.calle_principal = toUpeCaseEvent($event)" name="calle_principal" #calle_principal="ngModel" required minlength="3">
+                            <div class="alert alert-danger" *ngIf="calle_principal.invalid && (calle_principal.dirty || calle_principal.touched)">
+                                <div *ngIf="!!calle_principal.errors.required">
+                                    calle_principal es requerido
+                                </div>
+                                <div *ngIf="!!calle_principal.errors.minlength">
+                                    calle_principal debe tener al menos 3 caracteres
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="calle_secundaria" class="col-form-label col-sm-2">Calle2 <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="puntoRetiro.calle_secundaria" (ngModelChange)="puntoRetiro.calle_secundaria = toUpeCaseEvent($event)" name="calle_secundaria" #calle_secundaria="ngModel" required minlength="3">
+                            <div class="alert alert-danger" *ngIf="calle_principal.invalid && (calle_secundaria.dirty || calle_secundaria.touched)">
+                                <div *ngIf="!!calle_secundaria.errors.required">
+                                    calle_secundaria es requerido
+                                </div>
+                                <div *ngIf="!!calle_secundaria.errors.minlength">
+                                    calle_secundaria debe tener al menos 3 caracteres
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="numero" class="col-form-label col-sm-2">Numero <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="puntoRetiro.numero" (ngModelChange)="puntoRetiro.numero = toUpeCaseEvent($event)" name="numero" #numero="ngModel" required minlength="1">
+                            <div class="alert alert-danger" *ngIf="numero.invalid && (numero.dirty || numero.touched)">
+                                <div *ngIf="!!numero.errors.required">
+                                    numero es requerido
+                                </div>
+                                <div *ngIf="!!numero.errors.minlength">
+                                    numero debe tener al menos 1 caracteres
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="latitud" class="col-form-label col-sm-2">Latitud</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="latitud" name="latitud" [(ngModel)]="latitud" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="longitud" class="col-form-label col-sm-2">Longitud</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="longitud" name="longitud" [(ngModel)]="longitud" required>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>

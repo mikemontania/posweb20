@@ -1,0 +1,414 @@
+<!-- ── Banners de recuperación ─────────────────────────────── -->
+
+<!-- Banner: venta que no se pudo guardar — el vendedor debe verificar y guardar manualmente -->
+@if (hayPending) {
+  <div class="recovery-banner recovery-banner--danger">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span class="recovery-text">
+      <strong>Venta sin confirmar.</strong>
+      Hubo un error al guardar. Verificá en la lista si ya fue registrada antes de restaurar.
+    </span>
+    <div class="recovery-actions">
+      <button class="btn btn-sm btn-primary" (click)="onRestaurarPending()">
+        Restaurar y revisar
+      </button>
+      <button class="btn btn-sm btn-secondary" (click)="onDescartarPending()">Descartar</button>
+    </div>
+  </div>
+}
+
+<!-- Banner: draft recuperable (corte de luz, browser cerrado) -->
+@if (hayDraft && !hayPending) {
+  <div class="recovery-banner recovery-banner--info">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+    </svg>
+    <span class="recovery-text">
+      <strong>Carrito guardado.</strong> Tenés productos de una sesión anterior sin guardar.
+    </span>
+    <div class="recovery-actions">
+      <button class="btn btn-sm btn-primary" (click)="onRestaurarDraft()">Restaurar</button>
+      <button class="btn btn-sm btn-secondary" (click)="onDescartarDraft()">Descartar</button>
+    </div>
+  </div>
+}
+
+<!-- ── Layout POS ─────────────────────────────────────────── -->
+<div class="pos-layout">
+
+  <!-- ════════════ IZQUIERDA — Carrito ════════════ -->
+  <aside class="pos-left" [class.tab-hidden]="tabActivo !== 'carrito'">
+
+    <!-- Cabecera minimalista -->
+    <div class="pos-header">
+      <div class="pos-header-left">
+        <span class="pos-icon">{{ esObsequio ? '🎁' : '💰' }}</span>
+        <span class="pos-title">{{ esObsequio ? 'Obsequio' : 'Venta' }}</span>
+      </div>
+      @if (st.cliente()?.listaPrecio) {
+        <span class="lp-badge"
+              [class.lp-emp]="st.cliente()!.listaPrecio.descripcion === 'EMPLEADOS'">
+          LISTA: {{ st.cliente()!.listaPrecio.descripcion }}
+        </span>
+      }
+    </div>
+
+    <!-- Zona cliente -->
+    <app-pos-cliente
+      [cliente]="st.cliente()"
+      [razonSocial]="st.razonSocial()"
+      [mostrar]="st.mostrarCliente()"
+      [clientes]="st.clientes()"
+      (buscarClick)="onVerificarVenta()"
+      (pedidoClick)="onAbrirPedidos()"
+      (cuponClick)="st.modalCupon.set(true)"
+      (influencerClick)="st.modalInfluencer.set(true)"
+      (clienteSeleccionado)="onClienteSeleccionado($event)"
+      (buscarChange)="onBuscarCliente($event)"
+      (cancelarBusqueda)="onCancelarBusqueda()"
+      (crearClienteClick)="onCrearCliente()"/>
+
+    <!-- Selectores modo/forma/canal en grilla horizontal -->
+    @if (st.mostrarCliente() && st.venta()) {
+      <div class="pos-selectores">
+        <div class="sel-row">
+          <span class="label-xs">Entrega</span>
+          <select class="sel"
+                  [value]="st.venta()!.modoEntrega ?? 'CONTRA_ENTREGA'"
+                  (change)="facade.st.patchVenta({ modoEntrega: $any($event.target).value })"
+                  name="modoEntrega">
+            <option value="CONTRA_ENTREGA">Contra entrega</option>
+            <option value="DELIVERY">Delivery</option>
+          </select>
+        </div>
+        <div class="sel-row">
+          <span class="label-xs">Forma pago</span>
+          <select class="sel" [ngModel]="st.selFormaVentaCod()"
+                  [disabled]="st.esContado()" name="formaVenta"
+                  (ngModelChange)="onCambioForma($event)">
+            @for (f of st.formas(); track f.codFormaVenta) {
+              <option [value]="f.codFormaVenta">{{ f.descripcion }}</option>
+            }
+          </select>
+        </div>
+        <div class="sel-row">
+          <span class="label-xs">Canal</span>
+          <select class="sel" [ngModel]="st.canal()?.codCanal"
+                  name="canal" (ngModelChange)="onCambioCanal($event)">
+            @for (c of st.canales(); track c.codCanal) {
+              <option [value]="c.codCanal">{{ c.descripcion }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+
+    <!-- Tabla carrito -->
+    <div class="pos-detalle-container">
+      <app-pos-detalle
+        [ventaDetalles]="st.ventaDetalles()"
+        [descuentos]="st.descuentos()"
+        [disabled]="!st.buscadorHabilitado()"
+        (restar)="onRestar($event)"
+        (quitar)="onQuitar($event)"
+        (agregarUno)="onAgregar($event)"
+        (quitarDescuento)="onQuitarDescuento($event)"/>
+    </div>
+
+    <!-- Descuentos aplicados — chips compactos -->
+    @if (st.hayDescuentos()) {
+      <div class="pos-descuentos">
+        <span class="desc-label">Descuentos:</span>
+        @for (d of st.descuentos(); track $index) {
+          <span class="desc-chip-item">
+            {{ d.descripcion }} · {{ d.descuento | number:'1.0-0' }}%
+            <button class="del-btn" (click)="onQuitarDescuento(d)" title="Quitar descuento">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </span>
+        }
+      </div>
+    }
+
+    <!-- Totales -->
+    <app-pos-totales [venta]="st.venta()"/>
+
+    <!-- Acciones -->
+    <div class="pos-footer">
+      <button class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+      <button class="btn-guardar"
+              (click)="onGuardar()"
+              [disabled]="st.guardando() || st.carritoVacio() || !st.venta()">
+        @if (st.guardando()) { <span class="spinner-sm"></span> }
+        Guardar
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ════════════ DERECHA — Catálogo ════════════ -->
+  <section class="pos-right" [class.tab-hidden]="tabActivo !== 'catalogo'">
+    <app-pos-catalogo
+      [productos]="st.productos()"
+      [categorias]="st.categorias()"
+      [loading]="st.cargandoProds()"
+      [totalElementos]="st.totalElementos()"
+      [pagina]="st.pagina()"
+      [cantidadElementos]="st.cantidadElementos()"
+      [disabled]="!st.buscadorHabilitado()"
+      (productoClick)="onProductoClick($event)"
+      (pageChange)="onPageChange($event)"
+      (busquedaChange)="onBusquedaChange($event)"
+      (categoriaChange)="onCategoriaChange($event)"/>
+  </section>
+
+  <!-- ════════════ TAB BAR MÓVIL ════════════ -->
+  <nav class="pos-tabs">
+    <button class="pos-tab-btn" [class.active]="tabActivo === 'catalogo'"
+            (click)="tabActivo = 'catalogo'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+      </svg>
+      Productos
+    </button>
+    <button class="pos-tab-btn" [class.active]="tabActivo === 'carrito'"
+            (click)="tabActivo = 'carrito'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      Carrito
+      @if (st.ventaDetalles().length > 0) {
+        <span class="pos-tab-badge">{{ st.ventaDetalles().length }}</span>
+      }
+    </button>
+  </nav>
+
+</div>
+
+<!-- ════════════════════════════════════
+     MODAL TERMINAL
+════════════════════════════════════ -->
+@if (st.modalTerminal()) {
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Terminal</h3>
+        <button class="modal-close" (click)="onCerrarTerminal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group form-row">
+          <label class="form-label">Terminal</label>
+          <select class="form-control"
+            [ngModel]="st.terminal()?.codTerminalVenta"
+            [disabled]="!facade.auth.session?.authorities?.includes('ROLE_ADMIN')"
+            name="terminal"
+            (ngModelChange)="onTerminalChange($event)">
+            @for (t of st.terminales(); track t.codTerminalVenta) {
+              <option [value]="t.codTerminalVenta">{{ t.descripcion }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="onCerrarTerminal()">Cerrar</button>
+        <button class="btn btn-primary"
+                (click)="onGuardarTerminal(st.terminal()?.codTerminalVenta ?? 0)">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════════════════════════════
+     MODAL COBRANZA (componente)
+════════════════════════════════════ -->
+<app-pos-cobranza
+  [open]="st.modalCobranza()"
+  [venta]="st.venta()"
+  [medioPago]="st.medioPago()"
+  [tipoMedioPago]="st.tipoMedioPago()"
+  [bancos]="st.bancos()"
+  [clientePref]="st.cliente()"
+  (guardar)="onCobranzaGuardada($event)"
+  (cerrar)="onCancelarCobranza()"/>
+
+<!-- ════════════════════════════════════
+     MODAL PEDIDOS
+════════════════════════════════════ -->
+@if (st.modalPedidos()) {
+  <div class="modal-overlay" (click)="st.modalPedidos.set(false)">
+    <div class="modal-box modal-pedidos" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Pedidos</h3>
+        <button class="modal-close" (click)="st.modalPedidos.set(false)">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2" style="margin-bottom:.75rem">
+          <div class="form-group form-row">
+            <label class="form-label">Desde</label>
+            <input type="date" class="form-control" [(ngModel)]="fechaInicio" name="fi"/>
+          </div>
+          <div class="form-group form-row">
+            <label class="form-label">Hasta</label>
+            <input type="date" class="form-control" [(ngModel)]="fechaFin" name="ff"/>
+          </div>
+          <div class="form-group form-row">
+            <label class="form-label">Nro.</label>
+            <input type="number" class="form-control" [(ngModel)]="nroPedido" name="np" min="0"/>
+          </div>
+          <!-- Filtro por cliente — idéntico a ng12 ng-select-clientes -->
+          <div class="form-group form-row" style="grid-column: 1 / -1">
+            <label class="form-label">Cliente (opcional)</label>
+            <app-select-search
+              [items]="st.clientes()"
+              bindLabel="concatDocNombre"
+              bindValue="codCliente"
+              placeholder="Buscar por CI/RUC o nombre..."
+              [selected]="clientePedidoFiltro"
+              (changed)="onClientePedidoFiltro($any($event))"
+              (search)="onBuscarClientePedido($event)"/>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-bottom:.75rem"
+                (click)="onBuscarPedido()">Buscar</button>
+
+        @if (st.listaPedidos().length > 0) {
+          <div class="table-responsive">
+            <table class="table tabla-parametros">
+              <thead>
+                <tr><th>Nro.</th><th>R.Social</th><th class="text-right">Sub Total</th>
+                    <th class="text-right">Total</th><th>Tipo</th><th>Fecha</th>
+                    <th class="text-right">Desc.%</th><th></th></tr>
+              </thead>
+              <tbody>
+                @for (p of st.listaPedidos(); track p.codPedido) {
+                  <tr>
+                    <td>{{ p.nroPedido?.toString()?.padStart(8,'0') }}</td>
+                    <td>{{ p.cliente?.razonSocial }}</td>
+                    <td class="text-right">{{ p.subTotal | number:'1.0-0' }}</td>
+                    <td class="text-right">{{ p.importeTotal | number:'1.0-0' }}</td>
+                    <td>{{ p.tipoPedido }}</td>
+                    <td>{{ p.fechaPedido | date:'dd/MM/yy' }}</td>
+                    <td class="text-right">{{ p.porcDescuento | number:'1.0-0' }}</td>
+                    <td>
+                      <button class="btn btn-success btn-sm"
+                              style="display:flex;align-items:center;gap:.3rem;white-space:nowrap"
+                              (click)="onSeleccionarPedido(p)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6"/>
+                        </svg>
+                        Cargar
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        <!-- Paginación pedidos — idéntico a ng12 cargarPaginaPedidos -->
+        @if (st.totalPedidos() > 20) {
+          <div class="pag-wrap" style="margin-top:.75rem">
+            <button class="pag-btn" [disabled]="paginaPedidos <= 1"
+                    (click)="onPaginaPedidos(paginaPedidos - 1)">‹</button>
+            @for (p of pageNumsPedidos; track $index) {
+              @if (p === '...') { <span class="pag-ellipsis">…</span> }
+              @else {
+                <button class="pag-btn" [class.active]="p === paginaPedidos"
+                        (click)="onPaginaPedidos(+p)">{{ p }}</button>
+              }
+            }
+            <button class="pag-btn" [disabled]="paginaPedidos >= totalPagesPedidos"
+                    (click)="onPaginaPedidos(paginaPedidos + 1)">›</button>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary"
+                (click)="st.modalPedidos.set(false)">Volver a venta</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════════════════════════════
+     MODAL CUPÓN
+════════════════════════════════════ -->
+@if (st.modalCupon()) {
+  <div class="modal-overlay" (click)="st.modalCupon.set(false)">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Cupón de descuento</h3>
+        <button class="modal-close"
+                (click)="st.modalCupon.set(false); cuponTemp = null; alertaCupon = ''">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Código de cupón</label>
+          <input type="text" class="form-control" [(ngModel)]="codigoCupon"
+                 name="cupon" placeholder="Mínimo 8 caracteres"/>
+        </div>
+        @if (alertaCupon) {
+          <div [class]="alertaCupon === 'Cupón válido' ? 'alert alert-success' : 'alert alert-danger'">
+            {{ alertaCupon }}
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary"
+                (click)="st.modalCupon.set(false); cuponTemp = null; alertaCupon = ''">Cerrar</button>
+        @if (!cuponTemp) {
+          <button class="btn btn-primary" (click)="onValidarCupon()">Validar cupón</button>
+        } @else {
+          <button class="btn btn-success" (click)="onUsarCupon()">Usar cupón</button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════════════════════════════
+     MODAL INFLUENCER
+════════════════════════════════════ -->
+@if (st.modalInfluencer()) {
+  <div class="modal-overlay" (click)="st.modalInfluencer.set(false)">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Cupón influencer</h3>
+        <button class="modal-close"
+                (click)="st.modalInfluencer.set(false); cuponInfluencerTemp = null; alertaInfluencerCupon = ''">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Código</label>
+          <input type="text" class="form-control" [(ngModel)]="codigoInfluencer"
+                 name="infCupon" placeholder="Mínimo 8 caracteres"/>
+        </div>
+        @if (alertaInfluencerCupon) {
+          <div [class]="alertaInfluencerCupon === 'Codigo de influencer valido' ? 'alert alert-success' : 'alert alert-danger'">
+            {{ alertaInfluencerCupon }}
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary"
+                (click)="st.modalInfluencer.set(false); cuponInfluencerTemp = null; alertaInfluencerCupon = ''">Cerrar</button>
+        @if (!cuponInfluencerTemp) {
+          <button class="btn btn-primary" (click)="onValidarInfluencer()">Validar código</button>
+        } @else {
+          <button class="btn btn-success" (click)="onUsarInfluencer()">Usar código</button>
+        }
+      </div>
+    </div>
+  </div>
+}

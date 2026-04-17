@@ -1,0 +1,200 @@
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!producto.id" class="m-b-0 text-white">Crear banco</h4>
+        <h4 *ngIf="producto.id" class="m-b-0 text-white">Actualizar banco</h4>
+    </div>
+    <div class="card-body">
+
+        <form #productoForm="ngForm">
+
+            <div class="col-lg-2 border-dark">
+                <div class="card">
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <img *ngIf="!imagenTemp && producto.imagenes.length ==0" [src]="sinImagen"
+                            style="width:242px;height:200px;">
+                        <img *ngIf="!imagenTemp && producto.imagenes.length >0" [src]="producto.imagenes[0].imagen"
+                            style="width:242px;height:200px;">
+                        <img *ngIf="imagenTemp" [src]="imagenTemp" style="width:242px;height:200px;"> -
+                        <div class="caption" *ngIf="!imagenTemp && producto.imagenes.length ==0">
+                            <input id="uploadedfile" (change)="seleccionImage($event.target.files[0])" type="file">
+                        </div>
+                        <button *ngIf="!imagenTemp && producto.imagenes.length >0" type="button"
+                            class="btn btn-outline-danger ml-1" ngbTooltip="Eliminar"
+                            (click)='delete(producto.imagenes[0].id)' type="button ">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="nombre" class="col-form-label col-sm-2">Producto <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.nombre"
+                        (ngModelChange)="producto.nombre = toUpeCaseEvent($event)" name="nombre" #nombre="ngModel"
+                        required minlength="4">
+                    <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                        <div *ngIf="!!nombre.errors.required">
+                            nombreProducto es requerido
+                        </div>
+                        <div *ngIf="!!nombre.errors.minlength">
+                            nombreProducto debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="api_extra_data" class="col-form-label col-sm-2">api_extra_data <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.api_extra_data"
+                        (ngModelChange)="producto.api_extra_data = toUpeCaseEvent($event)" name="api_extra_data"
+                        #api_extra_data="ngModel" required minlength="4">
+                    <div class="alert alert-danger"
+                        *ngIf="api_extra_data.invalid && (api_extra_data.dirty || api_extra_data.touched)">
+                        <div *ngIf="!!api_extra_data.errors.required">
+                            api_extra_data es requerido
+                        </div>
+                        <div *ngIf="!!api_extra_data.errors.minlength">
+                            api_extra_data debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-group row">
+                <label for="descripcion" class="col-form-label col-sm-2">Descripcion <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.descripcion"
+                        (ngModelChange)="producto.descripcion =  toUpeCaseEvent($event)" name="descripcion"
+                        #descripcion="ngModel" required minlength="4">
+                    <div class="alert alert-danger"
+                        *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                        <div *ngIf="!!descripcion.errors.required">
+                            descripcion es requerido
+                        </div>
+                        <div *ngIf="!!descripcion.errors.minlength">
+                            descripcion debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label for="descripcion_extensa" class="col-form-label col-sm-2">Descripcion extensa <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <textarea type="text" class="form-control" [(ngModel)]="producto.descripcion_extensa"
+                        (ngModelChange)="producto.descripcion_extensa =  toUpeCaseEvent($event)"
+                        name="descripcion_extensa" #descripcion_extensa="ngModel" required minlength="4">
+                </textarea>
+                    <div class="alert alert-danger"
+                        *ngIf="descripcion_extensa.invalid && (descripcion_extensa.dirty || descripcion_extensa.touched)">
+                        <div *ngIf="!!descripcion_extensa.errors.required">
+                            descripcion_extensa es requerido
+                        </div>
+                        <div *ngIf="!!descripcion_extensa.errors.minlength">
+                            descripcion_extensa debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="etiquetas" class="col-form-label col-sm-2">etiquetas<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <textarea type="text" class="form-control" [(ngModel)]="producto.etiquetas"
+                        (ngModelChange)="producto.etiquetas =  toUpeCaseEvent($event)" name="etiquetas"
+                        #etiquetas="ngModel" required minlength="4">
+                </textarea>
+                    <div class="alert alert-danger" *ngIf="etiquetas.invalid && (etiquetas.dirty || etiquetas.touched)">
+                        <div *ngIf="!!etiquetas.errors.required">
+                            etiquetas es requerido
+                        </div>
+                        <div *ngIf="!!etiquetas.errors.minlength">
+                            etiquetas debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="cantidad_mayorista" class="col-form-label col-sm-2">Cantidad Mayorista</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.cantidad_mayorista"
+                        name="cantidad_mayorista" #cantidad_mayorista="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="precio" class="col-form-label col-sm-2">Precio</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.precio" name="precio"
+                        #precio="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="precio_mayorista" class="col-form-label col-sm-2">Precio Mayorista</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.precio_mayorista"
+                        name="precio_mayorista" #precio_mayorista="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cantidad_disponible" class="col-form-label col-sm-2">Cantidad Disponible</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.cantidad_disponible"
+                        name="cantidad_disponible" #cantidad_disponible="ngModel">
+                </div>
+            </div>
+
+
+
+
+            <div class="form-group row">
+                <label for="activo" class="col-form-label col-sm-2">Activo <span style="color: red">(*)</span> </label>
+                <div class="col-sm-6">
+                    <ng-select [(ngModel)]="producto.activo" name="activo" id="activo" #activo="ngModel"
+                        [clearable]="false">
+                        <ng-option [value]="true">SI</ng-option>
+                        <ng-option [value]="false">NO</ng-option>
+                    </ng-select>
+
+                </div>
+            </div>
+
+
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button class="btn btn-outline-success ml-1" ngbTooltip="Guardar" type="button" role="button"
+                        (click)='create()' *ngIf="!producto.id else elseBlock" [disabled]="!productoForm.form.valid"><i
+                            class="feather icon-save"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-outline-success ml-1" ngbTooltip="Guardar" type="button" role="button"
+                            (click)='update()' [disabled]="!productoForm.form.valid"><i
+                                class="feather icon-save"></i>Actualizar</button>
+                    </ng-template>
+                    <button type="button" [routerLink]="['/abi-productos']" class="btn btn-outline-danger ml-1"
+                        ngbTooltip="Cancelar"><i class="feather icon-arrow-left"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

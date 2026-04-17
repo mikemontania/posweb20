@@ -1,0 +1,101 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de puntos( {{ totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/puntos/formulario']">
+            <i class="fa fa-plus"></i>
+            Nuevo
+          </button>
+            </div>
+            <div class="col-6">
+                <input-debounce delay="500" id="inputPuntos" height="15px" type="text" placeholder="Ingrese punto" required="" aria-invalid="false" (value)="buscarPuntos($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor ...</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="puntos?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="puntos?.length>0">
+                <thead>
+                    <tr>
+                        <!--   <th>Codigo</th> -->
+                        <th>#</th>
+                        <th>Descripcion</th>
+                        <th>Lista precio</th>
+                        <th>Tipo</th>
+                       <!--  <th>Sucursal</th> -->
+                        <th>Punto</th>
+                        <th>F. Desde</th>
+                        <th>F. Hasta</th>
+                        <th>C. Desde</th>
+                        <th>C. Hasta</th>
+                        <th>Activo</th>
+                       
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let punto of puntos;let i =index">
+                        <!--  <td>{{ punto.codPunto }}</td> -->
+                        <td> {{i+1}}</td>
+                        <td>{{ punto.descripcion }}</td>
+                        <td>{{ punto.listaPrecio.descripcion}}</td>
+                        <td>{{ punto.tipo }}</td>
+                      
+                        <td>{{ punto.puntos | number }}</td>
+                        <td>{{ punto.fechaDesde | date:'dd/MM/y'}}</td>
+                        <td>{{ punto.fechaHasta | date:'dd/MM/y' }}</td>
+                        <td>{{ punto.importeDesde | number }}</td>
+                        <td>{{ punto.importeHasta | number }}</td>
+                        <td *ngIf="punto.activo === true">Si</td>
+                        <td *ngIf="punto.activo === false">NO</td>
+                        <!--       <td>
+                <button type="button" name="eliminar" (click)='delete(punto)' class="btn btn-danger btn-sm">Eliminar</button>
+              </td>
+              <td>
+              <button type="button" name="editar" [routerLink]="['/puntos/formulario', punto.codPunto]" class="btn btn-dropbox btn-sm">editar</button>
+            </td> -->
+            
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/puntos/formulario', punto.codPunto]" type="button">
+                      <i class="fa fa-pencil"></i>
+                </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(punto)' type="button">
+                      <i class="fa fa-trash-o"></i>
+                 </button>
+                        </td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+
+</div>

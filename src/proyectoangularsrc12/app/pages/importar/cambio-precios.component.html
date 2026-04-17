@@ -1,0 +1,281 @@
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Importar nuevos precios</h4>
+    </div>
+    <div class="card-body">
+        <form #precioForm="ngForm">
+            <div class="form-group row">
+                <label for="listaPrecio" class="col-form-label col-sm-2">Seleccione la lista de precios </label>
+                <div class="col-sm-6">
+                    <select id="selectListaPrecio" class="custom-select " style="width: 100%; height:36px;"
+                        tabindex="-1" aria-hidden="true" [(ngModel)]="seleccionListaPrecio"
+                        #selectorListaPrecio="ngModel" name="selectListaPrecio"
+                        (ngModelChange)="cambioListaPrecio($event)">
+                        <option *ngFor="let m of listaPrecio" [value]="m.codListaPrecio">
+                            {{m.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row" *ngIf="seleccionListaPrecio >0">
+                <label class="col-form-label col-sm-2"> </label>
+                <div class="col-sm-6">
+
+                    <input type="file" id="uploadedfile" accept=".xlsx" multiple="false" (change)="onFileChange($event)"
+                        [disabled]="!editable" />
+
+                </div>
+            </div>
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" (click)='cambioPrecios()' *ngIf="preciosEncontrados?.length>0"
+                        class="btn btn-themecolor waves-effect waves-light"><i class="fa  fa-pencil"></i> Cambiar
+                        precios</button>
+                    <button type="button" [routerLink]="['/precios']" class="btn btn-danger waves-effect waves-light"><i
+                            class="fa  fa-arrow-circle-left"></i> Atrás</button>
+                    <button type="button" (click)='ngOnInit()' class="btn btn-secondary waves-effect waves-light"><i
+                            class="fa fa-ban fa-fw"></i> Cancelar</button>
+
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosNoEncontrados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <strong> No se han encontrado precios para {{preciosNoEncontrados.length}} productos </strong>
+                        <button class="btn btn-success" (click)='mostrarFormulario()' type="button">
+                            <i class="fa fa-plus"></i> Agregar precios desde excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosEncontrados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-info text-center">
+                        <strong>{{preciosEncontrados.length}} Precios encontrados a ser modificados </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosModificados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-success text-center">
+                        <strong>{{preciosModificados.length}} Precios modificados </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosSinCambios?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-warning text-center">
+                        <strong>{{preciosSinCambios.length}} Precios que no tendran cambios</strong>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <perfect-scrollbar class="scroll-container"
+                        style="position: relative; max-width: 100%; max-height: 400px;" [scrollIndicators]="true">
+                        <div class="scrollable-content table-responsive">
+                            <table class="table table-sm table-bordered " *ngIf="precios?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Codigo Ref.</th>
+                                        <th>Producto </th>
+                                        <th>Precio Actual</th>
+                                        <th>Precio Nuevo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of precios;let i =index" [ngClass]="{
+                                        'alert-success':p.encontrado == true,
+                                        'alert-danger':p.encontrado == false
+                                      }">
+                                        <td> {{i+1}}</td>
+                                        <td>{{ p.codigo }}</td>
+                                        <td>{{ p.producto }}</td>
+                                        <td>{{ p.precioActual | number }}</td>
+                                        <td>{{ p.precioNuevo | number }}</td>
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
+                </div>
+                <div class="card-body">
+                    <perfect-scrollbar class="scroll-container"
+                        style="position: relative; max-width: 100%; max-height: 400px;" [scrollIndicators]="true">
+                        <div class="scrollable-content table-responsive">
+                            <table class="table table-sm table-bordered " *ngIf="preciosModificados?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Codigo Ref.</th>
+                                        <th>Producto </th>
+                                        <th>Precio</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of preciosModificados;let i =index" [ngClass]="{
+                                        'alert-info':p.producto.codProductoErp}">
+                                        <td> {{i+1}}</td>
+                                        <td>{{ p.producto.codProductoErp }}</td>
+                                        <td>{{ p.producto.nombreProducto }}</td>
+                                        <td>{{ p.precio | number }}</td>
+
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
+                </div>
+            </div>
+
+
+
+
+        </form>
+
+    </div>
+</div>
+
+<!--  ===========================================================Modal Vendedor Cab ====================================== -->
+<div class="fondo-negro-t animated fadeIn" [ngClass]="modalFormulario">
+    <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header label-themecolor">
+                    <h4 class="text-white">Precio</h4>
+                    <button (click)="cancelarModalFormulario()" type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form #precioForm="ngForm">
+
+
+
+                        <div class="form-group row">
+                            <label for="cantDesde" class="col-form-label col-sm-2">Cantidad Desde <span
+                                    style="color: red">(*)</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" [(ngModel)]="precio.cantDesde"
+                                    name="cantDesde" required #cantDesde="ngModel">
+                            </div>
+                            <div class="alert alert-danger"
+                                *ngIf="cantDesde.invalid && (cantDesde.dirty || cantDesde.touched)">
+                                <div *ngIf="!!cantDesde?.errors.required">
+                                    cantDesde es requerido
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="cantHasta" class="col-form-label col-sm-2">Cantidad Hasta <span
+                                    style="color: red">(*)</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" [(ngModel)]="precio.cantHasta"
+                                    name="cantHasta" required #cantHasta="ngModel">
+                            </div>
+                            <div class="alert alert-danger"
+                                *ngIf="cantHasta.invalid && (cantHasta.dirty || cantHasta.touched)">
+                                <div *ngIf="!!cantHasta?.errors.required">
+                                    cantHasta es requerido
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" *ngIf="precio.cantDesde > precio.cantHasta">
+                                <div>
+                                    cantHasta no puede ser menor a cantidadDesde
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group row">
+                            <label for="fechaDesde" class="col-form-label col-sm-2">Fecha Desde <span
+                                    style="color: red">(*)</span></label>
+                            <div class="col-sm-6">
+                                <input type="date" class="form-control" [(ngModel)]="precio.fechaDesde"
+                                    name="fechaDesde" required #fechaDesde="ngModel">
+                            </div>
+                            <div class="alert alert-danger"
+                                *ngIf="fechaDesde.invalid && (fechaDesde.dirty || fechaDesde.touched)">
+                                <div *ngIf="!!fechaDesde?.errors.required">
+                                    fechaDesde es requerido
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="fechaHasta" class="col-form-label col-sm-2">Fecha Hasta <span
+                                    style="color: red">(*)</span></label>
+                            <div class="col-sm-6">
+                                <input type="date" class="form-control" [(ngModel)]="precio.fechaHasta"
+                                    name="fechaHasta" required #fechaHasta="ngModel">
+                            </div>
+                            <div class="alert alert-danger"
+                                *ngIf="fechaHasta.invalid && (fechaHasta.dirty || fechaHasta.touched)">
+                                <div *ngIf="!!fechaHasta?.errors.required">
+                                    fechaHasta es requerido
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" *ngIf="precio.fechaDesde > precio.fechaHasta">
+                                <div>
+                                    fechaHasta no puede ser menor a cantidadDesde
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="tipoPrecio" class="col-form-label col-sm-2">Tipo Precio <span
+                                    style="color: red">(*)</span></label>
+                            <div class="col-sm-6">
+                                <select id="selectTipoPrecio" class="custom-select " style="width: 100%; height:36px;"
+                                    tabindex="-1" aria-hidden="true" [(ngModel)]="seleccionTipoPrecio"
+                                    #selectorTipoPrecio="ngModel" name="selectTipoPrecio"
+                                    (ngModelChange)="cambioTipoPrecio($event)">
+                                    <option *ngFor="let m of tipoPrecio" [value]="m.codTipoPrecio">
+                                        {{m.descripcion}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="unidad" class="col-form-label col-sm-2">Unidad Medida <span
+                                    style="color: red">(*)</span></label>
+                            <div class="col-sm-6">
+                                <select id="selectUnidadMed" class="custom-select " style="width: 100%; height:36px;"
+                                    tabindex="-1" aria-hidden="true" [(ngModel)]="seleccionUnidad"
+                                    #selectorUnidad="ngModel" name="selectUnidadMed"
+                                    (ngModelChange)="cambioUnidad($event)">
+                                    <option *ngFor="let m of unidadMedida" [value]="m.codUnidad">
+                                        {{m.nombreUnidad}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row button-group">
+                            <div class="col-sm-6">
+
+                                <button class="btn btn-info waves-effect waves-light" type="button" role="button"
+                                    (click)='confirmarFormulario()' *ngIf="!precio.codPrecio"
+                                    [disabled]="!precioForm.form.valid"><i class="fa   fa-floppy-o"></i>Crear</button>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <div class="modal-footer">
+                        <div class="form-group row button-group">
+                            <div class="col-sm-12 align-self-center" style=" text-align: center;" aling="center">
+                                <button class="btn btn-secondary " (click)="cancelarModalFormulario()" type="button"
+                                    data-dismiss="modal">
+                                    <i class="fa  fa-arrow-circle-left"></i> Atrás
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,855 @@
+<div class="row">
+    <div class="col-lg-8" *ngIf="_modoFomulario =='REPARTO'">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <span>
+                            <h3 class="card-title m-b-5 center">
+                                <span class="lstick"></span>Reparto
+                            </h3>
+                        </span>
+                    </div>
+                </div>
+                <div class="container py-5">
+
+                    <form #repartoForm="ngForm" >
+                        <div class="form-group row">
+                            <div class="col-sm-6"  >
+                                <label for="ngChofer" class="col-form-label ">Chofer</label>
+                                <ng-select-chofer [disabled]="_modoConsulta"   #searchChofer id="ngChofer" [cargadorChofer]="cargadorChofer"
+                                    style="width: 100%" id="chofer" name="chofer"
+                                    (retornoObjeto)="seleccionarChofer($event)"></ng-select-chofer>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="vehiculo" class="col-form-label ">Coche</label>
+                                <ng-select-vehiculo [disabled]="_modoConsulta" #searchAyudante1 id="ngVehiculo"
+                                    [cargadorVehiculo]="cargadorVehiculo" style="width: 100%" name="vehiculo"
+                                    (retornoObjeto)="seleccionarVehiculo($event)">
+                                </ng-select-vehiculo>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="ngayudante1" class="col-form-label ">Ayudante 1</label>
+                                <ng-select-chofer [disabled]="_modoConsulta" #searchAyudante1 id="ngayudante1" [cargadorChofer]="cargadorAyudante1"
+                                    style="width: 100%" name="ayudante1" (retornoObjeto)="seleccionarAyudante1($event)">
+                                </ng-select-chofer>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="ngayudante2" class="col-form-label ">Ayudante 2</label>
+                                <ng-select-chofer [disabled]="_modoConsulta" #searchAyudante2 id="ngayudante2" [cargadorChofer]="cargadorAyudante2"
+                                    style="width: 100%" name="ayudante2" (retornoObjeto)="seleccionarAyudante2($event)">
+                                </ng-select-chofer>
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <div class="col-sm-6">
+                                <label for="fechaReparto" class="col-form-label">Fecha reparto:</label>
+                                <input [disabled]="_modoConsulta" type="date" class="form-control form-control-sm" [(ngModel)]="fechaReparto"
+                                    id="fechaReparto" name="fechaReparto" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="obs" class="col-form-label ">Observación</label>
+                                <input type="text" [disabled]="_modoConsulta" class="form-control form-control-sm" [(ngModel)]="obsReparto"
+                                    name="obs" id="obs">
+                            </div>
+                        </div>
+                        <div class="form-group row button-group">
+                            <div class="col-sm-6 align-self-center" style=" text-align: center;" aling="center">
+                               <!--  <button *ngIf="_modoConsulta == false" class="btn btn-secondary  " (click)="mostrarPedidos()" type="button ">
+                                    <i class="fa fa-shopping-cart "></i>
+                                    Importar Pedidos
+                                </button> -->
+                                <button *ngIf="_modoConsulta == false" class="btn btn-secondary " (click)="mostrarVenta()" type="button ">
+                                    <i class="mdi mdi-cash"></i>
+                                    Importar Ventas
+                                </button>
+
+                            </div>
+
+                            <div class="col-sm-6 align-self-center" style=" text-align: center;" aling="center">
+
+                                <button  *ngIf="_modoConsulta == false" class="btn btn-secondary  " (click)="guardarReparto()" type="button ">
+                                    <i class="fa fa-shopping-cart "></i>
+                                    Guardar
+                                </button>
+
+                                <button *ngIf="_modoConsulta == false" class="btn btn-secondary " (click)="cancelar()" type="button ">
+                                    <i class="fa fa-close"></i>
+                                    Cancelar
+                                </button>
+                                <button *ngIf="_modoConsulta == true" class="btn btn-secondary " (click)="atras()" type="button ">
+                                    <i class="fa fa-arrow-circle-left"></i>
+                                    Volver a reparto
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8" *ngIf="_modoFomulario =='PEDIDOS'">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <span>
+                            <h3 class="card-title m-b-5 center">
+                                <span class="lstick"></span>Importar de pedidos
+                            </h3>
+                        </span>
+                    </div>
+                </div>
+                <div class="container py-5">
+
+                    <form #repartoForm="ngForm">
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="fechaInicioPedido" class="col-form-label"> F.Desde:</label>
+                                <input type="date" class="form-control form-control-sm  "
+                                    [(ngModel)]="fechaInicioPedido" name="fechaInicioPedido">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="fechaFinPedido" class="col-form-label"> Fecha Hasta:</label>
+                                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaFinPedido"
+                                    name="fechaFinPedido" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="cliente" class="col-form-label"> Cliente:</label>
+                                <ng-select-clientes #searchClientes id="ngbdtypeaheadClientes"
+                                    [cargadorCliente]="cargadorClientePedido" style="width: 100%" name="cliente"
+                                    (retornoObjeto)="seleccionarClientePedido($event)">
+                                </ng-select-clientes>
+                            </div>
+                            <!-- =========== Para Role Adm ============== -->
+                            <div class="col-sm-6" *ngIf="rol == 'ROLE_ADMIN'">
+                                <label for="sucursal" class="col-form-label">Sucursal:</label>
+                                <ng-select-sucursal #searchSucursales id="ngbdtypeaheadSucursales"
+                                    [cargadorSucursal]="cargadorSucursal" style="width: 100%" name="sucursal"
+                                    (retornoObjeto)="seleccionarSucursal($event)">
+                                </ng-select-sucursal>
+                            </div>
+                            <!-- =========== Para Role cajero ============== -->
+                            <div class="col-sm-6" *ngIf="rol == 'ROLE_CAJERO'">
+                                <label for="sucursal" class="col-form-label ">Sucursal:</label>
+                                <select id="seleccionSucursales" class="form-control form-control-sm custom-select"
+                                    [(ngModel)]="seleccionSucursal" style="font-size: 90%;width: 100%; "
+                                    name="seleccionSucursales" (ngModelChange)="cambioSucursal($event)">
+                                    <option style="font-size: 90%; " *ngFor="let s of sucursales"
+                                        [value]="s.codSucursal">
+                                        {{ s.nombreSucursal }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row button-group ">
+                            <div class="col-sm-6  " style=" text-align: center;">
+                                <button class="btn btn-themecolor   waves-effect waves-light " (click)='buscarPedido()'
+                                    type="button ">
+                                    <i class="fa fa-search "></i>
+                                    Buscar
+                                </button>
+                                <button type="button" (click)="mostrarPedidos()" class="btn  btn-secondary">
+                                    <i class="fa  fa-close"></i> Cancelar
+                                </button>
+
+
+                            </div>
+                            <div class="col-sm-6 " style=" text-align: center;">
+                                <button *ngIf="listaPedidos?.length > 0" class="btn btn-success"
+                                    (click)="seleccionarPaginaPedido()" type="button "> <i class="fa fa-truck"></i>
+                                    Importar Pagina
+                                    {{paginaPedido}} </button>
+                                <button type="button" (click)="cancelarPedidos()" class="btn  btn-secondary">
+                                    <i class="fa  fa-arrow-circle-left"></i> Atrás
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8" *ngIf="_modoFomulario =='VENTAS'">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <span>
+                            <h3 class="card-title m-b-5 center">
+                                <span class="lstick"></span>Importar ventas
+                            </h3>
+                        </span>
+                    </div>
+                </div>
+                <div class="container py-5">
+                    <form #repartoForm="ngForm">
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="fechaInicioVenta" class="col-form-label"> Fecha Desde:</label>
+                                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaInicioVenta"
+                                    name="fechaInicioVenta" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="fechaFinVenta" class="col-form-label"> Fecha Hasta:</label>
+                                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaFinVenta"
+                                    name="fechaFinVenta" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="cliente" class="col-form-label"> Cliente:</label>
+                                <ng-select-clientes #searchClientes id="ngbdtypeaheadClientes"
+                                    [cargadorCliente]="cargadorClienteVenta" style="width: 100%" name="cliente"
+                                    (retornoObjeto)="seleccionarClienteVenta($event)">
+                                </ng-select-clientes>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="nroComprobante" class="col-form-label"> N° factura:</label>
+                                <input type="text " placeholder="Ej: 008-008-0000072"
+                                    [textMask]="{ mask: mask, guide: true }" guide="false "
+                                    class="form-control form-control-sm " [(ngModel)]="nroComprobante"
+                                    name="nroComprobante " />
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <!-- =========== Para Role Adm ============== -->
+                            <div class="col-sm-6" *ngIf="rol == 'ROLE_ADMIN'">
+                                <label for="sucursal" class="col-form-label">Sucursal:</label>
+                                <ng-select-sucursal #searchSucursales id="ngbdtypeaheadSucursales"
+                                    [cargadorSucursal]="cargadorSucursal" style="width: 100%" name="sucursal"
+                                    (retornoObjeto)="seleccionarSucursal($event)">
+                                </ng-select-sucursal>
+                            </div>
+                            <!-- =========== Para Role cajero ============== -->
+                            <div class="col-sm-6" *ngIf="rol == 'ROLE_CAJERO'">
+                                <label for="sucursal" class="col-form-label ">Sucursal:</label>
+                                <select id="seleccionSucursales" class="form-control form-control-sm custom-select"
+                                    [(ngModel)]="seleccionSucursal" style="font-size: 90%;width: 100%; "
+                                    name="seleccionSucursales" (ngModelChange)="cambioSucursal($event)">
+                                    <option style="font-size: 90%; " *ngFor="let s of sucursales"
+                                        [value]="s.codSucursal">
+                                        {{ s.nombreSucursal }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row button-group ">
+                            <div class="col-sm-6  " style=" text-align: center;">
+                                <button class="btn btn-themecolor   " (click)="buscarVentas()" type="button ">
+                                    <i class="fa fa-search "></i> Buscar
+                                </button>
+                                <button type="button" (click)="mostrarVenta()" class="btn  btn-secondary">
+                                    <i class="fa  fa-close"></i> Cancelar
+                                </button>
+                            </div>
+                            <div class="col-sm-6 " style=" text-align: center;">
+                                <button *ngIf="listaVenta?.length > 0" class="btn btn-success"
+                                    (click)="seleccionarPaginaVenta()" type="button "> <i class="fa fa-truck"></i>
+                                    Importar Pagina
+                                    {{paginaVenta}} </button>
+                                <button type="button" (click)="cancelarVentas()" class="btn  btn-secondary">
+                                    <i class="fa  fa-arrow-circle-left"></i> Atrás
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex no-block">
+                            <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                                <img src="../../../assets/images/icon/cash.png" class="w50" alt="Income" /></div>
+                            <div class="align-self-center">
+                                <h6 class="text-muted m-t-10 m-b-0">Total Gs.</h6>
+                                <h2 *ngIf="reparto.totalGs" class="m-t-0">{{reparto.totalGs| number}} Gs.</h2>
+                                <h2 *ngIf="!reparto.totalGs" class="m-t-0">0 Gs.</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex no-block">
+                            <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                                <img src="../../../assets/images/icon/balanza.png" class="w50" alt="Income" /></div>
+                            <div class="align-self-center">
+                                <h6 class="text-muted m-t-10 m-b-0">Total Kg.</h6>
+                                <h2 *ngIf="reparto.totalKg" class="m-t-0">{{reparto.totalKg | number}} Kg.</h2>
+                                <h2 *ngIf="!reparto.totalKg" class="m-t-0">0 Kg.</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex no-block">
+                            <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                                <img src="../../../assets/images/icon/932602.png" class="w50" alt="Income" /></div>
+                            <div class="align-self-center">
+                                <h6 class="text-muted m-t-10 m-b-0">Cantidad</h6>
+                                <h2 *ngIf="repartoDocs" class="m-t-0">{{repartoDocs.length | number}}</h2>
+                                <h2 *ngIf="!repartoDocs" class="m-t-0">0 </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="m-r-20 align-self-center">
+              <div class="form-group row ">
+                <div class="col-sm-6  align-self-center" style=" text-align: center;" aling="center">
+                  <button class="btn btn-secondary  " (click)="mostrarModalPedidos()" type="button "> <i
+                      class="fa fa-shopping-cart "></i> Guardar </button>
+
+                </div>
+
+                <div class="col-sm-6 align-self-center" style=" text-align: center;" aling="center">
+                  <button class="btn btn-secondary " (click)="ngOnInit()" type="button "> <i
+                      class="fa fa-close"></i>Cancelar </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================================================== -->
+<!-- Detalles Reparto-->
+<!-- ============================================================== -->
+<div class="card" *ngIf="_modoFomulario == 'REPARTO'">
+    <ngb-tabset type="tabs">
+        <ngb-tab title="Productos">
+            <ng-template ngbTabContent>
+                <div class="card">
+                    <div class="card-body">
+                        <div *ngIf="repartoDetalles?.length == 0" class="alert alert-info">
+
+                            No se han cargado registros ...
+
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-striped"
+                                *ngIf="repartoDetalles?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>Imagen</th>
+                                        <th class="align-middle">Producto</th>
+                                        <th class="align-middle">Cantidad</th>
+                                        <th class="align-middle">Unidad de Medida</th>
+                                        <th class="align-middle">Cantidad Unidad</th>
+                                        <th class="align-middle">T. Kg</th>
+                                        <th class="align-middle">T. Gs</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let detalle of repartoDetalles | slice: (paginaDetalles * pageSizeDetalles) - pageSizeDetalles :paginaDetalles * pageSizeDetalles">
+                                        <td class="align-middle w50" align="center" style="background: white">
+                                            <img *ngIf="detalle.producto.img"
+                                                [attr.src]="detalle.producto.img | imagen:'productos' | async"
+                                                class="img-producto50" />
+                                            <img *ngIf="!detalle.producto.img" [src]="sinImagen" class="img-producto50">
+                                        </td>
+                                        <td class="align-middle">{{ detalle.producto.concatCodErpNombre }}</td>
+                                        <td class="align-middle">{{ detalle.cantidad }}</td>
+                                        <td class="align-middle">{{ detalle.unidadMedida.nombreUnidad }}</td>
+                                        <td class="align-middle">{{ detalle.cantidadUnidad}}</td>
+                                        <td class="align-middle">{{ detalle.totalKg }}</td>
+                                        <td class="align-middle">{{ detalle.totalGs }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="container" *ngIf="repartoDetalles?.length > 0">
+                            <ngb-pagination class="d-flex justify-content-center" [size]="tamanhoPag"
+                                [collectionSize]="repartoDetalles.length" [(page)]="paginaDetalles" [maxSize]="4"
+                                [boundaryLinks]="true">
+                                <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+                                <ng-template ngbPaginationNext>&raquo;</ng-template>
+                                <ng-template ngbPaginationFirst>Primera</ng-template>
+                                <ng-template ngbPaginationLast>Última</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+
+
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Documentos">
+            <ng-template ngbTabContent>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div *ngIf="repartoDocs?.length == 0" class="alert alert-info">
+                            No se han cargado registros ...
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-striped" *ngIf="repartoDocs?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Tipo</th>
+                                        <th>Venta</th>
+                                        <th>Pedido</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>T. Kg</th>
+                                        <th>T. Gs</th>
+                                        <th>ver</th>
+                                        <th *ngIf="_modoConsulta == false" >Quitar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let doc of repartoDocs | slice: (paginaDocs * pageSizeDocs) - pageSizeDocs :paginaDocs * pageSizeDocs">
+                                        <td *ngIf="doc.tipo == 'VENTA'" class="align-middle w50" align="center"
+                                            style="background: white">
+                                            <img src="../../../assets/images/icon/cashF.svg" class="w50" alt="Income" />
+                                        </td>
+                                        <td *ngIf="doc.tipo == 'PEDIDO'" class="align-middle w50" align="center"
+                                            style="background: white">
+                                            <img src="../../../assets/images/icon/shpc.svg" class="w50" alt="Income" />
+                                        </td>
+                                        <td class="align-middle">{{ doc.tipo }}</td>
+                                        <td class="align-middle" *ngIf="doc.venta">{{ doc.venta.nroComprobante }}</td>
+                                        <td class="align-middle" *ngIf="!doc.venta">000-000-0000000</td>
+                                        <td class="align-middle" *ngIf="doc.pedido">
+                                            {{doc.pedido.nroPedido.toString().padStart(8,"00000000") }}</td>
+                                        <td class="align-middle" *ngIf="!doc.pedido">00000000</td>
+                                        <td class="align-middle">
+                                            {{ doc.cliente.docNro  +' '+ doc.cliente.razonSocial}} </td>
+                                        <td class="align-middle" *ngIf="doc.venta">
+                                            {{ doc.venta.fechaVenta | date:'dd/MM/yyyy'}} </td>
+                                        <td class="align-middle" *ngIf="doc.pedido">
+                                            {{doc.pedido.fechaPedido | date:'dd/MM/yyyy' }} </td>
+                                        <td class="align-middle">{{ doc.totalKg }}</td>
+                                        <td class="align-middle">{{ doc.totalGs }}</td>
+                                        <td class="align-middle" *ngIf="doc.venta">
+                                            <button class="btn btn-success btn-circle "
+                                                [routerLink]="['/ventasLista/id', doc.venta.codVenta]" type="button">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                        </td>
+                                        <td class="align-middle" *ngIf="doc.pedido">
+                                            <button class="btn btn-success btn-circle "
+                                                [routerLink]="['/pedidoLista/id', doc.pedido.codPedido]" type="button">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                        </td>
+
+
+                                        <td  class="align-middle" *ngIf="doc.venta &&_modoConsulta== false">
+                                            <button class="btn btn-danger btn-circle " (click)='quitarVenta(doc)'
+                                                type="button">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </td>
+                                        <td class="align-middle" *ngIf="doc.pedido &&_modoConsulta== false">
+                                            <button class="btn btn-danger btn-circle " (click)='quitarPedido(doc)'
+                                                type="button">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="container" *ngIf="repartoDocs?.length > 0">
+                            <ngb-pagination class="d-flex justify-content-center" [size]="tamanhoPag"
+                                [collectionSize]="repartoDocs.length" [(page)]="paginaDocs" [maxSize]="4"
+                                [boundaryLinks]="true">
+                                <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+                                <ng-template ngbPaginationNext>&raquo;</ng-template>
+                                <ng-template ngbPaginationFirst>Primera</ng-template>
+                                <ng-template ngbPaginationLast>Última</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+
+
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Clientes">
+            <ng-template ngbTabContent>
+                <div class="row">
+                    <div class="col-5">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <!--                                     <label class="small text-uppercase my-1" for="categorias">Buscar:</label>
+ -->
+                                <input-debounce class="m-3" #inputCliente delay="500" id="inputCliente" height="15px"
+                                    type="text" placeholder="Buscar cliente ..." required="" aria-invalid="false"
+                                    (value)="buscar($event)">
+                                </input-debounce>
+
+                                <perfect-scrollbar class="scroll-container"
+                                    style="position: relative; max-width: 100%; max-height: 500px;"
+                                    [scrollIndicators]="true">
+                                    <div class="scrollable-content table-responsive">
+                                        <table class="table table-sm table-bordered table-striped"
+                                            *ngIf="repartoDocs?.length>0">
+                                            <thead>
+                                                <tr>
+                                                    <th>comprobante</th>
+                                                    <th>Razon social</th>
+                                                    <th>Ruc</th>
+                                                    <th>ver</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let doc of repartoDocsAuxi">
+                                                    <td class="align-middle" *ngIf="doc.venta">
+                                                        {{ doc.venta.nroComprobante }}
+                                                    </td>
+                                                    <td class="align-middle" *ngIf="doc.pedido">
+                                                        {{doc.pedido.nroPedido.toString().padStart(8,"00000000") }}</td>
+                                                    <td class="align-middle">{{ doc.cliente.razonSocial }}</td>
+                                                    <td class="align-middle">{{ doc.cliente.docNro }}</td>
+                                                    <td class="align-middle">
+                                                        <button class="btn btn-success" type="button"
+                                                            (click)="zoomMarcador(doc)">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </perfect-scrollbar>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="card-body">
+
+                            <div class="input-group">
+                                <span class="form-control form-group form-inline btn p-2 mt-4 mb-3">
+                                    <b>
+                                        Link:&nbsp;
+                                    </b>
+                                    <a *ngIf="lat != -25.29688941637652 && lng !=-57.59492960130746" class="text-primary pointer" (click)='openLink()'>
+                                        {{linkBase+lat+","+lng}}
+                                    </a>
+                                </span>
+                            </div>
+                            <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoomMap"  >
+                                <agm-marker #marker  *ngFor="let doc of repartoDocs; let i = index" [latitude]="doc.latitud"
+                                    [longitude]="doc.longitud"  (markerClick)="clickedMarker(infowindow)">
+                                    <agm-info-window #infowindow   >
+                                        <span class="form-inline">
+                                            <strong>Razon social:</strong>
+                                            <strong> {{ doc.cliente.razonSocial }} </strong>
+                                        </span>
+                                        <span class="form-inline">
+                                            <strong>Nro doc:</strong>
+                                            <strong> {{ doc.cliente.docNro }} </strong>
+                                        </span>
+                                        <span class="form-inline">
+                                            <strong>Tel/cel:</strong>
+                                            <strong> {{ doc.cliente.telefono }} </strong>
+                                        </span>
+                                        <span class="form-inline">
+                                            <strong>Dirección:</strong>
+                                            <strong> {{ doc.cliente.direccion }} </strong>
+                                        </span>
+                                        <span class="form-inline">
+                                            <strong>Longitud:</strong>
+                                            <strong> {{ doc.cliente.longitud }} </strong>
+                                        </span>
+                                        <span class="form-inline">
+                                            <strong>Latitud:</strong>
+                                            <strong> {{ doc.cliente.latitud }} </strong>
+                                        </span>
+                                        <span class="form-inline">
+                                            <label class="small text-uppercase my-1" for="categorias">Link:</label>
+                                            <a class="text-primary pointer" (click)='openLink()'>
+                                                <label>{{linkBase+lat+","+lng}}</label>
+                                            </a>
+                                        </span>
+                                    </agm-info-window>
+
+                                </agm-marker>
+
+                            </agm-map>
+                        </div>
+
+
+                    </div>
+                </div>
+            </ng-template>
+        </ngb-tab>
+
+    </ngb-tabset>
+</div>
+
+<!-- ============================================================== -->
+<!-- Detalles Venta-->
+<!-- ============================================================== -->
+<div class="card" *ngIf="_modoFomulario == 'VENTAS'">
+    <div class="card-body">
+        <div class="d-flex">
+            <div>
+                <span>
+                    <h3 class="card-title m-b-5 center">
+                        <span class="lstick"></span>Ventas
+                    </h3>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="filas" class="col-form-label col-sm-2 col-lg-1.5 col-xl-1">Filas:</label>
+            <div class="col-sm-2 col-lg-1.5 col-xl-1">
+                <select class="selectpicker form-control-sm custom-select" name="filas" [(ngModel)]="pageSizeVenta"
+                    (ngModelChange)="cambioNumero($event)">
+                    <option *ngFor="let t of numeros" [value]="t.cod">
+                        {{ t.descripcion }}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div *ngIf="listaVenta?.length == 0" class="alert alert-info">
+            No hay registros en la base de datos!
+        </div>
+
+
+
+        <div class="table-responsive" *ngIf="listaVenta?.length > 0">
+            <div>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Codigo</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Sucursal</th>
+                            <th>Anulado</th>
+                            <th>Cliente</th>
+                            <th>SubTotal</th>
+                            <th>I.Total</th>
+                            <th>N.Comprobante</th>
+                            <th>Fecha</th>
+                            <th>Porc.Desc.%</th>
+                            <th>F.Anulación</th>
+                            <th>Tipo</th>
+                            <th>Entrega</th>
+
+                            <th>Agregar</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let venta of listaVenta;let i =index" [ngClass]="{
+                            'alert-success': venta.codReparto != null }">
+                            <td> {{i+1}}</td>
+                            <td>{{ venta.codVenta }}</td>
+                            <td *ngIf="venta.esObsequio == true"><i class="fa fa-gift" aria-hidden="true"></i> </td>
+                            <td *ngIf="!venta.esObsequio || venta.esObsequio == false"><i class="mdi mdi-cash"
+                                    aria-hidden="true"></i>
+                            </td>
+                            <td>{{ venta.estado }}</td>
+                            <td>{{ venta.codSucursalErp }}</td>
+                            <td *ngIf="venta.anulado == true">SI</td>
+                            <td *ngIf="venta.anulado == false">NO</td>
+                            <td>{{ venta.cliente.concatDocNombre }}</td>
+                            <td align="center" *ngIf="!venta.subTotal">0</td>
+                            <td align="center" *ngIf="venta.subTotal">
+                                {{ venta.subTotal | number }}
+                            </td>
+                            <td align="center" *ngIf="!venta.importeTotal">0</td>
+                            <td align="center" *ngIf="venta.importeTotal">
+                                {{ venta.importeTotal | number }}
+                            </td>
+                            <td align="center" *ngIf="!venta.nroComprobante">xxx-xxx-xx</td>
+                            <td align="center" *ngIf="venta.nroComprobante">
+                                {{ venta.nroComprobante }}
+                            </td>
+                            <td align="center" *ngIf="!venta.fechaVenta">xx/xx/xx</td>
+                            <td align="center" *ngIf="venta.fechaVenta">
+                                {{ venta.fechaVenta }}
+                            </td>
+                            <td align="center" *ngIf="!venta.porcDescuento">0</td>
+                            <td align="center" *ngIf="venta.porcDescuento">
+                                {{ venta.porcDescuento | number }}
+                            </td>
+                            <td align="center" *ngIf="!venta.fechaAnulacion">xx/xx/xx</td>
+                            <td align="center" *ngIf="venta.fechaAnulacion">
+                                {{ venta.fechaAnulacion }}
+                            </td>
+                             <td align="center"  >
+                                {{ venta.tipoVenta }}
+                            </td>
+
+                            <td align="center"  >
+                                {{ venta.modoEntrega }}
+                            </td>
+
+
+
+                            <td align="center">
+                                <button class="btn btn-secondary btn-circle" (click)="seleccionarVenta(venta)"
+                                    type="button">
+                                    <i class="fa fa-truck"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="listaVenta?.length>0"
+            [collectionSize]="totalElementosVenta" [size]="tamanhoPag" [pageSize]="pageSizeVenta" [(page)]="paginaVenta"
+            [maxSize]="5" [boundaryLinks]="true" (pageChange)="cargarPaginaVenta($event)">
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationEllipsis>...</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- Detalles Pedido-->
+<!-- ============================================================== -->
+
+<div class="card" *ngIf="_modoFomulario =='PEDIDOS'">
+    <div class="card-body">
+        <div class="d-flex">
+            <div>
+                <span>
+                    <h3 class="card-title m-b-5 center"><span class="lstick"></span>Pedidos</h3>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="filas" class="col-form-label col-sm-2 col-lg-1.5 col-xl-1">Filas:</label>
+            <div class="col-sm-2 col-lg-1.5 col-xl-1">
+                <select class=" form-control form-control-sm custom-select" name="filas" [(ngModel)]="pageSizePedido"
+                    (ngModelChange)="cambioNumero($event)">
+                    <option *ngFor="let t of numeros" [value]="t.cod">
+                        {{t.descripcion}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+
+        <div *ngIf="listaPedidos?.length == 0" class="alert alert-info">
+            No hay registros en la base de datos!
+        </div>
+
+
+        <div class="table-responsive" *ngIf="listaPedidos?.length>0">
+            <div *ngIf="listaPedidos?.length>0">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Codigo</th>
+                            <th>Nro pedido</th>
+                            <th>Estado</th>
+                            <th>Sucursal</th>
+                            <th>Anulado</th>
+                            <th>Cliente</th>
+                            <th>Sub Total</th>
+                            <th>I.Total</th>
+                            <th>Fecha</th>
+                            <th>Desc %</th>
+                            <th>F.Anulación</th>
+                            <th>Agregar</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of listaPedidos;let i =index" [ngClass]="{
+                            'alert-success': p.codReparto != null  }">
+                            <td> {{i+1}}</td>
+                            <td>{{ p.codPedido }}</td>
+                            <td class="align-middle"> {{p.nroPedido.toString().padStart(8,"00000000") }}</td>
+                            <td>{{ p.estado }}</td>
+                            <td>{{ p.codSucursalErp }}</td>
+                            <td *ngIf="p.anulado == true">SI</td>
+                            <td *ngIf="p.anulado == false">NO</td>
+                            <td>{{ p.cliente.concatDocNombre }}</td>
+                            <td align="center" *ngIf="!p.subTotal">0</td>
+                            <td align="center" *ngIf="p.subTotal">{{p.subTotal | number }}</td>
+                            <td align="center" *ngIf="!p.importeTotal">0</td>
+                            <td align="center" *ngIf="p.importeTotal">{{ p.importeTotal | number }}</td>
+                            <td align="center" *ngIf="!p.fechaPedido">xx/xx/xx</td>
+                            <td align="center" *ngIf="p.fechaPedido">{{ p.fechaPedido }}</td>
+                            <td align="center" *ngIf="!p.porcDescuento">0</td>
+                            <td align="center" *ngIf="p.porcDescuento">{{ p.porcDescuento | number }}</td>
+                            <td align="center" *ngIf="!p.fechaAnulacion">xx/xx/xx</td>
+                            <td align="center" *ngIf="p.fechaAnulacion">{{ p.fechaAnulacion }}</td>
+                            <td align="center">
+                                <button class="btn btn-secondary btn-circle " (click)="seleccionarPedido(p)"
+                                    type="button">
+                                    <i class="fa fa-truck"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="listaPedidos?.length>0"
+            [collectionSize]="totalElementosPedido" [size]="tamanhoPag" [pageSize]="pageSizePedido"
+            [(page)]="paginaPedido" [maxSize]="5" [boundaryLinks]="true" (pageChange)="cargarPaginaPedidos($event)">
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationEllipsis>...</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- Fin Detalles -->
+<!-- ============================================================== -->

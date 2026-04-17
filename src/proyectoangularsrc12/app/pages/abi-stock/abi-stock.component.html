@@ -1,0 +1,224 @@
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Actualizar stock</h4>
+    </div>
+    <div class="card-body">
+        <form #precioForm="ngForm">
+            <h3>
+                Atención.
+            </h3>
+            <h5>
+                - Cargé el archivo xlx solo con los campos que se muestran acontinuación.
+            </h5>
+            <h5>
+                - Los titulos de cabecera en xlx debe ser "codigo","cantidad_disponible" como se muestra acontinuación.
+            </h5>
+            <div class="form-group row">
+
+                <div class="col-sm-6">
+                    <table class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>codigo</th>
+                                <th>cantidad_disponible</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <h3>
+                                        100000006
+                                    </h3>
+                                </td>
+                                <td>
+                                    <h3>
+                                        5
+                                    </h3>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h3>
+                                        100000007
+                                    </h3>
+                                </td>
+                                <td>
+                                    <h3>
+                                        12
+                                    </h3>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+
+                <div class="col-sm-6" *ngIf="productos?.length>0">
+
+                    <input type="file" id="uploadedfile" accept=".xlsx" multiple="false" (change)="onFileChange($event)" [disabled]="!editable" />
+
+                </div>
+
+                <div class="col-sm-6" *ngIf="productos?.length == 0">
+                    <div class="alert alert-danger text-center">
+                        <p>
+                            <strong>
+                                No se han recibido productos del catalogo de ABI 
+                            </strong>
+                        </p>
+                        <p>
+                            <strong>
+                                Favor contacte con el grupo de desarrollo. 
+                            </strong>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" (click)='cambioPrecios()' *ngIf="stocksEncontrados?.length>0" class="btn btn-themecolor waves-effect waves-light"><i class="fa  fa-pencil"></i> Cambiar
+                        precios</button>
+                    <button type="button" [routerLink]="['/dashboard']" class="btn btn-danger waves-effect waves-light"><i
+                            class="fa  fa-arrow-circle-left"></i> Atrás</button>
+                    <button type="button" *ngIf="productos?.length>0" (click)='ngOnInit()' class="btn btn-secondary waves-effect waves-light"><i
+                            class="fa fa-ban fa-fw"></i> Cancelar</button>
+                    <button type="button" *ngIf="productos?.length>0" (click)='export()' class="btn btn-success waves-effect waves-light">
+                                <i class="fa fa-download"></i> Exportar Actuales</button>
+                </div>
+            </div>
+
+
+            <div class="row" animated fadeIn *ngIf="stocksNoEncontrados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <strong> No se han encontrado stock para {{stocksNoEncontrados.length}} productos </strong>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="stocksEncontrados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-info text-center">
+                        <strong>{{stocksEncontrados.length}} Stocks a ser modificados </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="stocksModificados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-success text-center">
+                        <strong>{{stocksModificados.length}} Stocks modificados </strong>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <perfect-scrollbar class="scroll-container" style="position: relative; max-width: 100%; max-height: 400px;" [scrollIndicators]="true">
+                        <div class="scrollable-content table-responsive">
+                            <table class="table table-sm table-bordered " *ngIf="stocks?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Id </th>
+                                        <th>Cantidad disponible</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- [ngClass]="{
+                                        'alert-success':p.encontrado == true,
+                                        'alert-danger':p.encontrado == false
+                                      }" -->
+                                    <tr *ngFor="let p of stocks;let i =index">
+                                        <td> {{i+1}}</td>
+                                        <td>{{ p.id }}</td>
+                                        <td>{{ p.cantidad_disponible | number}}</td>
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
+                </div>
+                <div class="card-body">
+                    <perfect-scrollbar class="scroll-container" style="position: relative; max-width: 100%; max-height: 400px;" [scrollIndicators]="true">
+                        <div class="scrollable-content table-responsive">
+                            <table class="table table-sm table-bordered " *ngIf="stocksModificados?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Id </th>
+                                        <th>Cantidad disponible</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of stocksModificados;let i =index">
+                                        <td> {{i+1}}</td>
+                                        <td>{{ p.id }}</td>
+                                        <td>{{ p.cantidad_disponible | number}}</td>
+
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
+                </div>
+            </div>
+            <div class="table-responsive" *ngIf="productos?.length>0">
+                <div>
+                    <table class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>ID</th>
+                                <th>Codigo Ref.</th>
+                                <th>Producto</th>
+                                <th>Descripcion</th>
+                                <th>Cantidad Disponible</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let producto of productos">
+                                <td class="wh90" align="center" style="background: white">
+                                    <img *ngIf="producto.imagenes.length >0" [src]="producto.imagenes[0].imagen" class="img-producto80" />
+                                    <img *ngIf="producto.imagenes.length ==0" [src]="sinImagen" class="img-producto80">
+                                </td>
+                                <td>
+                                    <h3>
+                                        {{ producto.id }}
+                                    </h3>
+                                </td>
+                                <td>
+                                    <h3>
+                                        {{ producto.api_extra_data }}
+                                    </h3>
+                                </td>
+                                <td>
+                                    <h3>
+                                        {{ producto.nombre }}
+                                    </h3>
+                                </td>
+                                <td>
+                                    <h3>
+                                        {{ producto.descripcion}}
+                                    </h3>
+                                </td>
+                                <td>
+                                    <h3>
+                                        {{ producto.cantidad_disponible}}
+                                    </h3>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+        </form>
+
+    </div>
+</div>

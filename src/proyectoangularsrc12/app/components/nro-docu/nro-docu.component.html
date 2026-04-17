@@ -1,0 +1,34 @@
+
+
+<form *ngIf="form" [formGroup]="form">
+  <div class="form-group row">
+    <label for="personadocNro" class="col-form-label col-sm-4">
+      Nº Documento <span style="color: red">(*)</span>
+    </label>
+    <div class="col-sm-8 d-flex align-items-center">
+      <input
+        type="text"
+        class="form-control"
+        formControlName="personadocNro"
+        required
+        [ngStyle]="{
+          'flex': tipoDoc === 'RUC' ? '0 0 60%' : '1 1 73%',
+          'max-width': tipoDoc === 'RUC' ? '60%' : '73%'
+        }"
+      />
+      <!-- Mostrar el label "digito" al lado del input si tipoDoc es RUC -->
+      <label *ngIf="tipoDoc === 'RUC'" class="col-form-label ml-2 mb-0 alert-primary" style="flex-shrink: 0;">
+        DV: {{ extractDigito(form.get('docNro').value)}}
+      </label>
+    </div>
+
+    <div
+      class="alert alert-danger col-sm-8 offset-sm-4 mt-2"
+      *ngIf="form.get('personadocNro').invalid && form.get('personadocNro').touched"
+    >
+      <div *ngIf="form.get('personadocNro').errors?.required">
+        Número de documento es requerido
+      </div>
+    </div>
+  </div>
+</form>

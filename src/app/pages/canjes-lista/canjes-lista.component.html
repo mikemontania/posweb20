@@ -1,0 +1,191 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Canjes</h1>
+      <span class="page-count badge badge-primary">{{ totalElements() }} registros</span>
+    </div>
+  </div>
+
+  <div class="card filter-card">
+    <div class="filters-grid">
+
+      <div class="form-group">
+        <label class="form-label">Fecha Desde</label>
+        <input type="date" class="form-control" [ngModel]="fechaDesde()" (ngModelChange)="fechaDesde.set($event)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha Hasta</label>
+        <input type="date" class="form-control" [ngModel]="fechaHasta()" (ngModelChange)="fechaHasta.set($event)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sucursal</label>
+        <app-select-search [items]="sucursales()" bindLabel="nombreSucursal" bindValue="codSucursal"
+          placeholder="Todas" [selected]="selSucursal()" (changed)="selSucursal.set($any($event))"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Usuario</label>
+        <app-select-search [items]="usuarios()" bindLabel="nombrePersona" bindValue="codUsuario"
+          placeholder="Todos" [selected]="selUsuario()" (changed)="selUsuario.set($any($event))"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cliente</label>
+        <app-select-search [items]="clientes()" bindLabel="concatDocNombre"
+          placeholder="Buscar por CI/RUC o nombre"
+          [selected]="selCliente()"
+          (changed)="selCliente.set($any($event))"
+          (search)="buscarClientes($event)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-control" [ngModel]="estado()" (ngModelChange)="estado.set($event)">
+          <option value="">Todos</option>
+          @for (e of estadoOpts; track e) { @if (e) { <option [value]="e">{{ e }}</option> } }
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nro Canje</label>
+        <input type="number" class="form-control" placeholder="0 = todos"
+               [ngModel]="nroCanje()" (ngModelChange)="nroCanje.set(+$event)"/>
+      </div>
+      <div class="form-group-action" style="display:flex;gap:.5rem;align-items:flex-end;padding-bottom:.15rem">
+        <button class="btn btn-primary" (click)="buscar(0)" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg> Buscar
+        </button>
+        <button class="btn btn-secondary" (click)="limpiar()" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg> Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── KPIs ──────────────────────────────────────────── -->
+  @if (totalElements() > 0) {
+    <div class="kpi-row">
+      <div class="kpi-card kpi-puntos">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Total Puntos (pág.)</div>
+        <div class="kpi-value">{{ totalPuntos() | number:'1.0-0' }}<span class="kpi-unit"> pts.</span></div>
+      </div>
+      <div class="kpi-card kpi-cant">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Cantidad</div>
+        <div class="kpi-value">{{ totalElements() | number }}</div>
+      </div>
+    </div>
+  }
+
+  <div class="card tabla-card">
+    @if (loading()) {
+      <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+    }
+    @if (!loading() && items().length === 0) {
+      <div class="table-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>No se encontraron canjes</p>
+      </div>
+    }
+    @if (!loading() && items().length > 0) {
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead>
+            <tr>
+              <th>Cód.</th><th>Nro Canje</th><th>Estado</th><th>Sucursal</th>
+              <th>Anulado</th><th>Cliente</th><th>Puntos</th>
+              <th>Fecha</th><th>F. Anulación</th>
+              <th class="th-acciones th-acciones-sticky">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.codCanje) {
+              <tr [class.row-anulado]="item.anulado">
+                <td><code>{{ item.codCanje }}</code></td>
+                <td>{{ item.nroCanje }}</td>
+                <td><span class="badge" [class]="'badge-'+(item.estado==='CONFIRMADO'?'success':item.estado==='PENDIENTE'?'warning':item.anulado?'danger':'secondary')">{{ item.estado }}</span></td>
+                <td>{{ item.codSucursalErp ?? '—' }}</td>
+                <td class="text-center">
+                  @if (item.anulado) { <span class="badge badge-danger">Sí</span> }
+                  @else { <span class="badge badge-success">No</span> }
+                </td>
+                <td>{{ item.cliente?.concatDocNombre ?? item.cliente?.razonSocial ?? '—' }}</td>
+                <td class="text-right"><strong>{{ item.puntos | number:'1.0-0' }}</strong></td>
+                <td>{{ item.fechaCanje | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ item.fechaAnulacion ? (item.fechaAnulacion | date:'dd/MM/yy') : '—' }}</td>
+                <td class="td-acciones td-acciones-sticky">
+                  <a [routerLink]="['/canjes-lista/id', item.codCanje]" class="btn-accion btn-editar" title="Ver detalles">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </a>
+                  @if (isAdmin() && !item.anulado) {
+                    <button class="btn-accion btn-eliminar" title="Anular" (click)="solicitarAnular(item)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                      </svg>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar">
+        <span class="pagination-info">
+          Página {{ currentPage() + 1 }} de {{ totalPages() }} &nbsp;·&nbsp; {{ totalElements() }} registros
+        </span>
+        <div class="pagination-controls">
+          <button class="pag-btn" [disabled]="currentPage() === 0" (click)="goToPage(currentPage()-1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          @for (p of pageNumbers(); track $index) {
+            @if (p === '...') { <span class="pag-ellipsis">…</span> }
+            @else { <button class="pag-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ +p+1 }}</button> }
+          }
+          <button class="pag-btn" [disabled]="currentPage() >= totalPages()-1" (click)="goToPage(currentPage()+1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>
+
+<!-- ── Modal Anular ──────────────────────────────────── -->
+@if (showAnularModal()) {
+  <div class="modal-overlay" (click)="showAnularModal.set(false)">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header"><h3>Anular Canje #{{ canjeAnular()?.codCanje }}</h3></div>
+      <div class="modal-body">
+        <p>¿Está seguro que desea anular este canje?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showAnularModal.set(false)">Cancelar</button>
+        <button class="btn btn-danger" (click)="confirmarAnular()" [disabled]="anulando()">
+          @if (anulando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+          Anular
+        </button>
+      </div>
+    </div>
+  </div>
+}

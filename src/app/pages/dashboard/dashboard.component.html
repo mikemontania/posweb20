@@ -1,0 +1,301 @@
+<!-- ── Filtros ─────────────────────────────────────────────── -->
+<div class="dash-header">
+  <h1 class="page-title">Dashboard</h1>
+
+  <div class="dash-filters card">
+    <div class="filters-row">
+
+      <div class="filter-group">
+        <label class="form-label">Fecha Desde</label>
+        <input type="date" class="form-control" [(ngModel)]="fechaDesde" [max]="fechaHasta"/>
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Fecha Hasta</label>
+        <input type="date" class="form-control" [(ngModel)]="fechaHasta" [min]="fechaDesde" [max]="today"/>
+      </div>
+
+      @if (!isCajero()) {
+        <div class="filter-group filter-wide">
+          <label class="form-label">Sucursal</label>
+          <app-select-search
+            [items]="sucursales()"
+            bindLabel="nombreSucursal"
+            bindValue="codSucursal"
+            placeholder="Todas las sucursales"
+            [selected]="sucursalSelObj()"
+            (changed)="onSucursalChange($any($event))"
+          />
+        </div>
+
+        @if (usuarios().length > 0) {
+          <div class="filter-group filter-wide">
+            <label class="form-label">Usuario</label>
+            <app-select-search
+              [items]="usuarios()"
+              bindLabel="nombrePersona"
+              bindValue="codUsuario"
+              placeholder="Todos los usuarios"
+              [selected]="usuarioSelObj()"
+              (changed)="onUsuarioChange($any($event))"
+            />
+          </div>
+        }
+      }
+
+      <div class="filter-group filter-action">
+        <label class="form-label">&nbsp;</label>
+        <button class="btn btn-primary" (click)="buscar()" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+          } @else {
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          }
+          Buscar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── KPI Cards ─────────────────────────────────────────────── -->
+@if (cargado()) {
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--blue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Total Facturado</span>
+        <span class="kpi-value">GS. {{ formatGs(totalSucursalImporte()) }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--green">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 12l2 2 4-4"/><path d="M5 7a7 7 0 1 0 14 0A7 7 0 0 0 5 7"/>
+        </svg>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Cant. Ventas</span>
+        <span class="kpi-value">{{ formatGs(totalSucursalVentas()) }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--amber">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Total Cobrado</span>
+        <span class="kpi-value">GS. {{ formatGs(totalMedioPagoImporte()) }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--purple">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Vendedores activos</span>
+        <span class="kpi-value">{{ resUsuario().length }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Fila 1: Sucursal + Medio de Pago ────────────────── -->
+  <div class="dash-grid">
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Resumen por Sucursal</span>
+        <div class="tipo-toggle">
+          <button [class.active]="tipoSucursal()==='importe'" (click)="tipoSucursal.set('importe')">Importe</button>
+          <button [class.active]="tipoSucursal()==='cantidad'" (click)="tipoSucursal.set('cantidad')">Ventas</button>
+        </div>
+      </div>
+      <app-chart-bar
+        [labels]="chartSucursal().labels"
+        [datasets]="chartSucursal().datasets"
+        [horizontal]="true"
+        [height]="240"
+      />
+      <div class="card-footer-stats">
+        <span>Total: <strong>GS. {{ formatGs(totalSucursalImporte()) }}</strong></span>
+        <span>Ventas: <strong>{{ totalSucursalVentas() }}</strong></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Medios de Pago</span>
+        <div class="tipo-toggle">
+          <button [class.active]="tipoMedioPago()==='importe'" (click)="tipoMedioPago.set('importe')">Importe</button>
+          <button [class.active]="tipoMedioPago()==='cantidad'" (click)="tipoMedioPago.set('cantidad')">Cantidad</button>
+        </div>
+      </div>
+      <app-chart-pie
+        [labels]="chartMedioPago().labels"
+        [data]="chartMedioPago().data"
+        [donut]="true"
+        [height]="240"
+      />
+      <div class="card-footer-stats">
+        <span>Total cobrado: <strong>GS. {{ formatGs(totalMedioPagoImporte()) }}</strong></span>
+        <span>Cobranzas: <strong>{{ totalMedioPagoQty() }}</strong></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Fila 2: Vendedores + Top Productos ──────────────── -->
+  <div class="dash-grid">
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Vendedores</span>
+        <div class="dash-controls">
+          <div class="tipo-toggle">
+            <button [class.active]="tipoUsuario()==='importe'" (click)="tipoUsuario.set('importe')">Importe</button>
+            <button [class.active]="tipoUsuario()==='cantidad'" (click)="tipoUsuario.set('cantidad')">Ventas</button>
+          </div>
+          <select class="form-control form-control-sm" [(ngModel)]="limitTopValue">
+            @for (n of limites; track n) { <option [value]="n">Top {{ n }}</option> }
+          </select>
+        </div>
+      </div>
+      <app-chart-bar
+        [labels]="chartUsuario().labels"
+        [datasets]="chartUsuario().datasets"
+        [horizontal]="true"
+        [height]="280"
+      />
+      <div class="card-footer-stats">
+        <span>Total: <strong>GS. {{ formatGs(totalUsuarioImporte()) }}</strong></span>
+        <span>Ventas: <strong>{{ totalUsuarioVentas() }}</strong></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Top Productos</span>
+        <div class="dash-controls">
+          <div class="tipo-toggle tipo-toggle--4">
+            <button [class.active]="tipoProductos()==='importe'" (click)="tipoProductos.set('importe')">Importe</button>
+            <button [class.active]="tipoProductos()==='cantidad'" (click)="tipoProductos.set('cantidad')">Cant.</button>
+            <button [class.active]="tipoProductos()==='ventas'" (click)="tipoProductos.set('ventas')">Ventas</button>
+            <button [class.active]="tipoProductos()==='peso'" (click)="tipoProductos.set('peso')">Peso</button>
+          </div>
+        </div>
+      </div>
+      <app-chart-bar
+        [labels]="chartProductos().labels"
+        [datasets]="chartProductos().datasets"
+        [horizontal]="true"
+        [height]="280"
+      />
+      <div class="card-footer-stats">
+        <span>Total: <strong>GS. {{ formatGs(totalProductosImporte()) }}</strong></span>
+        <span>Productos: <strong>{{ topProductos().length }}</strong></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Fila 3: Top Clientes + Reparto ──────────────────── -->
+  <div class="dash-grid">
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Top Clientes</span>
+        <div class="tipo-toggle">
+          <button [class.active]="tipoClientes()==='importe'" (click)="tipoClientes.set('importe')">Importe</button>
+          <button [class.active]="tipoClientes()==='cantidad'" (click)="tipoClientes.set('cantidad')">Ventas</button>
+        </div>
+      </div>
+      <app-chart-bar
+        [labels]="chartClientes().labels"
+        [datasets]="chartClientes().datasets"
+        [horizontal]="true"
+        [height]="280"
+      />
+      <div class="card-footer-stats">
+        <span>Total: <strong>GS. {{ formatGs(totalClientesImporte()) }}</strong></span>
+        <span>Clientes: <strong>{{ topClientes().length }}</strong></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Resumen Reparto</span>
+        <div class="tipo-toggle">
+          <button [class.active]="tipoReparto()==='importe'" (click)="tipoReparto.set('importe')">Importe</button>
+          <button [class.active]="tipoReparto()==='cantidad'" (click)="tipoReparto.set('cantidad')">Ventas</button>
+        </div>
+      </div>
+      <app-chart-bar
+        [labels]="chartReparto().labels"
+        [datasets]="chartReparto().datasets"
+        [horizontal]="true"
+        [height]="280"
+      />
+    </div>
+
+  </div>
+
+  <!-- ── Fila 4: Canales ─────────────────────────────────── -->
+  @if (resCanal().length > 0) {
+    <div class="dash-grid dash-grid--single">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Canales de Venta</span>
+          <div class="tipo-toggle">
+            <button [class.active]="tipoCanal()==='importe'" (click)="tipoCanal.set('importe')">Importe</button>
+            <button [class.active]="tipoCanal()==='cantidad'" (click)="tipoCanal.set('cantidad')">Clientes</button>
+          </div>
+        </div>
+        <app-chart-pie
+          [labels]="chartCanal().labels"
+          [data]="chartCanal().data"
+          [donut]="false"
+          [height]="260"
+        />
+      </div>
+    </div>
+  }
+
+} @else if (!loading()) {
+  <!-- Estado inicial -->
+  <div class="dash-empty">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+    <p>Seleccioná un rango de fechas y presioná <strong>Buscar</strong></p>
+  </div>
+}
+
+@if (loading()) {
+  <div class="dash-loading">
+    <div class="dash-grid">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="card skeleton-card">
+          <div class="skeleton" style="height:18px;width:40%;margin-bottom:1rem"></div>
+          <div class="skeleton" style="height:240px"></div>
+        </div>
+      }
+    </div>
+  </div>
+}

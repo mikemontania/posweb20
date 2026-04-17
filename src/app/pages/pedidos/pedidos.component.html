@@ -1,0 +1,309 @@
+<div class="pos-layout">
+
+  <!-- ══════════ IZQUIERDA — Pedido ══════════ -->
+  <aside class="pos-left" [class.tab-hidden]="tabActivo !== 'carrito'">
+
+    <!-- Cabecera — idéntica al ng12 -->
+    <div class="pos-header">
+      <div class="pos-header-left">
+        <span class="pos-icon">🛒</span>
+        <span class="pos-title">
+          {{ st.modoEdicion() ? 'Editando #' + st.pedidoEditando() : 'Pedido' }}
+        </span>
+      </div>
+      @if (st.cliente()?.listaPrecio) {
+        <span class="lp-badge"
+              [class.lp-emp]="st.cliente()!.listaPrecio.descripcion === 'EMPLEADOS'">
+          LISTA DE PRECIO: {{ st.cliente()!.listaPrecio.descripcion }}
+        </span>
+      }
+    </div>
+
+    <!-- Cliente — pos-cliente
+         buscarClick  = verificarPedido (lupa)
+         pedidoClick  = mostrarModalPedidos (lápiz / cargar pedido)
+         cuponClick / influencerClick no aplica en pedidos, ignorados
+    -->
+    <app-pos-cliente
+      [cliente]="st.cliente()"
+      [razonSocial]="st.razonSocial()"
+      [mostrar]="st.mostrarCliente()"
+      [clientes]="st.clientes()"
+      [mostrarCargarPedido]="true"
+      [mostrarCupon]="false"
+      [mostrarInfluencer]="false"
+      [mostrarNuevoCliente]="true"
+      [mostrarObservacion]="true"
+      (buscarClick)="onBuscarClick()"
+      (pedidoClick)="onPedidoClick()"
+      (nuevoClienteClick)="onNuevoCliente()"
+      (observacionClick)="onObservacion()"
+      (clienteSeleccionado)="onClienteSeleccionado($event)"/>
+
+    <!-- Sucursal + Canal — fiel al ng12 -->
+    @if (st.mostrarCliente()) {
+      <div class="pos-selectores">
+        <div class="sel-row">
+          <select class="sel" name="sucursal"
+                  [ngModel]="st.sucursal()?.codSucursal"
+                  (ngModelChange)="onSucursalChange(getSucursalById($event))">
+            @for (s of st.sucursales(); track s.codSucursal) {
+              <option [value]="s.codSucursal">{{ s.nombreSucursal }}</option>
+            }
+          </select>
+        </div>
+        <div class="sel-row">
+          <select class="sel" name="canal"
+                  [ngModel]="st.canal()?.codCanal"
+                  (ngModelChange)="onCanalChange(getCanalById($event))">
+            @for (c of st.canales(); track c.codCanal) {
+              <option [value]="c.codCanal">{{ c.descripcion }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+
+    <!-- Tabla detalles — pos-detalle -->
+    <div class="pos-detalle-container">
+      <app-pos-detalle
+        [ventaDetalles]="st.pedidoDetalles()"
+        [disabled]="st.deshabilitarBuscador()"
+        (restar)="onRestar($event)"
+        (quitar)="onQuitar($event)"
+        (agregarUno)="onAgregarUno($event)"/>
+    </div>
+
+    <!-- Tabla descuentos — fiel al ng12 (tabla visible cuando hay cliente) -->
+    @if (!st.deshabilitarBuscador() && st.hayDescuentos()) {
+      <div class="desc-tabla-wrap">
+        <table class="desc-tabla">
+          <thead>
+            <tr>
+              <th>Código</th><th>Descripción</th><th>Descuento</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of st.descuentos(); track $index) {
+              <tr>
+                <td>{{ d.codDescuento | number }}</td>
+                <td>{{ d.descripcion }}</td>
+                <td>{{ d.descuento | number }}%</td>
+                <td>
+                  <button class="btn-quitar" (click)="onQuitarDesc(d)" title="Eliminar">
+                    🗑
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- Totales — pos-totales (porcDescuentoOverride = fiel al ng12) -->
+    @if (!st.deshabilitarBuscador()) {
+      <app-pos-totales
+        [venta]="st.pedido()"
+        [porcDescuentoOverride]="st.porcentajeDescuento()"/>
+    }
+
+    <!-- Footer — fiel al ng12 -->
+    <div class="pos-footer">
+      <button class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+      <button class="btn-guardar"
+              (click)="onGuardar()"
+              [disabled]="st.guardando() || st.carritoVacio() || !st.pedido()">
+        @if (st.guardando()) { <span class="spinner-sm"></span> }
+        Guardar
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ══════════ DERECHA — Productos ══════════ -->
+  <section class="pos-right" [class.tab-hidden]="tabActivo !== 'catalogo'">
+    <app-pos-catalogo
+      [productos]="st.productos()"
+      [categorias]="st.categorias()"
+      [loading]="st.cargandoProds()"
+      [totalElementos]="st.totalElementos()"
+      [pagina]="st.pagina()"
+      [cantidadElementos]="st.cantidadElementos()"
+      [disabled]="st.deshabilitarBuscador()"
+      (productoClick)="onProductoClick($event)"
+      (pageChange)="onPageChange($event)"
+      (busquedaChange)="onBusquedaChange($event)"
+      (categoriaChange)="onCategoriaChange($event)"/>
+  </section>
+
+  <!-- ══════════ TABS MÓVIL ══════════ -->
+  <nav class="pos-tabs">
+    <button class="pos-tab-btn" [class.active]="tabActivo === 'catalogo'"
+            (click)="tabActivo = 'catalogo'">
+      📦 Productos
+    </button>
+    <button class="pos-tab-btn" [class.active]="tabActivo === 'carrito'"
+            (click)="tabActivo = 'carrito'">
+      🛒 Pedido
+      @if (st.pedidoDetalles().length > 0) {
+        <span class="pos-tab-badge">{{ st.pedidoDetalles().length }}</span>
+      }
+    </button>
+  </nav>
+</div>
+
+<!-- ══════════ COBRANZA — pos-cobranza ══════════ -->
+<app-pos-cobranza
+  [open]="st.oculto() === ''"
+  [venta]="st.pedido()"
+  [medioPago]="st.medioPago()"
+  [tipoMedioPago]="st.tipoMedioPago()"
+  [bancos]="st.bancos()"
+  [clientePref]="st.cliente()"
+  (guardar)="onGuardarCobranza($event)"
+  (cerrar)="onCerrarCobranza()"/>
+
+<!-- ══════════ MODAL OBSERVACIÓN — fiel al ng12 ══════════ -->
+@if (st.mostrarModal()) {
+  <div class="modal-overlay" (click)="onCerrarObs()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Cargar Observación</h3>
+        <button class="modal-close" (click)="onCerrarObs()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control"
+               [ngModel]="st.pedido()?.observacion ?? ''"
+               (ngModelChange)="st.patchPedido({ observacion: $event?.toUpperCase() })"
+               name="observacion" placeholder="Observación..."/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="onCerrarObs()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ══════════ MODAL CREAR CLIENTE — fiel al ng12 ══════════ -->
+@if (st.modalCliente() === '') {
+  <div class="modal-overlay" (click)="f.cerrarModalCliente()">
+    <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Crear nuevo cliente</h3>
+        <button class="modal-close" (click)="f.cerrarModalCliente()">✕</button>
+      </div>
+      <div class="modal-body">
+        <app-clientes-form/>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ══════════ MODAL CARGAR PEDIDO — fiel al ng12 ══════════ -->
+@if (st.modalPedidos() === '') {
+  <div class="modal-overlay" (click)="onCancelarPedidos()">
+    <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Pedidos</h3>
+        <button class="modal-close" (click)="onCancelarPedidos()">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Filtros — fiel al ng12 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">F.Desde</label>
+            <input type="date" class="form-control" name="fi"
+                   [ngModel]="st.fechaInicio()"
+                   (ngModelChange)="st.fechaInicio.set($event)"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha Hasta</label>
+            <input type="date" class="form-control" name="ff"
+                   [ngModel]="st.fechaFin()"
+                   (ngModelChange)="st.fechaFin.set($event)"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex:1">
+            <label class="form-label">Cliente</label>
+            <app-select-search
+              placeholder="Buscar cliente..."
+              [items]="st.clientes()"
+              bindLabel="concatDocNombre"
+              (search)="f.buscarClientes($event)"
+              (changed)="onSeleccionCliente($event)"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nro pedido</label>
+            <input type="number" class="form-control" name="np" min="0"
+                   [ngModel]="st.nroPedido()"
+                   (ngModelChange)="st.nroPedido.set($event)"/>
+          </div>
+          <div class="form-group" style="align-self:flex-end">
+            <button class="btn btn-primary" (click)="onBuscarPedido()">
+              🔍 Buscar
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla — fiel al ng12: Nro | R.Social | SubTotal | ImpTotal | Tipo | Fecha | Desc% | Editar -->
+        @if (st.listaPedidos().length === 0) {
+          <p class="sin-resultados">Sin resultados.</p>
+        } @else {
+          <div class="tabla-wrap">
+            <table class="tabla-modal">
+              <thead>
+                <tr>
+                  <th>Nro.</th>
+                  <th>R.Social</th>
+                  <th>Sub.Total</th>
+                  <th>Imp.Total</th>
+                  <th>Tipo</th>
+                  <th>Fecha</th>
+                  <th>Desc.%</th>
+                  <th>Editar</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of st.listaPedidos(); track p.codPedido) {
+                  <tr>
+                    <td>{{ p.nroPedido?.toString()?.padStart(8, '0') }}</td>
+                    <td>{{ p.cliente?.razonSocial }}</td>
+                    <td class="td-num">{{ p.subTotal | number }}</td>
+                    <td class="td-num">{{ p.importeTotal | number }}</td>
+                    <td>{{ p.tipoPedido }}</td>
+                    <td>{{ p.fechaPedido | date:'dd/MM/yy' }}</td>
+                    <td class="td-num">{{ p.porcDescuento | number }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-success" (click)="onEditarPedido(p)">
+                        ✏️
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginación -->
+          @if (pageNumsPedidos.length > 1) {
+            <div class="paginador-modal">
+              @for (n of pageNumsPedidos; track n) {
+                <button class="pg-btn"
+                        [class.active]="st.paginaPedido() === n"
+                        (click)="onPagePedidos(n)">
+                  {{ n }}
+                </button>
+              }
+            </div>
+          }
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="onCancelarPedidos()">cerrar</button>
+      </div>
+    </div>
+  </div>
+}

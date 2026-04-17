@@ -1,0 +1,189 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Movimientos de Stock Premios</h1>
+      @if (totalElements() > 0) {
+        <span class="page-count badge badge-primary">{{ totalElements() }} registros</span>
+      }
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card" style="padding:1rem 1.25rem;margin-bottom:1rem">
+    <div class="form-grid-2" style="max-width:860px">
+      <div class="form-group">
+        <label class="form-label">Fecha Desde</label>
+        <input type="date" class="form-control"
+          [ngModel]="fechaDesde()" (ngModelChange)="fechaDesde.set($event)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha Hasta</label>
+        <input type="date" class="form-control"
+          [ngModel]="fechaHasta()" (ngModelChange)="fechaHasta.set($event)"/>
+      </div>
+      @if (isAdmin()) {
+        <div class="form-group">
+          <label class="form-label">Sucursal</label>
+          <app-select-search [items]="sucursales()" bindLabel="nombreSucursal"
+            bindValue="codSucursal" placeholder="Todas"
+            [selected]="selSucursal()" (changed)="selSucursal.set($any($event))"/>
+        </div>
+      }
+      <div class="form-group">
+        <label class="form-label">Movimiento</label>
+        <app-select-search [items]="operaciones" bindLabel="descripcion"
+          bindValue="id" placeholder="Todos"
+          [selected]="selOperacion()" (changed)="selOperacion.set($any($event))"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nº Comprobante</label>
+        <input type="text" class="form-control" placeholder="xxx-xxx-xxxxxxx"
+          [ngModel]="nroComprobante()" (ngModelChange)="nroComprobante.set($event)"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:.5rem">
+      <button class="btn btn-primary" (click)="buscar()" [disabled]="loading()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Buscar
+      </button>
+      <button class="btn btn-secondary" (click)="limpiar()" [disabled]="loading()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Limpiar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card tabla-card">
+    @if (loading()) {
+      <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+    }
+    @if (!loading() && items().length === 0) {
+      <div class="table-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>No se encontraron movimientos</p>
+      </div>
+    }
+    @if (!loading() && items().length > 0) {
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Código</th>
+              <th>Operación</th>
+              <th>Sucursal</th>
+              <th>Usuario</th>
+              <th>Fecha</th>
+              <th class="text-right">Ítems</th>
+              <th>N° Comprobante</th>
+              <th class="th-acciones th-acciones-sticky">Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.codStockPremioCab; let i = $index) {
+              <tr>
+                <td>{{ currentPage() * 20 + i + 1 }}</td>
+                <td><code>{{ item.codStockPremioCab }}</code></td>
+                <td><span [class]="badgeClass(item.operacion)">{{ item.operacion }}</span></td>
+                <td>{{ item.sucursal?.nombreSucursal ?? ('Suc. ' + item.codSucursal) }}</td>
+                <td>{{ item.usuario }}</td>
+                <td>{{ item.fecha | date:'dd/MM/yyyy' }}</td>
+                <td class="text-right">{{ item.cantidadItems | number }}</td>
+                <td>{{ item.nroComprobante || '—' }}</td>
+                <td class="td-acciones td-acciones-sticky">
+                  <button class="btn-accion btn-editar" title="Ver detalle" (click)="verDetalle(item)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+                      <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+                      <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination-bar">
+        <span class="pagination-info">
+          Página {{ currentPage() + 1 }} de {{ totalPages() }}
+          &nbsp;·&nbsp; {{ totalElements() }} registros
+        </span>
+        <div class="pagination-controls">
+          <button class="pag-btn" [disabled]="currentPage() === 0"
+                  (click)="goToPage(currentPage() - 1)" title="Anterior">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          @for (p of pageNumbers(); track $index) {
+            @if (p === '...') {
+              <span class="pag-ellipsis">…</span>
+            } @else {
+              <button class="pag-btn" [class.active]="p === currentPage()"
+                      (click)="goToPage(p)">{{ +p + 1 }}</button>
+            }
+          }
+          <button class="pag-btn" [disabled]="currentPage() >= totalPages() - 1"
+                  (click)="goToPage(currentPage() + 1)" title="Siguiente">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>
+
+<!-- Modal Detalle -->
+@if (showDetalle()) {
+  <div class="modal-overlay" (click)="showDetalle.set(false)">
+    <div class="modal-box" style="max-width:560px" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Detalle del Movimiento</h3>
+      </div>
+      <div class="modal-body">
+        @if (detalleLineas().length === 0) {
+          <p style="color:var(--text-muted);text-align:center">Sin detalles</p>
+        } @else {
+          <div class="table-responsive">
+            <table class="table tabla-parametros">
+              <thead>
+                <tr>
+                  <th>#</th><th>Premio</th><th>Operación</th><th class="text-right">Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (det of detalleLineas(); track $index; let i = $index) {
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ det.premio?.descripcion }}</td>
+                    <td>
+                      <span [class]="badgeClass(det.operacion)">{{ det.operacion }}</span>
+                    </td>
+                    <td class="text-right">{{ det.cantidad | number }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showDetalle.set(false)">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}

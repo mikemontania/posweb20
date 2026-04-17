@@ -1,0 +1,5 @@
+ <ng-select [items]="vendedores" (search)="onSearch($event)" placeholder="Seleccione vendedor" (change)="selectedItem($event)" notFoundText="No se ha encontrado vendedor" bindLabel="concatDocNombre" [(ngModel)]="cargadorVendedor">
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <b [ngOptionHighlight]="search">{{item.concatDocNombre}}</b>
+    </ng-template>
+</ng-select>

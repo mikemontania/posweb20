@@ -1,0 +1,289 @@
+<!-- ======================================================================================================================================================================================================================================================= -->
+<div class="row animated ventas-fila">
+  <!--  ===========================================================Canje====================================== -->
+  <aside class="col-lg-5">
+    <div class="card">
+      <div class="card-header label-themecolor  d-inline">
+        <h4 class="text-white">Canje&nbsp;<i class="fa fa-lg fa-fw fa-shopping-cart" aria-hidden="true"></i>
+        </h4>
+      </div>
+      <div class="card-body ventas-tarjeta-body" align="center">
+        <div class="ventas-contenedor-body-30">
+          <div class="input-group mb-4" [hidden]="mostrarCliente">
+            <ng-select-clientes #searchClientes id="ngbdtypeaheadClientes" [cargadorCliente]="cliente"
+              style="width: 100%" name="cliente" (retornoObjeto)="seleccionarCliente($event)"></ng-select-clientes>
+          </div>
+          <div class="input-group" [hidden]="!mostrarCliente">
+          </div>
+          <div class="form-group" [hidden]="!mostrarCliente">
+            <div class="col-md-12 text-center">
+              <button class="btn btn-secondary" data-toggle="tooltip" title="Buscar cliente" type="button"
+                (click)="verificarcanje()"><i class="fa fa-search"></i>Buscar cliente
+              </button>
+            </div>
+          </div>
+          <form>
+            <div class="form-group row">
+              <label for="razonSocial" class="col-sm-2 col-form-label">Cliente:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="razonSocial" placeholder="RazonSocial" *ngIf="cliente"
+                  disabled='true' [(ngModel)]="cliente.concatDocNombre">
+                <input type="text" class="form-control" name="razonSocial" placeholder="RazonSocial" *ngIf="!cliente"
+                  disabled='true'>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="telefono" class="col-sm-2 col-form-label">Tel/Cel:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="telefono" placeholder="telefono" *ngIf="cliente"
+                  [(ngModel)]="cliente.telefono" disabled='true'>
+                <input type="text" class="form-control" name="telefono" placeholder="telefono" *ngIf="!cliente"
+                  disabled='true'>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="puntos" class="col-sm-2 col-form-label">Puntos:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="puntos" placeholder="puntos" [(ngModel)]="cliente.puntos"
+                  *ngIf="cliente" disabled='true'>
+                <input type="text" class="form-control" name="puntos" placeholder="puntos" *ngIf="!cliente"
+                  disabled='true'>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="table-responsive">
+          <div class="scrollable-content" style="min-height: 300px; max-height: 300px; overflow: scroll; height: yz;"
+            #scrollBody [scrollTop]="scrollBody.scrollHeight">
+            <table class="table  table-bordered">
+              <thead>
+                <tr class="small text-uppercase">
+                  <th scope="col">Premio</th>
+                  <th scope="col" width="100">Cantidad</th>
+                  <th scope="col" width="100">Puntos</th>
+                  <th scope="col" width="100">Total</th>
+                  <th scope="col" class="d-none d-md-block" width="50"><i class="fa fa-trash"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of canjeDetalle">
+                  <td>{{item.premio.codPremioErp}} -{{item.premio.descripcion}}</td>
+                  <td>
+                    <div class="btn-group center" role="group">
+                      <button type="button" align="left" (click)="restarPremio(item)"
+                        class=" btn btn-secondary btn-sm"><i class="fa fa-minus"></i></button>
+                      <span align="center">&nbsp;{{item.cantidad | number }}&nbsp;</span>
+                      <button type="button" align="right" (click)="seleccionarPremio(item.premio)"
+                        class=" btn btn-secondary btn-sm"><i class="fa fa-plus"></i></button>
+                    </div>
+                  </td>
+                  <td>{{item.puntos | number}}</td>
+                  <td>{{item.totalPuntos | number}}</td>
+                  <td>
+                    <button (click)="quitarPremioCompleto(item)" class="btn btn-danger btn-sm center" title="eliminar">
+                      <i class="fa fa-trash-o"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <table class="table  table-hover" *ngIf="cliente">
+            <tbody>
+              <tr>
+                <td> <b>Total puntos Cliente</b> </td>
+                <td>: <b>{{cliente.puntos| number}} </b> </td>
+              </tr>
+              <tr>
+                <td> <b>Puntos a descontar</b> </td>
+                <td>: <b>{{canje.puntos | number}} </b>
+                </td>
+              </tr>
+              <tr class="alert alert-warning" *ngIf="(cliente.puntos - canje.puntos) == 0">
+                <td> <b>Puntos sobrantes</b> </td>
+                <td> 0 </td>
+              </tr>
+              <tr class="alert alert-success" *ngIf="(cliente.puntos - canje.puntos) > 0">
+                <td> <b>Puntos sobrantes</b> </td>
+                <td>: <b>{{ cliente.puntos - canje.puntos | number}}</b> </td>
+              </tr>
+              <tr class="alert alert-danger" *ngIf="(cliente.puntos - canje.puntos) < 0">
+                <td> <b>Puntos sobrantes</b> </td>
+                <td>: <b>{{ cliente.puntos - canje.puntos | number}}</b> </td>
+              </tr>
+
+            </tbody>
+          </table>
+          <table class="table  table-hover" *ngIf="!cliente">
+            <tbody>
+              <tr>
+                <td> <b>Total puntos Cliente</b> </td>
+                <td>: <b>0</b> </td>
+              </tr>
+              <tr>
+                <td> <b>Puntos a descontar</b> </td>
+                <td>: <b>0 </b>
+                </td>
+              </tr>
+              <tr>
+                <td> <b>Puntos sobrantes</b> </td>
+                <td> 0 </td>
+              </tr>
+
+
+            </tbody>
+          </table>
+          <div align="right">
+            <br>
+            <button type="submit" data-toggle="modal" data-target=".cobranza-modal" style="margin-right: 0.2rem;"
+              class="btn btn-info text-white" (click)="guardarcanje()">Guardar</button>
+            <button type="submit" class="btn btn-secondary" (click)="limpiar()">Cancelar</button>
+          </div>
+        </div>
+        <!--table responsive-->
+      </div>
+    </div>
+  </aside>
+
+  <!--  ===========================================================Premio====================================== -->
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header label-themecolor">
+        <h4 class=" text-white">Premios({{totalElementos}})</h4>
+      </div>
+      <div class="card-body ventas-tarjeta-body">
+        <div class="ventas-contenedor-body-30 row">
+
+          <div class="col-xl-12  form-inline">
+            <label class="small text-uppercase my-1">Filtrar por puntos&nbsp;</label>
+          </div>
+          <div class="mt-3 mb-3 col-xl-12  form-inline">
+            <label class="small text-uppercase my-1">Desde: &nbsp;</label>
+            <input onclick="this.puntosDesde=''" type="number" class="form-control" name="puntosDesde" id="puntosDesde"
+              [(ngModel)]="puntosDesde" min="1">
+            <label class="small text-uppercase my-1"> &nbsp; Hasta: &nbsp; </label>
+            <input onclick="this.puntosHasta=''" type="number" class="form-control" name="puntosHasta" id="puntosHasta"
+              [(ngModel)]="puntosHasta" min="1">
+            <label class="small text-uppercase my-1"> &nbsp;Articulo: &nbsp;</label>
+            <input type="text" class="form-control" [(ngModel)]="textoBusqueda" name="descripcion"
+              #descripcion="ngModel" (ngModelChange)="textoBusqueda =toUpeCaseEvent($event)"
+              placeholder="Buscar articulo">&nbsp;&nbsp;
+            <button class="btn btn-secondary" data-toggle="tooltip" title="Buscar cliente" type="button"
+              (click)="buscarPremio(textoBusqueda)"><i class="fa fa-search"></i> <span> Buscar </span>
+            </button>
+          </div>
+        </div>
+
+
+        <div *ngIf="premios?.length == 0" class="alert alert-info">
+          No se han encontrado registros ...
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+          <div class="col-sm-12">
+            <div class="alert alert-info text-center">
+              <strong>Cargando ...</strong>
+              <br>
+              <i class="fa fa-refresh fa-spin fa-2x"></i>
+              <br>
+              <span>Espere por favor</span>
+            </div>
+          </div>
+        </div>
+
+        <perfect-scrollbar class="scroll-container" style="position: relative; max-width: 100%; max-height: 600px;"
+          [scrollIndicators]="true">
+          <div class="container">
+            <div class="row mr-0">
+              <div class=" box-product col-lg-3 col-md-4 col-6 pointer" *ngFor="let premio of premios"
+                (click)="seleccionarPremio(premio)">
+
+                <img *ngIf="!premio.img" [src]="sinImagen" class="img-producto80 mt-3">
+                <img *ngIf="premio.img" [attr.src]="premio.img | imagen:'premios' | async" class="img-producto80 mt-3">
+                <br>
+                <!--   <span class="product-card-body ellipsis-title">
+                  {{premio.codPremioErp}} - {{premio.descripcion}}
+                  Puntos:  {{premio.puntos | number}}
+                </span> -->
+                <span class="product-card-body ">
+                  <p style="font-size: 10px;">
+                    {{premio.codPremioErp}} - {{premio.descripcion}}
+                  </p>
+                  <p style="font-size: 10px;">
+                    {{premio.puntos | number}} puntos
+                  </p>
+                </span>
+
+              </div>
+            </div> <!-- /.row -->
+          </div>
+          <!-- /.container -->
+        </perfect-scrollbar>
+        <div class="table table-responsive container-fluid" *ngIf="!deshabilitarBuscador">
+          <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="premios?.length>0" [size]="size"
+            [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+            [maxSize]="3" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+          </ngb-pagination>
+        </div>
+        <!--card ventas-contenedor-->
+      </div>
+
+    </div>
+  </div>
+  <!--col-lg-7-->
+</div>
+
+
+<!--  ==================================================Cliente=========================================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="modalCliente">
+  <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white">Crear nuevo cliente</h4>
+          <!--    <button (click)="cerrarModalCliente()" type="button" class="close" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                              </button> -->
+          <button type="button" (click)="cerrarModalCliente()" class="btn btn-secondary waves-effect waves-light"><i
+              class="fa  fa-arrow-circle-left"></i>
+            <!-- Atrás -->
+            Volver
+          </button>
+        </div>
+        <div class="modal-body">
+          <form-cliente></form-cliente>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  ===========================================================Modal Cobranzas====================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="oculto">
+  <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white">Cobranza</h4>
+        </div>
+        <perfect-scrollbar class="scroll-container" style="position: relative; max-height: 600px;"
+          [scrollIndicators]="true">
+          <div class="scrollable-content">
+            <div class="modal-body" *ngIf="oculto == '' ">
+
+              <div class="modal-footer">
+
+              </div>
+            </div>
+          </div>
+        </perfect-scrollbar>
+      </div>
+    </div>
+  </div>
+</div>

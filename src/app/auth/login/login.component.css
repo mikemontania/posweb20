@@ -1,0 +1,146 @@
+.login-bg {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-page);
+  padding: 1rem;
+}
+
+.login-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Logo con imágenes reales */
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+
+.login-logo-icon {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.login-logo-text-img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  /* logo-mb-ps2 tiene texto negro — adaptar a tema */
+  filter: var(--logo-filter, none);
+}
+
+/* Temas oscuros → invertir el logo de texto negro a blanco */
+[data-theme="dark-blue"]   .login-logo-text-img,
+[data-theme="dark-gold"]   .login-logo-text-img,
+[data-theme="dark-teal"]   .login-logo-text-img,
+[data-theme="dark-purple"] .login-logo-text-img,
+[data-theme="dark-red"]    .login-logo-text-img,
+[data-theme="graphite"]    .login-logo-text-img {
+  filter: brightness(0) invert(1);
+}
+
+.login-subtitle {
+  font-size: .8125rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+/* Input con ícono */
+.input-wrapper {
+  position: relative;
+}
+.input-icon {
+  position: absolute;
+  left: .75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  display: flex;
+}
+.input-action {
+  position: absolute;
+  right: .375rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px; height: 30px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition);
+}
+.input-action:hover { color: var(--text-primary); }
+
+.input-with-icon { padding-left: 2.5rem; }
+.input-with-action { padding-right: 2.5rem; }
+
+/* Checkbox personalizado */
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  user-select: none;
+}
+.remember-check { display: none; }
+.remember-box {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+.remember-check:checked + .remember-box {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.remember-check:checked + .remember-box::after {
+  content: '';
+  display: block;
+  width: 9px; height: 5px;
+  border: 2px solid white;
+  border-top: none;
+  border-right: none;
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+/* Botón login */
+.btn-login {
+  width: 100%;
+  height: 44px;
+  font-size: .9375rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  gap: .5rem;
+}
+.btn-login:disabled { opacity: .7; cursor: not-allowed; }
+
+@media (max-width: 420px) {
+  .login-card { padding: 2rem 1.25rem; }
+  .login-logo-text-img { height: 22px; }
+}

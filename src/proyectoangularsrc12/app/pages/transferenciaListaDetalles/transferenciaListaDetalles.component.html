@@ -1,0 +1,188 @@
+<!-- ============================================================== -->
+<!--                          Transferencia                                 -->
+<!-- ============================================================== -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <h4 class="card-title"><span class="lstick"></span>Transferencia</h4>
+                    <div class="btn-group ml-auto m-t-10">
+                        <button class="btn btn-success btn-rounded" (click)="atras()" type="button">
+                            <i class="fa  fa-arrow-circle-left"></i> Atrás
+                        </button>
+                    </div>
+                </div>
+
+                <div class="align-self-center">
+                    <div class="table-responsive m-t-20">
+                        <table class="table vm no-th-brd no-wrap pro-of-month" *ngIf="transferencia">
+                            <thead>
+                                <tr>
+                                    <th>Codigo</th>
+                                    <th>Usuario</th>
+                                    <th>Comprobante</th>
+                                     <th>Fecha</th>
+                                     <th>F. Creación</th>
+                                     <th>D.Emisor</th>
+                                    <th>D.Receptor</th>
+                                    <th>Motivo</th>
+                                    <th>T.Productos</th>
+                                    <th>T. Transferencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {{ transferencia.codTransferencia }}
+                                    </td>
+                                    <td>
+                                        <h6>{{transferencia.codUsuarioCreacion}}</h6><small
+                                            class="text-muted">{{ transferencia.usuario }}</small>
+                                    </td>
+                                    <td>
+                                        <h6>{{ transferencia.nroComprobante }}</h6> 
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ transferencia.fecha | date:'dd/MM/yyyy' }}
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ transferencia.fechaCreacion | date:'dd/MM/yyyy, h:mm a' }}
+                                        </h6>
+                                    </td>
+                                    
+
+                                    <td>
+                                        <h6>
+                                            {{ transferencia.depositoEmisor.nombreDeposito }}  
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ transferencia.depositoReceptor.nombreDeposito }} 
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ transferencia.motivoTransferencia.descripcion }}  
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ transferencia.totalProducto | number }}  
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ transferencia.totalTransferencia | number }}  
+                                        </h6>
+                                    </td>
+ 
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================== -->
+<!--                    Detalles de transferencia                           -->
+<!-- ============================================================== -->
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <h4 class="card-title"><span class="lstick"></span>Detalles</h4>
+                    <!--   <div class="btn-group ml-auto m-t-10">
+                        <button class="btn btn-success btn-rounded" (click)="atras()" type="button">
+                            <i class="fa  fa-arrow-circle-left"></i> 
+                        </button>
+                    </div> -->
+                </div>
+                <perfect-scrollbar class="scroll-container"
+                    style="position: relative; max-width: 100%; max-height: 600px;" [scrollIndicators]="true">
+                    <div class="scrollable-content">
+                        <div class="table-responsive m-t-20">
+                            <table class="table vm no-th-brd no-wrap pro-of-month">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3">Producto</th>
+                                        <th>Unidad</th>
+                                        <th>Emisor inicio</th> 
+                                        <th>Receptor inicio</th> 
+                                        <th>Cantidad Transferencia</th>
+                                        <th>Emisor fin</th>
+                                        <th>Receptor fin</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detalle of detalles">
+                                        <td>
+                                            {{ detalle.nroItem }}
+                                        </td>
+                                        <!-- <td style="width:50px;">
+                                            <img *ngIf="detalle.producto.img" class="img-lista"
+                                                [attr.src]="detalle.producto.img | imagen:'productos' | async">
+                                            <img *ngIf="!detalle.producto.img" class="img-lista" [src]="sinImagen">
+                                        </td> -->
+                                        <td align="center" class="w70" align="center" style="background: white">
+                                            <img *ngIf="detalle.producto.img" [attr.src]="detalle.producto.img | imagen:'productos' | async" class="img-producto60" />
+                                            <img *ngIf="!detalle.producto.img" [src]="sinImagen" class="img-producto60">
+                                        </td>
+                                        <td>
+                                            <h6>{{ detalle.producto.codProductoErp }}</h6><small
+                                                class="text-muted">{{ detalle.producto.concatCodNombre }}</small>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.unidadMedida.nombreUnidad }}
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.emisorInicio | number }} 
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.receptorInicio | number }}  
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.cantidadTransferencia | number }}
+                                            </h6>
+                                        </td>
+                                       
+                                        <td>
+                                            <h6>
+                                                {{ detalle.emisorFin | number }}
+                                            </h6>
+                                        </td>
+                                       
+                                        <td>
+                                            <h6>
+                                                {{ detalle.receptorFin | number }}  
+                                            </h6>
+                                        </td>
+                                         
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </perfect-scrollbar>
+            </div>
+        </div>
+    </div>
+</div>

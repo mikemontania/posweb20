@@ -1,0 +1,6 @@
+<ng-select [items]="motivos" notFoundText="No se han encontrado motivos" [disabled]="disabled" placeholder="Seleccione motivo"
+ [(ngModel)]="cargadorMotivoTransferencia" bindLabel="descripcion" (change)="selectedItem($event)">
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <b [ngOptionHighlight]="search">{{item.descripcion}}</b>
+    </ng-template>
+</ng-select>

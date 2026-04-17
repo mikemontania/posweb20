@@ -1,0 +1,196 @@
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex">
+            <div>
+                <h3 class="card-title m-b-5 center"><span class="lstick"></span>Trasferencias</h3>
+            </div>
+        </div>
+
+        <form>
+            <div class="form-group row">
+
+                <div class="col-sm-4">
+                    <label for="emisor">Emisor</label>
+                    <ng-select-deposito #searchde id="selectdeposito" [cargadorDeposito]="cargadorDepositoEmisor"
+                        style="width: 100%"  [disabled]="disabledEmisor" name="emisor" (retornoObjeto)="seleccionarDepositoEmisor($event)">
+                    </ng-select-deposito>
+                </div>
+                <div class="col-sm-4">
+                    <label for="receptor">
+                        Receptor
+                    </label>
+                    <ng-select-deposito #searchdr id="selectdeposito" [cargadorDeposito]="cargadorDepositoReceptor"
+                        style="width: 100%"  [disabled]="disabledReceptor" name="receptor" (retornoObjeto)="seleccionarDepositoReceptor($event)">
+                    </ng-select-deposito>
+                </div>
+                <div class="col-sm-4">
+                    <label for="motivos">Motivo:</label>
+                    <ng-select-motivo-transferencia #searchde id="selectmotivo" [cargadorMotivoTransferencia]="cargadorMotivoTransferencia"
+                    style="width: 100%" [disabled]="disabledMotivo" name="motivos" (retornoObjeto)="seleccionarMotivo($event)">
+                </ng-select-motivo-transferencia>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-6 form-group button-group">
+
+                    <button class="btn    btn-info" type="button" (click)="guardar()">
+                        <i class="fa fa-check"></i>Guardar
+                    </button>
+                    <button class="btn   btn-success" type="button"*ngIf="mostrarDetalle == false" (click)="next()">
+                        <i class="fa fa-arrow-circle-rigth"></i>Siguiente
+                    </button>
+                    <button class="btn   btn-danger" type="button" (click)="limpiar()">
+                        <i class="fa fa-times"></i>Limpiar
+                    </button>
+                   
+
+                </div>
+                <div class="col-sm-6">
+
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex">
+            <div>
+                <h3 class="card-title m-b-5 center"><span class="lstick"></span>Detalles</h3>
+            </div>
+        </div>
+
+        <table class="table table-sm table-bordered " *ngIf="mostrarDetalle">
+            <thead>
+                <tr>
+
+                    <th style="width: 30%;">Producto</th>
+                    <th style="width: 10%;">Emisor inicio</th>
+                    <th style="width: 10%;">Cantidad Transferencia</th>
+                    <th style="width: 10%;">Receptor Inicio</th>
+                    <th style="width: 10%;">Emisor Fin</th>
+                    <th style="width: 10%;">Receptor Fin</th>
+                    <th style="width: 10%;">Agregar</th>
+                </tr>
+                <tr>
+                    <th style="width: 30%;">
+                        <ng-select [items]="stocksEmisor" notFoundText="No se han materiales con stock" placeholder="Seleccione material"
+                        [(ngModel)]="stockEmisor" name="estado" bindLabel="producto.nombreProducto" (clear)="clean()"
+                        (change)="seleccionarProducto($event)">
+                      </ng-select>
+                        
+                    </th>
+                    <th style="width: 10%;">
+                        <input type="number" class="form-control"disabled="true" name="emisorInicio" [(ngModel)]="emisorInicio">
+                    </th>
+                    <th style="width: 10%;">
+                        <input type="number" class="form-control" name="cantidadTransferencia"
+                            [(ngModel)]="cantidadTransferencia" #inputCantidad (keyup)="validarValor(inputCantidad.value)"   >
+                    </th>
+                   
+                    <th style="width: 10%;">
+                        <input type="number" class="form-control" disabled="true" name="receptorInicio" [(ngModel)]="receptorInicio">
+                    </th>
+                  
+                    <th style="width: 10%;">
+                        <input type="number" class="form-control"disabled="true" name="emisorFin" [(ngModel)]="emisorFin">
+                    </th>
+                 
+                    <th style="width: 10%;">
+                        <input type="number" class="form-control"disabled="true" name="receptorFin" [(ngModel)]="receptorFin">
+                    </th>
+                    <th style="width: 10%;">
+                        <button class="btn    btn-success" type="button" (click)="agregarDetalle()">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+
+
+
+        </table>
+        <perfect-scrollbar class="scroll-container"
+            style="position: relative; max-width: 100%; max-height: 4500px;height: 400px;" [scrollIndicators]="true">
+            <div class="scrollable-content table-responsive">
+                <table class="table table-sm table-bordered ">
+                    <thead>
+                        <tr>
+                            <th>###</th>
+                            <th>Material</th>
+                            <th>Unidad</th>
+                            <th>E.inicio</th>
+                            <th>E.Fin</th>
+                            <th>Cant.Transf.</th>
+                            <th>R.inicio</th>
+                            <th>R.Fin</th>
+                            <th>###</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let detail of transferencia.detalle;let i =index">
+                            <td>{{i+1}}</td>
+                            <td>
+                                {{detail.producto.concatCodErpNombre}}
+                            </td>
+                            <td>
+                                {{detail.unidadMedida.codUnidadErp}}
+                            </td>
+                            <td>
+                                {{detail.emisorInicio}}
+                            </td>
+                            <td>
+                                {{detail.emisorFin}}
+                            </td>
+                            <td>
+                                {{detail.cantidadTransferencia}}
+                            </td>
+                            <td>
+                                {{detail.receptorInicio}}
+                            </td>
+                            <td>
+                                {{detail.receptorFin}}
+                            </td>
+                            <td>
+                                <button class="btn    btn-danger" type="button" (click)=" quitarDetalle(i)">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </perfect-scrollbar>
+        <table class="table table-sm table-bordered ">
+            <!--    <tfoot class="alert-info">
+                <tr>
+                    <td> Total Descuento: </td>
+                    <td> {{compra.importeDescuento  | number}} </td>
+                </tr>
+                <tr>
+                    <td> Total Importe Iva 5%: </td>
+                    <td> {{compra.importeIva5  | number}} </td>
+                </tr>
+                <tr>
+                    <td> Total Importe Iva 10%: </td>
+                    <td> {{compra.importeIva10  | number}} </td>
+                </tr>
+                <tr>
+                    <td> Total Importe Iva Exenta: </td>
+                    <td> {{compra.importeIvaExenta  | number}} </td>
+                </tr>
+                <tr>
+                    <td> Total Importe sub total: </td>
+                    <td> {{compra.subTotal  | number}} </td>
+                </tr>
+                <tr>
+                    <td> Total Importe total: </td>
+                    <td>{{compra.importeTotal  | number}} </td>
+                </tr>
+            </tfoot> -->
+        </table>
+    </div>
+</div>

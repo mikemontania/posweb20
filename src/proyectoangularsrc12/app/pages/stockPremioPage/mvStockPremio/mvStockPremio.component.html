@@ -1,0 +1,147 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex">
+      <div>
+        <h3 class="card-title m-b-5 center"><span class="lstick"></span>Movimiento Stock Premio</h3>
+      </div>
+    </div>
+
+    <form>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label for="nroComprobante">Usuario</label>
+          <input type="text" class="form-control" id="usuario" name="usuario" [(ngModel)]="stockPremio.usuario"
+            disabled="true" />
+        </div>
+
+        <div class="col-sm-3">
+          <label for="operacion">Motivo </label>
+          <ng-select [(ngModel)]="stockPremio.operacion" name="operacion" id="operacion" #activo="ngModel"
+            (ngModelChange)="stockPremio.nroComprobante = ''" [disabled]="mostrarDetalles" [clearable]="false">
+            <ng-option [value]="'ENTRADA'">ENTRADA</ng-option>
+            <ng-option [value]="'OBSEQUIO'">OBSEQUIO</ng-option>
+            <ng-option [value]="'INVENTARIO'">INVENTARIO</ng-option>
+          </ng-select>
+        </div>
+
+        <div class="col-sm-3">
+          <label for="sucursal">Sucursal</label>
+          <ng-select-sucursal #searchSucursal id="selectsucursal"
+            [disabled]="_loginServices.user.authorities[0] != 'ROLE_ADMIN' || mostrarDetalles"
+            [cargadorSucursal]="cargadorSucursal" style="width: 100%" name="sucursal"
+            (retornoObjeto)="seleccionarSucursal($event)">
+          </ng-select-sucursal>
+        </div>
+
+        <div class="col-sm-3" *ngIf="stockPremio.operacion == 'ENTRADA'">
+          <label for="nroComprobante">Nº Comprobante</label>
+          <input type="text" class="form-control" id="nroComprobante" name="nroComprobante" [disabled]="mostrarDetalles"
+            placeholder="xxx-xxx-xxxxxxxx" [textMask]="{ mask: mask, guide: true }" [(ngModel)]="stockPremio.nroComprobante">
+        </div>
+
+
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-6 form-group button-group">
+
+          <button class="btn    btn-info" type="button" (click)="guardar()">
+            <i class="fa fa-save"></i> Guardar
+          </button>
+          <button class="btn   btn-secondary" type="button" (click)="ngOnInit()">
+            <i class="fa fa-times"></i> Cancelar
+          </button>
+          <button class="btn    btn-success" type="button" (click)="habilitarDetalles()" *ngIf="!mostrarDetalles">
+            <i class="fa fa-list"></i> Agregar Detalles
+          </button>
+        </div>
+        <div class="col-sm-6">
+
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+<div class="card" *ngIf="mostrarDetalles">
+  <div class="card-body">
+    <div class="d-flex">
+      <div>
+        <h3 class="card-title m-b-5 center"><span class="lstick"></span>Detalles({{stockPremio?.detalle?.length}})</h3>
+      </div>
+    </div>
+
+    <table class="table table-sm table-bordered ">
+      <thead>
+        <tr>
+          <th style="width: 60%;">Premio</th>
+          <th style="width: 20%;">Operación</th>
+          <th style="width: 10%;">Cantidad</th>
+          <th style="width: 10%;">Agregar</th>
+        </tr>
+        <tr>
+          <th style="width: 60%;">
+            <ng-select-premio #searchProductos id="selectproducto" [cargadorPremio]="stockPremioDet.premio"
+              style="width: 100%" name="producto" (retornoObjeto)="seleccionarPremio($event)">
+            </ng-select-premio>
+          </th>
+          <th style="width: 20%;">
+            <ng-select [items]="operaciones" notFoundText="No se ha encontrado operacion" [disabled]="!mostrarDetalles"
+              placeholder="Seleccione operacion" [(ngModel)]="stockPremioDet.operacion" [clearable]="false"
+              name="selectMedio" bindLabel="descripcion" bindValue="descripcion">
+            </ng-select>
+          </th>
+          <th style="width: 10%;">
+            <input type="number" class="form-control" name="cantidad" [(ngModel)]="stockPremioDet.cantidad">
+          </th>
+          <th style="width: 10%;">
+            <button class="btn    btn-success" type="button" (click)="agregarDetalle()">
+              <i class="fa fa-plus"></i>
+            </button>
+          </th>
+        </tr>
+      </thead>
+
+
+
+    </table>
+    <perfect-scrollbar class="scroll-container"
+      style="position: relative; max-width: 100%; max-height: 4500px;height: 400px;" [scrollIndicators]="true">
+      <div class="scrollable-content table-responsive">
+        <table class="table table-sm table-bordered ">
+          <thead>
+            <tr>
+              <th>###</th>
+              <th>Premio</th>
+              <th>Operacion</th>
+              <th>Cantidad</th>
+              <th>Quitar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of stockPremio.detalle;let i =index">
+              <td>{{i+1}}</td>
+              <td>
+                {{detail.premio.descripcion}}
+              </td>
+              <td>
+                {{detail.operacion}}
+              </td>
+              <td>
+                {{detail.cantidad | number}}
+              </td>
+
+              <td>
+                <button class="btn    btn-danger" type="button" (click)=" quitarDetalle(i)">
+                  <i class="fa fa-times"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </perfect-scrollbar>
+
+  </div>
+</div>

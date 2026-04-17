@@ -1,0 +1,102 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Detalle de Canje</h1>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn btn-secondary" (click)="atras()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Volver
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="form-loading"><span class="spinner"></span> Cargando...</div>
+  }
+
+  @if (!loading() && canje()) {
+
+    <!-- Cabecera -->
+    <div class="card" style="padding:1.25rem">
+      <div class="form-grid-2">
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Código</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.codCanje }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">N° Canje</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.nroCanje }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Estado</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.estado }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Fecha</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.fechaCanje }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Sucursal</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.codSucursalErp }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Cliente</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.cliente?.razonSocial }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Doc.</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.cliente?.docNro }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Puntos</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.puntos | number:'1.0-0' }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Anulado</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ canje()?.anulado ? 'Sí' : 'No' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Líneas de detalle -->
+    <div class="card tabla-card">
+      <div style="padding:.75rem 1.25rem .25rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)">
+        Detalle de líneas
+      </div>
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead><tr>
+            <th style="width:52px"></th>
+            <th>Premio</th><th>Cód. Ref.</th><th>Cant.</th><th>Puntos Unit.</th><th>Total Puntos</th>
+          </tr></thead>
+          <tbody>
+            @for (d of detalles(); track $index) {
+              <tr>
+                <td style="padding:.25rem .5rem;text-align:center;vertical-align:middle">
+                  @if (d.premio?.img) {
+                    <img [src]="d.premio.img | imagen : 'premios' | async" style="width:40px;height:40px;object-fit:contain;border-radius:4px"/>
+                  } @else {
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="opacity:.4">
+                      <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/>
+                      <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                    </svg>
+                  }
+                </td>
+                <td class="td-wrap">{{ d.premio?.descripcion ?? d.premio?.nombrePremio ?? '—' }}</td>
+                <td><code>{{ d.premio?.codPremioErp ?? '—' }}</code></td>
+                <td class="text-right">{{ d.cantidad }}</td>
+                <td class="text-right">{{ d.puntos | number:'1.0-0' }}</td>
+                <td class="text-right"><strong>{{ (d.cantidad ?? 1) * (d.puntos ?? 0) | number:'1.0-0' }}</strong></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  }
+</div>

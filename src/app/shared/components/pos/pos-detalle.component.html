@@ -1,0 +1,179 @@
+<!-- Botón "Ver detalles" -->
+@if (ventaDetalles.length > 0) {
+  <button class="pd-ver-btn" type="button" (click)="abrirModal()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+    Ver detalles ({{ ventaDetalles.length }})
+  </button>
+}
+
+<!-- Lista con miniatura -->
+<div class="pd-wrap">
+  @if (ventaDetalles.length === 0) {
+    <div class="pd-empty">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span>Sin productos</span>
+    </div>
+  } @else {
+    <ul class="pd-list" #listaScroll>
+      @for (item of ventaDetalles; track item.nroItem) {
+        <li class="pd-item" [class.bonif-item]="item.tipoDescuento?.startsWith('BONIF')">
+
+          <!-- Miniatura -->
+          <div class="pd-thumb">
+            @if (item.producto.img) {
+              <img [src]="item.producto.img | imagen:'productos' | async"
+                   class="pd-thumb-img" [alt]="item.producto.nombreProducto" loading="lazy"/>
+            } @else {
+              <div class="pd-thumb-ph">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+            }
+          </div>
+
+          <!-- Info: nombre + código ERP + precio unit -->
+          <div class="pd-item-info">
+            <span class="pd-item-nombre" [title]="item.producto.nombreProducto">
+              {{ item.producto.nombreProducto }}
+              @if (item.porcDescuento > 0) {
+                <span class="desc-chip">−{{ item.porcDescuento | number:'1.0-0' }}%</span>
+              }
+            </span>
+            <span class="pd-item-meta">
+              #{{ item.producto.codProductoErp }} · {{ item.importePrecio | number:'1.0-0' }} c/u
+            </span>
+          </div>
+
+          <!-- Controles: cantidad + total + borrar -->
+          <div class="pd-item-controls">
+            @if (!item.tipoDescuento?.startsWith('BONIF')) {
+              <app-pos-cantidad
+                [valor]="item.cantidad" [min]="1" [disabled]="disabled"
+                (valorChange)="item.cantidad !== $event
+                  ? (item.cantidad > $event ? restar.emit(item) : agregarUno.emit(item.producto))
+                  : null"/>
+            } @else {
+              <span class="qty-static">× {{ item.cantidad }}</span>
+            }
+            <span class="pd-item-total">{{ item.importeTotal | number:'1.0-0' }}</span>
+            @if (!item.tipoDescuento?.startsWith('BONIF')) {
+              <button class="del-btn" [disabled]="disabled" (click)="quitar.emit(item)" title="Quitar">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+              </button>
+            }
+          </div>
+
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+<!-- Modal completo -->
+@if (modalOpen()) {
+  <div class="pd-modal-overlay" (click)="cerrarModal()">
+    <div class="pd-modal-box" (click)="$event.stopPropagation()">
+      <div class="pd-modal-header">
+        <h3>Detalle ({{ ventaDetalles.length }} items)</h3>
+        <button class="del-btn del-btn-modal" (click)="cerrarModal()">✕</button>
+      </div>
+      <div class="pd-modal-body">
+        <table class="pd-modal-table">
+          <thead>
+            <tr>
+              <th>Img</th><th>Producto</th><th>Cant.</th>
+              <th>Precio</th><th>Desc.</th><th>Desc.%</th><th>Total</th><th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of ventaDetalles; track item.nroItem) {
+              <tr [class.bonif-row]="item.tipoDescuento?.startsWith('BONIF')">
+                <td class="td-img">
+                  @if (item.producto.img) {
+                    <img [src]="item.producto.img | imagen:'productos' | async"
+                         class="modal-prod-img" [alt]="item.producto.nombreProducto"/>
+                  } @else {
+                    <div class="modal-prod-img-ph">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                      </svg>
+                    </div>
+                  }
+                </td>
+                <td class="td-nombre">
+                  <span class="td-nombre-main">{{ item.producto.nombreProducto }}</span>
+                  <span class="td-sku">#{{ item.producto.codProductoErp }}</span>
+                </td>
+                <td class="text-center">
+                  @if (!item.tipoDescuento?.startsWith('BONIF')) {
+                    <app-pos-cantidad [valor]="item.cantidad" [min]="1" [disabled]="disabled"
+                      (valorChange)="item.cantidad !== $event
+                        ? (item.cantidad > $event ? restar.emit(item) : agregarUno.emit(item.producto))
+                        : null"/>
+                  } @else {
+                    <span class="fw">{{ item.cantidad | number:'1.0-0' }}</span>
+                  }
+                </td>
+                <td class="text-right">{{ item.importePrecio | number:'1.0-0' }}</td>
+                <td class="text-center">
+                  @if (item.importeDescuento > 0) {
+                    <span class="desc-chip">{{ item.importeDescuento | number:'1.0-0' }}</span>
+                  } @else { — }
+                </td>
+                <td class="text-center">
+                  @if (item.porcDescuento > 0) {
+                    <span class="desc-chip">{{ item.porcDescuento | number:'1.0-0' }}%</span>
+                  } @else { — }
+                </td>
+                <td class="text-right fw">{{ item.importeTotal | number:'1.0-0' }}</td>
+                <td class="td-tipo">{{ item.tipoDescuento }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        @if (descuentos && descuentos.length > 0) {
+          <div class="pd-modal-descuentos">
+            <div class="pd-modal-desc-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              Descuentos aplicados
+            </div>
+            <div class="pd-modal-desc-chips">
+              @for (d of descuentos; track $index) {
+                <span class="desc-chip-modal">
+                  <span class="desc-chip-modal-cod">#{{ d.codDescuento | number:'1.0-0' }}</span>
+                  {{ d.descripcion }} <strong>{{ d.descuento | number:'1.0-0' }}%</strong>
+                  @if (!disabled) {
+                    <button class="del-btn-chip" (click)="quitarDescuento.emit(d)" title="Quitar">
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                  }
+                </span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+      <div class="pd-modal-footer">
+        <button class="btn btn-secondary btn-sm" (click)="cerrarModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}

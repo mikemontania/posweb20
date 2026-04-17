@@ -1,0 +1,72 @@
+/* Contenedor general */
+.ticket-actions {
+  display: flex; gap: .5rem; padding: 1rem 1.25rem;
+  flex-wrap: wrap;
+}
+.ticket-wrapper {
+  display: flex; justify-content: center;
+  padding: 1rem;
+}
+.ticket-card {
+  width: 302px; max-width: 302px; /* 80mm at 96dpi */
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px; color: black;
+  background: white; padding: .5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Ticket tabla */
+.ticket-table { width: 100%; border-collapse: collapse; }
+.ticket-table thead { border-bottom: 1px dashed black; }
+.ticket-table tfoot { border-top: 1px dashed black; }
+
+th.cantidad, td.cantidad {
+  text-align: center; vertical-align: top;
+  width: 40px; max-width: 40px; word-break: break-all;
+}
+th.producto, td.producto {
+  text-align: left; vertical-align: top;
+  width: 150px; max-width: 150px;
+}
+th.precio, td.precio,
+th.total, td.total {
+  text-align: right; vertical-align: top;
+  width: 54px; max-width: 54px; word-break: break-all;
+}
+
+/* Alineaciones */
+.centrado { text-align: center; }
+.izquierda { text-align: left; }
+.derecha { text-align: right; }
+
+/* Separadores */
+hr.dashed {
+  border: none;
+  border-top: 1px dashed black;
+  margin: .25rem 0;
+}
+
+/* Fila label:valor */
+.row-label {
+  display: flex; justify-content: space-between;
+  padding: .1rem 0;
+}
+.row-label.strong { font-weight: bold; }
+
+/* Ocultar botones al imprimir */
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 2mm;
+  }
+  .oculto-impresion, .oculto-impresion * {
+    display: none !important;
+  }
+  .ticket-wrapper { padding: 0; justify-content: flex-start; }
+  .ticket-card {
+    border: none;
+    width: 80mm; max-width: 80mm;
+    font-size: 10px;
+  }
+}

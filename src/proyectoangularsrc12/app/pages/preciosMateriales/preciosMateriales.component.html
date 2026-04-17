@@ -1,0 +1,112 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="preciosMateriales" class="m-b-0 text-white">Listado de precios de costo( {{ totalElementos}})</h4>
+        <h4 *ngIf="!preciosMateriales" class="m-b-0 text-white">Listado de precios de costo( 0 )</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/preciosMateriales/formulario']">
+                 <i class="fa fa-plus"></i>              Nuevo
+                </button>
+                <button *ngIf="user.authorities[0] == 'ROLE_ADMIN'" class="btn btn-rounded   btn-secondary"
+                type="button" [routerLink]="['/precioscosto/importar']">
+                <i class="fa fa-paperclip"></i>
+                Importar
+            </button>
+             </div>
+            <div class="col-9">
+                <div class="row col-12 form-group">
+                    <label for="productos" class="col-form-label col-sm-2">Productos</label>
+                    <div class="col-sm-6">
+                        <ng-select-producto #searchProductos id="selectproducto" [cargadorProducto]="cargadorProducto" style="width: 100%" name="producto" (retornoObjeto)="seleccionarProducto($event)"></ng-select-producto>
+                    </div>
+                </div>
+                 <div class="row col-12 form-group">
+                    <label for="sucursales" class="col-form-label col-sm-2">Sucursal</label>
+                    <div class="col-sm-6">
+                        <ng-select-sucursal #searchSucursales id="selectSucursal" [cargadorSucursal]="cargadorSucursal" style="width: 100%" name="sucursal" (retornoObjeto)="seleccionarSucursal($event)"></ng-select-sucursal>
+                     </div>
+                </div>  
+                <div class=" form-group button-group col-6">
+                    <button class="btn btn-themecolor waves-effect waves-light" (click)='buscarPrecios()' type="button">
+                          <i class="fa fa-search"></i>
+                      Buscar
+                    </button>
+                    <button class="btn btn-secondary waves-effect waves-light" (click)='ngOnInit()' type="button">
+                          <i class="fa fa-close"></i>
+                      Cancelar
+                    </button>
+                    <button type="button" (click)='getReporte()'
+                    class="btn  btn-success   waves-effect waves-light">
+                    <i class="fa  fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="preciosMateriales?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="preciosMateriales?.length>0">
+                <thead>
+                    <tr>
+                         <th>Codigo</th>
+                         <th>Cod material</th>
+                         <th>Producto</th>
+                        <th>Sucursal</th>
+                        <th>fechaCreacion</th>
+                        <th>fechaModificacion</th>
+                        <th>Precio C.</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let precio of preciosMateriales">
+                       
+                        <td>{{ precio.codPrecioMaterial }}</td>
+                        <td>{{ precio.producto.codProductoErp }}</td>
+                        <td>{{ precio.producto.nombreProducto }}</td>
+                        <td>{{ precio.sucursal.nombreSucursal }}</td>
+                        <td>{{ precio.fechaCreacion | date:'dd/MM/yyyy'}}</td>  
+                        <td>{{ precio.fechaModificacion | date:'dd/MM/yyyy'}}</td>
+                        <td>{{ precio.precioCosto | number }}</td>
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/preciosMateriales/formulario', precio.codPrecioMaterial]" type="button">
+                                    <i class="fa fa-pencil"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(precio)' type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

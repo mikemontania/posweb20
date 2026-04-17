@@ -1,0 +1,185 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex">
+      <div>
+        <span>
+          <h3 class="card-title m-b-5 center">
+            <span class="lstick"></span>Rutas
+          </h3>
+        </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center">
+                <span class="lstick m-r-20"> </span>
+                <img
+                  src="../../../assets/images/icon/cash.png"
+                  class="w50"
+                  alt="Income"
+                />
+              </div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Total Gs.</h6>
+                <h2 class="m-t-0">{{ importeTotal | number }} Gs.</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center">
+                <span class="lstick m-r-20"> </span>
+                <img
+                  src="../../../assets/images/icon/road.png"
+                  class="w50"
+                  alt="Income"
+                />
+              </div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Total Km.</h6>
+                <h2 class="m-t-0">{{ distanciaTotal | number }} Km.</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ngb-tabset type="tabs">
+      <ngb-tab title="Documentos">
+        <ng-template ngbTabContent>
+          <div class="d-flex">
+            <button
+              class="btn btn-outline-success m-1"
+              (click)="sortMarkerBySuc()"
+            >
+              Ordenar por sucursal <i class="fa fa-home"></i>
+            </button>
+            <button
+              class="btn btn-outline-secondary m-1"
+              (click)="copiarTabla()"
+            >
+              Copiar tabla <i class="fa fa-clipboard"></i>
+            </button>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Factura</th>
+                <th>Cliente</th>
+                <th>Telefono</th>
+                <th>Importe</th>
+                <th>Url</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let marcador of marcadores; let i = index">
+                <td>{{ marcador.orden }}</td>
+                <td>
+                  <small>{{ marcador.comprobante }}</small>
+                </td>
+                <td>
+                  <small
+                    >{{ marcador.razonSocial }} - {{ marcador.docNro }}
+                  </small>
+                </td>
+                <td>
+                  <small>{{ marcador.telefono }}</small>
+                </td>
+                <td>
+                  <small>{{ marcador.importe | number }}</small> Gs
+                </td>
+
+                <td>
+                  <small
+                    >{{
+                      'http://www.google.com/maps/place/' +
+                        marcador.latitud +
+                        ',' +
+                        marcador.longitud
+                    }}
+                  </small>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-outline-success ml-1"
+                    (click)="sortMarkerByMarcador(marcador.codRepartoDocs)"
+                    [disabled]="marcador.orden === 0"
+                  >
+                    <i class="fa fa-home"></i>
+                  </button>
+                  <button
+                    class="btn btn-outline-success ml-1"
+                    (click)="changeOrder(marcador.codRepartoDocs, 'up')"
+                    [disabled]="marcador.orden === 0"
+                  >
+                    <i class="fa fa-arrow-up"></i>
+                  </button>
+                  <button
+                    class="btn btn-outline-success ml-1"
+                    (click)="changeOrder(marcador.codRepartoDocs, 'down')"
+                    [disabled]="marcador.orden === marcadores.length"
+                  >
+                    <i class="fa fa-arrow-down"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Marcadores">
+        <ng-template ngbTabContent>
+          <agm-map
+            [latitude]="mapCenterLat"
+            [longitude]="mapCenterLng"
+            [zoom]="mapZoom"
+          >
+            <!-- Marcador de la sucursal con ícono de casita -->
+            <agm-marker
+              [latitude]="sucursal.latitud"
+              [longitude]="sucursal.longitud"
+              [iconUrl]="'../../../assets/map/sucursal-punto-partida.png'"
+            >
+            </agm-marker>
+
+            <!-- Marcadores de los documentos con número de orden -->
+            <agm-marker
+              *ngFor="let marcador of marcadores; let i = index"
+              [latitude]="marcador.latitud"
+              [longitude]="marcador.longitud"
+              [iconUrl]="'../../../assets/map/red-dot.png'"
+              [label]="{ color: 'black', text: marcador.orden.toString() }"
+            >
+              <!-- InfoWindow para mostrar los detalles del marcador -->
+              <agm-info-window>
+                <div>
+                  <p><strong>Cliente:</strong> {{ marcador.razonSocial }}</p>
+                  <p><strong>Dirección:</strong> {{ marcador.direccion }}</p>
+                  <p><strong>Teléfono:</strong> {{ marcador.telefono }}</p>
+                  <button (click)="generateMapUrl(marcador)">
+                    Generar URL
+                  </button>
+                </div>
+              </agm-info-window>
+            </agm-marker>
+          </agm-map>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>
+
+<div>
+  <div></div>
+</div>

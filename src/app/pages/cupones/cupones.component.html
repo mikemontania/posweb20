@@ -1,0 +1,101 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Cupones</h1>
+      <span class="page-count badge badge-primary">{{ totalElements() }} registros</span>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card filter-card">
+    <div class="filters-grid">
+      <div class="form-group">
+        <label class="form-label">Buscar</label>
+        <input type="text" class="form-control" placeholder="Código, cupón, alianza..."
+               [ngModel]="keyword()" (ngModelChange)="keyword.set($event)"/>
+      </div>
+      <div class="form-group-action" style="display:flex;gap:.5rem;align-items:flex-end;padding-bottom:.15rem">
+        <button class="btn btn-primary" (click)="buscar(0)" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Buscar
+        </button>
+        <button class="btn btn-secondary" (click)="limpiar()" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card tabla-card">
+    @if (loading()) {
+      <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+    }
+    @if (!loading() && items().length === 0) {
+      <div class="table-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>No se encontraron cupones</p>
+      </div>
+    }
+    @if (!loading() && items().length > 0) {
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead>
+            <tr>
+              <th>#</th><th>Código</th><th>QR</th><th>Cupón</th><th>Alianza</th>
+              <th>Utilizado</th><th>Descuento</th><th>F. Vencimiento</th>
+              <th>Doc Titular</th><th>Rz. Titular</th><th>Utz. Doc</th><th>Utz. Nombre</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of items(); track c.codCupon; let i = $index) {
+              <tr [class.row-anulado]="!c.activo">
+                <td>{{ i + 1 }}</td>
+                <td><code>{{ c.codCupon }}</code></td>
+                <td style="font-family:monospace;font-size:.75rem;max-width:120px;word-break:break-all">{{ c.qr }}</td>
+                <td><strong>{{ c.cupon }}</strong></td>
+                <td>{{ c.alianza?.alianza ?? '—' }}</td>
+                <td class="text-center">
+                  @if (!c.activo) { <span class="badge badge-danger">Sí</span> }
+                  @else { <span class="badge badge-success">No</span> }
+                </td>
+                <td class="text-right">{{ c.descuento | number }}</td>
+                <td>{{ c.fechaVencimiento ? (c.fechaVencimiento | date:'dd/MM/yyyy') : '—' }}</td>
+                <td>{{ c.nroDoc ?? '—' }}</td>
+                <td>{{ c.razonSocial ?? '—' }}</td>
+                <td>{{ c.nroDocUs ?? '—' }}</td>
+                <td>{{ c.razonSocialUs ?? '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar">
+        <span class="pagination-info">
+          Página {{ currentPage() + 1 }} de {{ totalPages() }} &nbsp;·&nbsp; {{ totalElements() }} registros
+        </span>
+        <div class="pagination-controls">
+          <button class="pag-btn" [disabled]="currentPage() === 0" (click)="goToPage(currentPage()-1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          @for (p of pageNumbers(); track $index) {
+            @if (p === '...') { <span class="pag-ellipsis">…</span> }
+            @else { <button class="pag-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ +p+1 }}</button> }
+          }
+          <button class="pag-btn" [disabled]="currentPage() >= totalPages()-1" (click)="goToPage(currentPage()+1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>

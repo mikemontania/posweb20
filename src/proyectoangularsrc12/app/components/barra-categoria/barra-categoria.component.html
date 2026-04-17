@@ -1,0 +1,13 @@
+<perfect-scrollbar class="scroll-container" style="position: relative; max-width: 100%; max-height: 600px;"
+  [scrollIndicators]="true">
+  <div class="container">
+    <ul *ngIf="items?.length >0" class="pagination">
+      <li class="page-item" *ngFor="let categoria of items"
+        [ngClass]="categoriaSeleccionada == categoria? 'active':''">
+        <span class="page-link text-center" style="min-width: 200px;" *ngIf="categoriaSeleccionada == categoria">{{categoria.descripcion}}</span>
+        <div class="page-link text-center" style="min-width: 200px;"  *ngIf="categoriaSeleccionada != categoria" (click)="retornarCategoria(categoria)">
+          {{categoria.descripcion}}</div>
+      </li>
+    </ul>
+  </div>
+</perfect-scrollbar>

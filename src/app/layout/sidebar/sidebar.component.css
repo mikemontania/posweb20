@@ -1,0 +1,235 @@
+/* ── Sidebar contenedor ──────────────────────────────────── */
+.sidebar {
+  background: var(--bg-sidebar);
+  width: var(--sidebar-width);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  border-right: 1px solid rgba(255,255,255,.06);
+  transition: width var(--transition), transform var(--transition);
+}
+
+/* ── Botón cerrar mobile (solo aparece en mobile) ─────── */
+.sidebar-mobile-close {
+  display: none;
+  justify-content: flex-end;
+  padding: .5rem .75rem .25rem;
+}
+.sidebar-close-mobile {
+  width: 32px; height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-sidebar);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+.sidebar-close-mobile:hover { background: var(--bg-sidebar-hover); }
+
+/* ── Nav lista ───────────────────────────────────────────── */
+.sidebar-nav {
+  list-style: none;
+  padding: .5rem 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar del nav */
+.sidebar-nav::-webkit-scrollbar { width: 3px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 99px; }
+
+/* ── Nav link base ───────────────────────────────────────── */
+.nav-link,
+.nav-parent {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  padding: .5rem .875rem;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text-sidebar);
+  font-size: .875rem;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+.nav-link:hover,
+.nav-parent:hover {
+  background: var(--bg-sidebar-hover);
+  color: #fff;
+  text-decoration: none;
+}
+.nav-link.active {
+  background: var(--bg-sidebar-active);
+  color: var(--text-sidebar-active);
+  font-weight: 500;
+}
+.nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--color-accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  flex-shrink: 0;
+}
+.nav-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity var(--transition), width var(--transition);
+}
+.nav-badge {
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: .625rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 99px;
+  min-width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.nav-chevron {
+  flex-shrink: 0;
+  transition: transform var(--transition);
+  opacity: .6;
+}
+.nav-parent.open .nav-chevron { transform: rotate(180deg); }
+
+/* ── Sub-menú ────────────────────────────────────────────── */
+.nav-sub {
+  list-style: none;
+  background: rgba(0,0,0,.15);
+  overflow: hidden;
+  animation: slideDown 180ms ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nav-sub-link {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4375rem .875rem .4375rem 2.75rem;
+  color: var(--text-sidebar);
+  font-size: .8125rem;
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.nav-sub-link:hover  { background: var(--bg-sidebar-hover); color: #fff; text-decoration: none; }
+.nav-sub-link.active { color: var(--color-accent); font-weight: 500; }
+.nav-sub-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  opacity: .5;
+}
+.nav-sub-link.active .nav-sub-dot { opacity: 1; }
+
+/* ── Usuario en el footer del sidebar ───────────────────── */
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  padding: .875rem 1rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+  min-height: 60px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.sidebar-user-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: .6875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: .9;
+  letter-spacing: .02em;
+}
+
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  transition: opacity var(--transition), width var(--transition);
+}
+
+.sidebar-user-name {
+  font-size: .8125rem;
+  font-weight: 500;
+  color: var(--text-sidebar);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.sidebar-user-role {
+  font-size: .6875rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: .7;
+  /* Limpiar prefijo ROLE_ para mostrar solo el nombre del rol */
+  /* Se maneja en el template con slice o replace */
+}
+
+/* ── Estado colapsado ────────────────────────────────────── */
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+}
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-badge,
+.sidebar.collapsed .nav-chevron,
+.sidebar.collapsed .sidebar-user-info {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+.sidebar.collapsed .nav-link,
+.sidebar.collapsed .nav-parent {
+  justify-content: center;
+  padding: .5rem;
+}
+.sidebar.collapsed .nav-sub { display: none; }
+.sidebar.collapsed .sidebar-user {
+  justify-content: center;
+  padding: .875rem .5rem;
+}
+
+/* ── Mobile ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar-mobile-close { display: flex; }
+}

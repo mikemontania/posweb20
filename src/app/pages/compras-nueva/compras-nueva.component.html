@@ -1,0 +1,181 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Nueva Compra</h1>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn btn-secondary" (click)="cancelar()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </button>
+      <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando()">
+        @if (guardando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+        Guardar Compra
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Cabecera ────────────────────────────────────────── -->
+  <div class="card" style="padding:1.25rem;margin-bottom:1rem">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem">
+
+      <div class="form-group">
+        <label class="form-label">Proveedor <span class="text-danger">*</span></label>
+        <app-select-search [items]="proveedores()" bindLabel="razonSocial"
+          bindValue="codProveedor" placeholder="Seleccione proveedor"
+          [selected]="selProveedor()" (changed)="selProveedor.set($any($event))"
+          (search)="buscarProveedores($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Fecha Compra <span class="text-danger">*</span></label>
+        <input type="date" class="form-control" [ngModel]="fechaCompra()" (ngModelChange)="fechaCompra.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tipo Comprobante</label>
+        <select class="form-control" [ngModel]="tipoComprobante()" (ngModelChange)="tipoComprobante.set($event)">
+          @for (t of tipoComprobanteOpts; track t) { <option [value]="t">{{ t }}</option> }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">N° Comprobante <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" placeholder="ej: 001-001-0000001"
+               [ngModel]="nroComprobante()" (ngModelChange)="nroComprobante.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Timbrado <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" placeholder="ej: 12345678"
+               [ngModel]="timbrado()" (ngModelChange)="timbrado.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Inicio Timbrado</label>
+        <input type="date" class="form-control" [ngModel]="inicioTimbrado()" (ngModelChange)="inicioTimbrado.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Fin Timbrado</label>
+        <input type="date" class="form-control" [ngModel]="finTimbrado()" (ngModelChange)="finTimbrado.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Fecha Vencimiento</label>
+        <input type="date" class="form-control" [ngModel]="fechaVencimiento()" (ngModelChange)="fechaVencimiento.set($event)"/>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Líneas de compra ────────────────────────────────── -->
+  <div class="card tabla-card" style="margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border-color)">
+      <strong>Detalle de Compra</strong>
+      <button class="btn btn-secondary" style="gap:.35rem" (click)="agregarLinea()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Agregar línea
+      </button>
+    </div>
+    <div class="table-responsive">
+      <table class="table tabla-parametros lineas-table">
+        <thead>
+          <tr>
+            <th style="width:2rem">#</th>
+            <th style="min-width:200px">Producto</th>
+            <th style="min-width:130px">Unid. Medida</th>
+            <th style="min-width:130px">Depósito</th>
+            <th style="width:90px" class="text-right">Cantidad</th>
+            <th style="width:110px" class="text-right">Precio Unit.</th>
+            <th style="width:80px" class="text-right">% Desc.</th>
+            <th style="width:80px" class="text-right">% IVA</th>
+            <th style="width:110px" class="text-right">Total</th>
+            <th style="width:2rem"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of lineas(); track l._id; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>
+                <app-select-search [items]="l.productos" bindLabel="descripcion"
+                  placeholder="Buscar producto" [selected]="l.producto"
+                  (changed)="onProductoChange($any($event), i)"
+                  (search)="buscarProductos($event, i)"/>
+              </td>
+              <td>
+                <app-select-search [items]="unidades()" bindLabel="descripcion"
+                  placeholder="Unidad" [selected]="l.unidadMedida"
+                  (changed)="updateLinea(i, 'unidadMedida', $event)"/>
+              </td>
+              <td>
+                <app-select-search [items]="depositos()" bindLabel="descripcion"
+                  placeholder="Depósito" [selected]="l.deposito"
+                  (changed)="updateLinea(i, 'deposito', $event)"/>
+              </td>
+              <td>
+                <input type="number" class="form-control text-right" min="1"
+                       [ngModel]="l.cantidad" (ngModelChange)="updateLinea(i, 'cantidad', +$event)"/>
+              </td>
+              <td>
+                <input type="number" class="form-control text-right" min="0"
+                       [ngModel]="l.importePrecio" (ngModelChange)="updateLinea(i, 'importePrecio', +$event)"/>
+              </td>
+              <td>
+                <input type="number" class="form-control text-right" min="0" max="100"
+                       [ngModel]="l.porcDescuento" (ngModelChange)="updateLinea(i, 'porcDescuento', +$event)"/>
+              </td>
+              <td>
+                <select class="form-control" [ngModel]="l.porcIva" (ngModelChange)="updateLinea(i, 'porcIva', +$event)">
+                  @for (v of ivaOpts; track v) { <option [value]="v">{{ v }}%</option> }
+                </select>
+              </td>
+              <td class="text-right"><strong>{{ _total(l) | number:'1.0-0' }}</strong></td>
+              <td>
+                <button class="btn-accion btn-eliminar" title="Quitar" (click)="quitarLinea(i)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          }
+          @if (lineas().length === 0) {
+            <tr><td colspan="10" class="text-center" style="color:var(--text-muted);padding:1.5rem">
+              Sin líneas. Haga clic en "Agregar línea".
+            </td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Totales ─────────────────────────────────────────── -->
+  <div class="totales-grid">
+    <div class="total-box">
+      <div class="total-label">IVA 5%</div>
+      <div class="total-value">{{ totalIva5() | number:'1.0-0' }} Gs.</div>
+    </div>
+    <div class="total-box">
+      <div class="total-label">IVA 10%</div>
+      <div class="total-value">{{ totalIva10() | number:'1.0-0' }} Gs.</div>
+    </div>
+    <div class="total-box">
+      <div class="total-label">Exenta</div>
+      <div class="total-value">{{ totalExenta() | number:'1.0-0' }} Gs.</div>
+    </div>
+    <div class="total-box">
+      <div class="total-label">Neto</div>
+      <div class="total-value">{{ totalNeto() | number:'1.0-0' }} Gs.</div>
+    </div>
+    <div class="total-box total-principal">
+      <div class="total-label">Total Compra</div>
+      <div class="total-value">{{ totalImporte() | number:'1.0-0' }} Gs.</div>
+    </div>
+  </div>
+
+</div>

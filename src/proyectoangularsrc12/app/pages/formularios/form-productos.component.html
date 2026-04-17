@@ -1,0 +1,351 @@
+<div class="card ">
+
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!producto.codProducto" class="m-b-0 text-white">Crear producto</h4>
+        <h4 *ngIf="producto.codProducto" class="m-b-0 text-white">Actualizar producto</h4>
+    </div>
+    <div class="card-body">
+        <form #productoForm="ngForm">
+
+            <div class="col-lg-2 border-dark">
+                <div class="card">
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <img *ngIf="!imagenTemp && !producto.img" [src]="sinImagen" style="width:242px;height:200px;">
+                        <img *ngIf="!imagenTemp && producto.img" [attr.src]="producto.img | imagen:'productos' | async"
+                            style="width:242px;height:200px;">
+                        <img *ngIf="imagenTemp" [src]="imagenTemp" style="width:242px;height:200px;">
+                        <div class="caption">
+                            <input id="uploadedfile" (change)="seleccionImage($event.target.files[0])" type="file">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="nombreProducto" class="col-form-label col-sm-2">Producto <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.nombreProducto"
+                        (ngModelChange)="producto.nombreProducto = toUpeCaseEvent($event)" name="nombreProducto"
+                        #nombreProducto="ngModel" required minlength="4">
+                    <div class="alert alert-danger"
+                        *ngIf="nombreProducto.invalid && (nombreProducto.dirty || nombreProducto.touched)">
+                        <div *ngIf="!!nombreProducto.errors.required">
+                            nombreProducto es requerido
+                        </div>
+                        <div *ngIf="!!nombreProducto.errors.minlength">
+                            nombreProducto debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="color" class="col-form-label col-sm-2">Color <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.color"
+                        (ngModelChange)="producto.color =  toUpeCaseEvent($event)" name="color" #color="ngModel"
+                        required minlength="4">
+                    <div class="alert alert-danger" *ngIf="color.invalid && (color.dirty || color.touched)">
+                        <div *ngIf="!!color.errors.required">
+                            color es requerido
+                        </div>
+                        <div *ngIf="!!color.errors.minlength">
+                            color debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="descripcion" class="col-form-label col-sm-2">Descripcion <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.descripcion"
+                        (ngModelChange)="producto.descripcion =  toUpeCaseEvent($event)" name="descripcion"
+                        #descripcion="ngModel" required minlength="4">
+                    <div class="alert alert-danger"
+                        *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                        <div *ngIf="!!descripcion.errors.required">
+                            descripcion es requerido
+                        </div>
+                        <div *ngIf="!!descripcion.errors.minlength">
+                            descripcion debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="codBarra" class="col-form-label col-sm-2">Codigo de barra <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.codBarra"
+                        (ngModelChange)="producto.codBarra =  toUpeCaseEvent($event)" name="codBarra"
+                        #codBarra="ngModel" required minlength="4">
+                    <div class="alert alert-danger" *ngIf="codBarra.invalid && (codBarra.dirty || codBarra.touched)">
+                        <div *ngIf="!!codBarra.errors.required">
+                            Codigo de barra es requerido
+                        </div>
+                        <div *ngIf="!!codBarra.errors.minlength">
+                            Codigo de barra debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="codProductoErp" class="col-form-label col-sm-2">Codigo Erp <span
+                        style="color: red">(*)</span> </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.codProductoErp"
+                        (ngModelChange)="producto.codProductoErp = toUpeCaseEvent($event)" name="codProductoErp"
+                        required #codProductoErp="ngModel">
+                    <div class="alert alert-danger"
+                        *ngIf="codProductoErp.invalid && (codProductoErp.dirty || codProductoErp.touched)">
+                        <div *ngIf="!!codProductoErp.errors.required">
+                            codProductoErp es requerido
+                        </div>
+                        <div *ngIf="!!codProductoErp.errors.minlength">
+                            codProductoErp debe tener al menos 1 caracter
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="marca" class="col-form-label col-sm-2">Marca <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.marca"
+                        (ngModelChange)="producto.marca =  toUpeCaseEvent($event)" name="marca" #marca="ngModel"
+                        required minlength="2">
+                    <div class="alert alert-danger" *ngIf="marca.invalid && (marca.dirty || marca.touched)">
+                        <div *ngIf="!!marca.errors.required">
+                            marca es requerido
+                        </div>
+                        <div *ngIf="!!marca.errors.minlength">
+                            marca debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="unidad" class="col-form-label col-sm-2">Unidad Medida <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <!-- <select id="selectUnidadMed" class="custom-select f" style="width: 100%; height:36px;" tabindex="-1"
+                        aria-hidden="true" [(ngModel)]="seleccionUnidad" #unidadmedida="ngModel" name="unidadmedida"
+                        (ngModelChange)="seleccionarUnidadMedida($event)">
+                        <option *ngFor="let u of unidadMedida" [value]="u.codUnidad">
+                            {{u.nombreUnidad}}
+                        </option>
+                    </select> -->
+                    <ng-select [items]="unidadMedida" notFoundText="No se ha encontrado unidad"
+                    placeholder="Seleccione unidad" [(ngModel)]="producto.unidad" name="unidad"
+                    bindLabel="nombreUnidad" (clear)="cleanUnidad()" [clearable]="false"(change)="seleccionarUnidadMedida($event)">
+                </ng-select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="categoria" class="col-form-label col-sm-2">Categoria <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+
+                    <ng-select [items]="categoriaProducto" notFoundText="No se ha encontrado categoria"
+                    placeholder="Seleccione categoria" [(ngModel)]="producto.categoriaProducto" name="categoriaProducto"
+                    bindLabel="descripcion" (clear)="cleanCategoria()"[clearable]="false"(change)="seleccionarCategoria($event)">
+                </ng-select>
+                    <!-- <select id="selectCateg" class="custom-select f" style="width: 100%; height:36px;" tabindex="-1"
+                        aria-hidden="true" [(ngModel)]="seleccionCategoria" #categoria="ngModel" name="categoria"
+                        (ngModelChange)="seleccionarCategoria($event)">
+                        <option *ngFor="let c of categoriaProducto" [value]="c.codCategoriaProducto">
+                            {{c.descripcion}}
+                        </option>
+                    </select> -->
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="activo" class="col-form-label col-sm-2">Activo <span style="color: red">(*)</span> </label>
+                <div class="col-sm-6">
+                    <ng-select [(ngModel)]="producto.activo" name="activo" id="activo"
+                    #activo="ngModel" [clearable]="false">
+                    <ng-option [value]="true">SI</ng-option>
+                    <ng-option [value]="false">NO</ng-option>
+                    </ng-select>
+                     <!-- <select class=" custom-select  form-control" name="activo" id="activo"
+                        [(ngModel)]="producto.activo" required #activo="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select> -->
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="sinDescuento" class="col-form-label col-sm-2">Sin descuento:<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <!-- <select class=" custom-select  form-control" name="sinDescuento" id="sinDescuento"
+                        [(ngModel)]="producto.sinDescuento" #sinDescuento="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select> -->
+                    <ng-select [(ngModel)]="producto.sinDescuento" name="sinDescuento" id="sinDescuento"
+                    #sinDescuento="ngModel" [clearable]="false">
+                    <ng-option [value]="true">SI</ng-option>
+                    <ng-option [value]="false">NO</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="ivaEspecial" class="col-form-label col-sm-2">IVA especial <span
+                        style="color: red">(*)</span> </label>
+                <div class="col-sm-6">
+                    <ng-select [(ngModel)]="producto.ivaEspecial" name="ivaEspecial" id="ivaEspecial"
+                    #ivaEspecial="ngModel" [clearable]="false">
+                    <ng-option [value]="true">SI</ng-option>
+                    <ng-option [value]="false">NO</ng-option>
+                    </ng-select>
+                    <!-- <select class=" custom-select  form-control" name="ivaEspecial" id="ivaEspecial"
+                        [(ngModel)]="producto.ivaEspecial" required #ivaEspecial="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select> -->
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cantidadMin" class="col-form-label col-sm-2">Cantidad Minima</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.cantidadMin" name="cantidadMin"
+                        #cantidadMin="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cantidadMax" class="col-form-label col-sm-2">Cantidad Maxima</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.cantidadMax" name="cantidadMax"
+                        #cantidadMax="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="catABC" class="col-form-label col-sm-2">Categoria ABC <span style="color: red">(*)</span>
+                </label>
+                <div class="col-sm-6">
+                    <!-- <select class=" custom-select  form-control" name="catABC" id="catABC"
+                        [(ngModel)]="producto.catABC" #catABC="ngModel">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select> -->
+                    <ng-select [(ngModel)]="producto.catABC" name="catABC" id="catABC"
+                    #catABC="ngModel" [clearable]="false">
+                    <ng-option [value]="'A'">A</ng-option>
+                    <ng-option [value]="'B'">B</ng-option>
+                    <ng-option [value]="'C'">C</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="destacado" class="col-form-label col-sm-2">Destacado <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <!-- <select class=" custom-select  form-control" name="destacado" id="destacado"
+                        [(ngModel)]="producto.destacado" #destacado="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select> -->
+                    <ng-select [(ngModel)]="producto.destacado" name="destacado" id="destacado"
+                    #destacado="ngModel" [clearable]="false">
+                    <ng-option [value]="true">SI</ng-option>
+                    <ng-option [value]="false">NO</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="inventariable" class="col-form-label col-sm-2">Inventariable <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <!-- <select class=" custom-select  form-control" name="inventariable" id="inventariable"
+                        [(ngModel)]="producto.inventariable" #inventariable="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select> -->
+                    <ng-select [(ngModel)]="producto.inventariable" name="inventariable" id="inventariable"
+                    #inventariable="ngModel" [clearable]="false">
+                    <ng-option [value]="true">SI</ng-option>
+                    <ng-option [value]="false">NO</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="iva" class="col-form-label col-sm-2">Iva
+                    <span style="color: red">(*)</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.iva" name="iva" #iva="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="peso" class="col-form-label col-sm-2">Peso <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="producto.peso" name="peso" #peso="ngModel">
+                </div>
+            </div>
+ 
+            <div class="form-group row">
+                <label for="presentacion" class="col-form-label col-sm-2">Presentacion </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.presentacion"
+                        (ngModelChange)="producto.presentacion =  toUpeCaseEvent($event)" name="presentacion">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="grpMaterial" class="col-form-label col-sm-2">Grupo Material </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.grpMaterial"
+                        (ngModelChange)="producto.grpMaterial =  toUpeCaseEvent($event)" name="grpMaterial">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="obs" class="col-form-label col-sm-2">Obs </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="producto.obs"
+                        (ngModelChange)="producto.obs =  toUpeCaseEvent($event)" name="obs" #obs="ngModel">
+                </div>
+            </div>
+ 
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/productos']"
+                        class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i>
+                        Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()'
+                        *ngIf="!producto.codProducto else elseBlock" [disabled]="!productoForm.form.valid"><i
+                            class="fa   fa-floppy-o"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button"
+                            (click)='update()' [disabled]="!productoForm.form.valid"><i
+                                class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>

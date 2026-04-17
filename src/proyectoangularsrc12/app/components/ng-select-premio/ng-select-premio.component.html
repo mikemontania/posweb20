@@ -1,0 +1,7 @@
+<ng-select [items]="premios" (search)="onSearch($event)" placeholder="Seleccione premio" (change)="selectedItem($event)" notFoundText="No se ha encontrado premio" bindLabel="descripcion" [(ngModel)]="cargadorPremio">
+
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <b [ngOptionHighlight]="search">{{item.descripcion}}</b>
+
+    </ng-template>
+</ng-select>

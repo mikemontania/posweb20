@@ -1,0 +1,194 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="stockPremios" class="m-b-0 text-white">Listado de stock premios( {{ totalElementos}})</h4>
+        <h4 *ngIf="!stockPremios" class="m-b-0 text-white">Listado de stock premios( 0)</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+               <!--  <button class="btn btn-rounded   btn-success" type="button" (click)="modalAgregarStock()">
+                    <i class="fa fa-plus"></i>
+                    Inicializar Stock de Premio
+                </button> -->
+            </div>
+            <div class="col-9">
+                <div class="row col-12 form-group" *ngIf="role == 'ROLE_ADMIN'">
+                    <label for="listaPrecio" class="col-form-label col-sm-2">Sucursal</label>
+                    <div class="col-sm-8">
+                        <ng-select-sucursal #searchSucursal id="selectsucursal" [cargadorSucursal]="cargadorSucursal"
+                            style="width: 100%" name="sucursal" (retornoObjeto)="seleccionarSucursal($event)">
+                        </ng-select-sucursal>
+                    </div>
+                </div>
+                <div class="row col-12 form-group">
+                    <label for="listaPrecio" class="col-form-label col-sm-2">Premio</label>
+                    <div class="col-sm-8">
+                        <ng-select-premio #searchPremio id="selectpremio" [cargadorPremio]="cargadorPremio"
+                            style="width: 100%" name="premio" (retornoObjeto)="seleccionarPremio($event)">
+                        </ng-select-premio>
+                    </div>
+                </div>
+
+
+                <div class=" form-group button-group col-6">
+                    <button class="btn btn-info waves-effect waves-light" (click)='buscar()' type="button">
+                        <i class="fa fa-search"></i>
+                        Buscar
+                    </button>
+                    <button class="btn btn-secondary waves-effect waves-light" (click)='ngOnInit()' type="button">
+                        <i class="fa fa-close"></i>
+                        Cancelar
+                    </button>
+
+
+                </div>
+            </div>
+
+
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="stockPremios?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="stockPremios?.length>0">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Premio </th>
+                        <th>Sucursal </th>
+                        <th>Existencia</th>
+                        <th>Minimo</th>
+                        <th>Comprometido</th>
+                    <!--     <th>Dar entrada</th> -->
+                        <!--   <th>Eliminar</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of stockPremios">
+                        <td class="wh70" align="center" style="background: white">
+                            <img *ngIf="s.premio.img" [attr.src]="s.premio.img | imagen:'premios' | async"
+                                class="img-producto60" />
+                            <img *ngIf="!s.premio.img" [src]="sinImagen" class="img-producto60">
+                        </td>
+                        <td>{{ s.premio.descripcion }}</td>
+                        <td>{{ s.sucursal.nombreSucursal }}</td>
+                        <td>{{ s.existencia | number }}</td>
+                        <td>{{ s.minimo | number }}</td>
+                        <td>{{ s.comprometido | number }}</td>
+<!--
+                        <td>
+                            <button class="btn btn-success btn-circle " (click)="darEntrada(s)" type="button">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                        </td> -->
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag"
+            [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+            [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>
+<!--  ==================================================inicializar Stock=============================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="stockAdd">
+    <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header label-themecolor">
+                    <h4 class="text-white"> Inicializar el stock del premio</h4>
+                </div>
+                <div class="row col-12 form-group pt-3">
+                    <label for="listaPrecio" class="col-form-label col-sm-2">Premio</label>
+                    <div class="col-sm-8 ">
+                        <ng-select-premio #searchPremio id="nuevoPremio" [cargadorPremio]="nuevoPremio"
+                            style="width: 100%" name="nuevoPremio" (retornoObjeto)="seleccionarNuevoPremio($event)">
+                        </ng-select-premio>
+                    </div>
+                    <div class=" form-group button-group col-6 pt-3">
+                        <button class="btn btn-success waves-effect waves-light" (click)='iniciarStock()' type="button">
+                            <i class="fa fa-plus"></i>
+                            Inicializar
+                        </button>
+                        <button class="btn btn-secondary waves-effect waves-light" (click)='cancelarInicio()'
+                            type="button">
+                            <i class="fa fa-close"></i>
+                            Cancelar
+                        </button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  ================================================== Dar Entrada Stock=============================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="stockModif">
+    <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" *ngIf="ajusteStock && stockModif != 'oculto'">
+                <div class="modal-header label-themecolor">
+                    <h4 class="text-white"> Dar entrada stock del premio</h4>
+                </div>
+                <div class="container  pt-3">
+                    <div class="form-group row">
+                        <label for="premio" class="col-form-label col-sm-4">Premio </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="ajusteStock.premio.descripcion"
+                                disabled="true" name="premio">
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="existencia" class="col-form-label col-sm-4">Existencia </label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" [(ngModel)]="ajusteStock.existencia"
+                                disabled="true" name="existencia" #existencia="ngModel">
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="cantidad" class="col-form-label col-sm-4">Cantidad Entrada</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" [(ngModel)]="ajusteStock.comprometido"
+                                name="cantidad" #cantidad="ngModel">
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class=" form-group button-group col-6 pt-3">
+                    <button class="btn btn-success waves-effect waves-light" (click)='ajustarstock()' type="button">
+                        <i class="fa fa-save"></i>
+                        Ajustar Stock del premio
+                    </button>
+                    <button class="btn btn-secondary waves-effect waves-light" (click)='cerrarModalEntrada()'
+                        type="button">
+                        <i class="fa fa-close"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

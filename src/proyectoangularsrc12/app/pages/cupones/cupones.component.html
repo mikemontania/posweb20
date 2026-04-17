@@ -1,0 +1,108 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de cupones( {{ totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+              <!--   <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/cupones/formulario']">
+                    <i class="fa fa-plus"></i>
+                    Nuevo
+                </button> -->
+            </div>
+            <div class="col-6">
+                <input-debounce delay="500" id="inputCupones" height="15px" type="text" placeholder="Ingrese cupon"
+                    required="" aria-invalid="false" (value)="buscarCupones($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor ...</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="cupones?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered " *ngIf="cupones?.length>0">
+                <thead>
+                    <tr>
+                        <!--   <th>Codigo</th> -->
+                        <th>#</th>
+                        <th>codigo</th>
+                        <th>Qr</th> 
+                        <th>Qr</th> 
+                        <th>Cupon</th> 
+                        <th>Alianza</th> 
+                        <th>Utilizado</th>
+                        <th>Descuento</th>
+                        <th>F. Vencimiento</th>
+                        <th>Doc titular</th>
+                        <th>Rz titular</th>
+                        <th>Utz. por</th>
+                        <th>Utz. por</th>
+                        <!-- <th>Editar</th>
+                        <th>Eliminar</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                   
+                    <tr *ngFor="let cupon of cupones;let i =index" 
+                    [ngClass]="{
+                        'alert-success': cupon.activo == true,
+                        'alert-danger': cupon.activo == false }">
+                        <td> {{i+1}}</td>
+                        <td>{{ cupon.codCupon }}</td>
+                        <td> <ngx-qrcode [value]='cupon.qr'
+                            scale = '3'
+                            ></ngx-qrcode>
+                        </td>
+                        <td><h3>{{ cupon.qr }}</h3></td>
+                        <td><h3>{{ cupon.cupon }}</h3> </td>
+                        <td>{{ cupon.alianza.alianza }}</td>
+                        <td *ngIf="cupon.activo === true">NO</td>
+                        <td *ngIf="cupon.activo === false">SI</td>
+                        <td>{{ cupon.descuento | number}}</td>
+                        <td>{{ cupon.fechaVencimiento | date:'dd/MM/y' }}</td>
+                        <td>{{ cupon.nroDoc }}</td>
+                        <td>{{ cupon.razonSocial }}</td>
+                        <td>{{ cupon.nroDocUs }}</td>
+                        <td>{{ cupon.razonSocialUs }}</td>
+
+                        <!-- <td>
+                            <button class="btn btn-info btn-circle "
+                                [routerLink]="['/cupones/formulario', cupon.codCupon]" type="button">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(cupon)' type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </td> -->
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag"
+            [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+            [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+
+</div>

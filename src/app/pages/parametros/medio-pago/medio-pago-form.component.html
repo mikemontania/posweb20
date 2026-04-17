@@ -1,0 +1,90 @@
+<div class="page-content page-form">
+  @if (loading()) {
+    <div class="form-loading"><span class="spinner"></span> Cargando...</div>
+  }
+  @if (!loading()) {
+    <div class="card form-card">
+      <div class="card-header form-card-header">
+        <h2 class="form-title">{{ esEdicion() ? 'Actualizar' : 'Nuevo' }} Medio de Pago</h2>
+      </div>
+      <div class="card-body">
+        <form #f="ngForm" (ngSubmit)="guardar()">
+          <div class="form-fields form-grid-2">
+
+        <div class="form-row">
+          <label class="form-label">Código ERP<span class="req">*</span></label>
+          <input type="text" class="form-control" name="codMedioPagoErp" required
+            [ngModel]="it.codMedioPagoErp"
+            (ngModelChange)="set('codMedioPagoErp', toUpper($event))"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Descripción<span class="req">*</span></label>
+          <input type="text" class="form-control" name="descripcion" required
+            [ngModel]="it.descripcion"
+            (ngModelChange)="set('descripcion', toUpper($event))"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">¿Es Cheque?<span class="req">*</span></label>
+          <select class="form-control" name="esCheque"
+            [ngModel]="it.esCheque"
+            (ngModelChange)="set('esCheque', $event === 'true' || $event === true)">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">¿Tiene Banco?<span class="req">*</span></label>
+          <select class="form-control" name="tieneBanco"
+            [ngModel]="it.tieneBanco"
+            (ngModelChange)="set('tieneBanco', $event === 'true' || $event === true)">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">¿Tiene Referencia?<span class="req">*</span></label>
+          <select class="form-control" name="tieneRef"
+            [ngModel]="it.tieneRef"
+            (ngModelChange)="set('tieneRef', $event === 'true' || $event === true)">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">¿Tiene Tipo?<span class="req">*</span></label>
+          <select class="form-control" name="tieneTipo"
+            [ngModel]="it.tieneTipo"
+            (ngModelChange)="set('tieneTipo', $event === 'true' || $event === true)">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">¿Es Obsequio?<span class="req">*</span></label>
+          <select class="form-control" name="esObsequio"
+            [ngModel]="it.esObsequio"
+            (ngModelChange)="set('esObsequio', $event === 'true' || $event === true)">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+          </div>
+          <div class="form-actions">
+            <a routerLink="/medio-pago" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Atrás
+            </a>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando() || f.invalid">
+              @if (guardando()) {
+                <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+              }
+              {{ esEdicion() ? 'Actualizar' : 'Crear' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

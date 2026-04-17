@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep *)",
+      "Bash(find /c/Users/miguel.montania/Downloads/m2pos-ng20-v9/src/app/pages -name \"*.component.ts\" -type f -exec wc -l {} +)",
+      "Bash(ls -1d \"c:/Users/miguel.montania/Downloads\"/*/)",
+      "Bash(awk -F/ '{print $NF}')",
+      "Bash(grep -i \"\\\\\\\\.ts$\")",
+      "Bash(ls -d \"/c/Users/miguel.montania/Downloads\"/m2pos-ng20*)",
+      "Bash(grep -E \"\\\\.\\(ts|service|model\\)$\")",
+      "Bash(grep -v \"//\")",
+      "Bash(awk -F\"'\" '{print $2}')",
+      "Bash(awk -F\"'\" '{print $4}')",
+      "Bash(transferencia)",
+      "Bash(motivo\")",
+      "Bash(npx tsc *)",
+      "Bash(grep -rn 'track $index' '--include=*.html' .)"
+    ]
+  }
+}

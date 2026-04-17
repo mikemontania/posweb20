@@ -1,0 +1,149 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Movimiento Stock Premio</h1>
+    </div>
+  </div>
+
+  <!-- Cabecera del movimiento -->
+  <div class="card" style="padding:1.25rem;margin-bottom:1rem">
+    <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:1rem">
+      Datos del Movimiento
+    </div>
+    <div class="form-grid-2" style="max-width:720px">
+
+      <div class="form-group">
+        <label class="form-label">Usuario</label>
+        <input type="text" class="form-control" [value]="auth.session?.username ?? ''" disabled/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Motivo <span style="color:var(--color-danger)">*</span></label>
+        <select class="form-control"
+          [ngModel]="operacion()"
+          (ngModelChange)="onOperacionChange($event)"
+          [disabled]="mostrarDetalle()">
+          @for (op of operaciones; track op) {
+            <option [value]="op">{{ op }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Sucursal <span style="color:var(--color-danger)">*</span></label>
+        <app-select-search [items]="sucursales()" bindLabel="nombreSucursal"
+          bindValue="codSucursal" placeholder="Seleccione sucursal"
+          [selected]="selSucursal()" (changed)="selSucursal.set($any($event))"
+          [disabled]="!isAdmin() || mostrarDetalle()"/>
+      </div>
+
+      @if (operacion() === 'ENTRADA') {
+        <div class="form-group">
+          <label class="form-label">Nº Comprobante <span style="color:var(--color-danger)">*</span></label>
+          <input type="text" class="form-control"
+            [ngModel]="nroComprobante()" (ngModelChange)="nroComprobante.set($event)"
+            placeholder="xxx-xxx-xxxxxxx" [disabled]="mostrarDetalle()"/>
+        </div>
+      }
+
+    </div>
+
+    <div style="display:flex;gap:.75rem;margin-top:.5rem">
+      <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando() || lineas().length === 0">
+        @if (guardando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+        @else {
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+          </svg>
+        }
+        Guardar
+      </button>
+      <button class="btn btn-secondary" (click)="resetear()" [disabled]="guardando()">Cancelar</button>
+      @if (!mostrarDetalle()) {
+        <button class="btn btn-outline-secondary" (click)="habilitarDetalle()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Agregar Detalles
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Sección de detalles -->
+  @if (mostrarDetalle()) {
+    <div class="card" style="padding:1.25rem;margin-bottom:1rem">
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:1rem">
+        Detalle ({{ lineas().length }} ítems)
+      </div>
+
+      <!-- Fila de ingreso -->
+      <div class="form-grid-2" style="max-width:720px;align-items:end">
+        <div class="form-group">
+          <label class="form-label">Premio</label>
+          <app-select-search [items]="premios()" bindLabel="descripcion"
+            bindValue="codPremio" placeholder="Seleccione premio"
+            [selected]="selPremio()" (changed)="selPremio.set($any($event))"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Operación</label>
+          <select class="form-control" [ngModel]="detOp()" (ngModelChange)="detOp.set($event)">
+            @for (op of opcionesDetalle(); track op) {
+              <option [value]="op">{{ op }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cantidad</label>
+          <input type="number" class="form-control" min="1"
+            [ngModel]="detCantidad()" (ngModelChange)="detCantidad.set(+$event)"/>
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end">
+          <button class="btn btn-primary" (click)="agregarLinea()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Agregar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla de líneas -->
+      @if (lineas().length > 0) {
+        <div class="table-responsive" style="margin-top:.5rem">
+          <table class="table tabla-parametros">
+            <thead>
+              <tr>
+                <th>#</th><th>Premio</th><th>Operación</th><th class="text-right">Cantidad</th><th>Quitar</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (linea of lineas(); track $index) {
+                <tr>
+                  <td>{{ $index + 1 }}</td>
+                  <td><strong>{{ linea.premio.descripcion }}</strong></td>
+                  <td>
+                    <span [class]="linea.operacion === 'ENTRADA' ? 'badge badge-success' : 'badge badge-danger'">
+                      {{ linea.operacion }}
+                    </span>
+                  </td>
+                  <td class="text-right">{{ linea.cantidad | number }}</td>
+                  <td>
+                    <button class="btn-accion btn-eliminar" title="Quitar" (click)="quitarLinea($index)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+
+</div>

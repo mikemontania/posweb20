@@ -1,0 +1,101 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de productos( {{totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/productos/formulario']">
+                    <i class="fa fa-plus"></i>
+                    Nuevo
+                </button>
+            </div>
+            <div class="col-6">
+                <input-debounce #inputProducto delay="500" id="inputProductos" height="15px" type="text"
+                    placeholder="Buscar productos..." required="" aria-invalid="false"
+                    (value)="buscarProductos($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div *ngIf="productos?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive" [hidden]="cargando">
+            <div *ngIf="productos?.length>0">
+                <table class="table  table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Codigo Ref.</th>
+                            <th>Codigo barra</th>
+                            <th>Producto</th>
+                            <th>Categoria</th>
+                            <th>Unidad</th>
+                            <th>Grupo Mater.</th> 
+                            <th>Peso</th>
+                            <th>Activo</th>
+                            <th>Sin descuento</th>
+                            <th>Editar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let producto of productos">
+                            <td class="wh90" align="center" style="background: white">
+                                <img *ngIf="producto.img" [attr.src]="producto.img | imagen:'productos' | async"
+                                    class="img-producto80" />
+                                <img *ngIf="!producto.img" [src]="sinImagen" class="img-producto80">
+                            </td>
+                            <td>{{ producto.codProductoErp }}</td>
+                            <td>{{ producto.codBarra }}</td>
+                            <td>{{ producto.nombreProducto }}</td>
+                            <td *ngIf="producto.categoriaProducto">{{ producto.categoriaProducto.descripcion }}</td>
+                            <td *ngIf="!producto.categoriaProducto">xxxxxxxxxxxxx</td>
+                            <td>{{ producto.unidad.nombreUnidad }}</td>
+                            <td>{{ producto.grpMaterial }}</td>  
+                            <td>{{ producto.peso }}</td>
+                            <td *ngIf="producto.activo == true">SI</td>
+                            <td *ngIf="producto.activo == false">NO</td>
+                            <td *ngIf="producto.sinDescuento == true">SI</td>
+                            <td *ngIf="producto.sinDescuento == false">NO</td>
+
+                            <td>
+                                <button class="btn btn-info btn-circle "
+                                    [routerLink]="['/productos/formulario', producto.codProducto]" type="button">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-circle " (click)='delete(producto)' type="button">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="productos?.length > 0"
+            [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos"
+            [(page)]="pagina" [maxSize]="7" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

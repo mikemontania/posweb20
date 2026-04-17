@@ -1,0 +1,254 @@
+<!-- ============================================================== -->
+<!--                          Compra                                 -->
+<!-- ============================================================== -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <h4 class="card-title"><span class="lstick"></span>Compra</h4>
+                    <div class="btn-group ml-auto m-t-10">
+                        <button class="btn btn-success btn-rounded" (click)="atras()" type="button">
+                            <i class="fa  fa-arrow-circle-left"></i> Atrás
+                        </button>
+                    </div>
+                </div>
+
+                <div class="align-self-center">
+                    <div class="table-responsive m-t-20">
+                        <table class="table vm no-th-brd no-wrap pro-of-month" *ngIf="compra">
+                            <thead>
+                                <tr>
+                                    <th>Codigo</th>
+                                    <th>Comprobante</th>
+                                    <th>Proveedor</th>
+                                     <th>Fecha</th>
+                                    <th>F. Modificacion</th>
+                                    <th>F. Anulacion</th>
+                                    <th>Imp.Iva5</th>
+                                    <th>Imp.Iva10</th>
+                                    <th>Exenta</th>
+                                    <th>Descuento</th>
+                                    <th>Imp.Neto</th>
+                                    <th>Sub Total</th>
+                                    <th>Imp.Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {{ compra.codCompra }}
+                                    </td>
+                                    <td>
+                                        <h6>{{ compra.timbrado }}</h6><small
+                                            class="text-muted">{{ compra.nroComprobante }}</small>
+                                    </td>
+
+                                    <td>
+                                        <h6>{{compra.proveedor.docNro}}</h6><small
+                                            class="text-muted">{{ compra.proveedor.razonSocial }}</small>
+                                    </td>
+                                    
+
+                                    <td>
+                                        <h6>
+                                            {{ compra.fechaCompra | date:'dd/MM/yyyy' }}
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ compra.fechaModificacion | date:'dd/MM/yyyy, h:mm a' }}
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6 *ngIf="!compra.fechaAnulacion">
+                                            xx/xx/xxxx
+                                        </h6>
+                                        <h6 *ngIf="compra.fechaAnulacion">
+                                            {{ compra.fechaAnulacion | date:'dd/MM/yyyy, h:mm a' }}
+                                        </h6>
+                                    </td>
+
+                                    <td>
+                                        <h6>
+                                            {{ compra.importeIva5 | number }} Gs.
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ compra.importeIva10 | number }} Gs.
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ compra.importeIvaExenta | number }} Gs.
+                                        </h6>
+                                    </td>
+
+                                    <td>
+                                        <h6>{{ compra.porcDescuento | number }} %</h6><small
+                                            class="text-muted">{{ compra.importeDescuento | number }} Gs.</small>
+
+                                    </td>
+
+
+                                    <td>
+                                        <h6>
+                                            {{ compra.importeNeto | number }} Gs.
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ compra.subTotal | number }} Gs.
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            {{ compra.importeTotal | number }} Gs.
+                                        </h6>
+                                    </td>
+
+
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================== -->
+<!--                    Detalles de compra                           -->
+<!-- ============================================================== -->
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <h4 class="card-title"><span class="lstick"></span>Detalles</h4>
+                    <!--   <div class="btn-group ml-auto m-t-10">
+                        <button class="btn btn-success btn-rounded" (click)="atras()" type="button">
+                            <i class="fa  fa-arrow-circle-left"></i> 
+                        </button>
+                    </div> -->
+                </div>
+                <perfect-scrollbar class="scroll-container"
+                    style="position: relative; max-width: 100%; max-height: 600px;" [scrollIndicators]="true">
+                    <div class="scrollable-content">
+                        <div class="table-responsive m-t-20">
+                            <table class="table vm no-th-brd no-wrap pro-of-month">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3">Producto</th>
+                                        <th>Unidad</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>%IVA</th>
+                                        <th>%IVA5</th>
+                                        <th>%IVA 10</th>
+                                        <th>%IVA ex</th>
+                                        <th>% Des</th>
+                                        <th>Descuento</th>
+                                        <th>Neto</th>
+                                        <th>Sub total</th>
+                                        <th>Total</th>
+                                        <th colspan="2">Deposito</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detalle of detalles">
+                                        <td>
+                                            {{ detalle.nroItem }}
+                                        </td>
+                                        <!-- <td style="width:50px;">
+                                            <img *ngIf="detalle.producto.img" class="img-lista"
+                                                [attr.src]="detalle.producto.img | imagen:'productos' | async">
+                                            <img *ngIf="!detalle.producto.img" class="img-lista" [src]="sinImagen">
+                                        </td> -->
+                                        <td align="center" class="w70" align="center" style="background: white">
+                                            <img *ngIf="detalle.producto.img" [attr.src]="detalle.producto.img | imagen:'productos' | async" class="img-producto60" />
+                                            <img *ngIf="!detalle.producto.img" [src]="sinImagen" class="img-producto60">
+                                        </td>
+                                        <td>
+                                            <h6>{{ detalle.producto.codProductoErp }}</h6><small
+                                                class="text-muted">{{ detalle.producto.concatCodNombre }}</small>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.unidadMedida.nombreUnidad }}
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.cantidad | number }}
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.importePrecio | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.porcIva | number }}
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.importeIva5 | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.importeIva10 | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.importeIvaExenta | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.porcDescuento | number }} %
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.importeDescuento | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.importeNeto | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.subTotal | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>
+                                                {{ detalle.importeTotal | number }} Gs.
+                                            </h6>
+                                        </td>
+                                        <td>
+                                            <h6>{{detalle.deposito.tipoDeposito.descripcion}}</h6>
+                                            <small class="text-muted">{{ detalle.deposito.nombreDeposito }}</small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </perfect-scrollbar>
+            </div>
+        </div>
+    </div>
+</div>

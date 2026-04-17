@@ -1,0 +1,343 @@
+/* ── Banners de recuperación ──────────────────── */
+.recovery-banner {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .6rem 1rem; flex-shrink: 0;
+  font-size: .8125rem; flex-wrap: wrap;
+}
+.recovery-banner--danger {
+  background: var(--status-danger-bg);
+  border-bottom: 1px solid color-mix(in srgb, var(--status-danger-text) 20%, transparent);
+  color: var(--status-danger-text);
+}
+.recovery-banner--info {
+  background: var(--status-info-bg, #EFF6FF);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+  color: var(--color-accent);
+}
+.recovery-banner svg { flex-shrink: 0; }
+.recovery-text { flex: 1; min-width: 200px; color: var(--text-primary); }
+.recovery-text strong { font-weight: 600; }
+.recovery-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════
+   POS LAYOUT
+   ═══════════════════════════════════════════════════════ */
+/* Escapar el padding de .main-content y compensar breadcrumb */
+:host {
+  display: block;
+  margin: -1rem;                      /* cancela el padding: 1rem del main-content */
+  margin-top: 0;                      /* no subir sobre el breadcrumb */
+}
+
+.pos-layout {
+  display: flex; gap: 0;
+  /* 100dvh - app-header - breadcrumb(~40px) - main-padding-top(16px) */
+  height: calc(100dvh - var(--header-height, 56px) - 3.5rem);
+  overflow: hidden;
+  background: var(--bg-page, #f4f6f8);
+}
+
+/* ── Paneles ──────────────────────────── */
+.pos-left {
+  width: 440px; min-width: 360px; max-width: 480px;
+  display: flex; flex-direction: column;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+}
+.pos-right {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  background: var(--bg-page);
+  overflow: hidden;
+}
+
+/* ── Cabecera izquierda — minimalista ─── */
+.pos-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .45rem .75rem;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.pos-header-left { display: flex; align-items: center; gap: .45rem; }
+.pos-title {
+  font-size: .9375rem; font-weight: 700;
+  color: var(--text-primary); letter-spacing: -.01em;
+}
+.pos-icon {
+  font-size: .95rem; line-height: 1;
+}
+.lp-badge {
+  font-size: .68rem; font-weight: 700; padding: .2rem .55rem;
+  border-radius: 99px;
+  background: var(--color-accent-light, #EFF6FF);
+  color: var(--color-accent, #2563EB);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+  letter-spacing: .04em;
+}
+.lp-emp {
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  border-color: color-mix(in srgb, var(--status-warning-text) 20%, transparent);
+}
+
+/* ── Selectores modo/forma/canal ─────── */
+.pos-selectores {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: .4rem;
+  padding: .4rem .75rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  background: var(--bg-surface-2);
+}
+.sel-row { display: flex; flex-direction: column; gap: .15rem; }
+.label-xs {
+  font-size: .6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--text-muted);
+}
+.sel {
+  width: 100%; height: 28px; font-size: .72rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 8px);
+  background: var(--bg-surface); color: var(--text-primary);
+  padding: 0 .4rem;
+  outline: none; cursor: pointer;
+  transition: border-color 120ms, box-shadow 120ms;
+  appearance: auto; -webkit-appearance: auto;
+}
+.sel:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.sel:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ── Detalle container ────────────────── */
+.pos-detalle-container {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.pos-detalle-container app-pos-detalle {
+  display: flex; flex-direction: column; height: 100%;
+}
+
+/* ── Descuentos — chip row en lugar de tabla ── */
+.pos-descuentos {
+  padding: .35rem .875rem;
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .35rem;
+  background: color-mix(in srgb, var(--status-success-bg) 40%, transparent);
+}
+.desc-label {
+  font-size: .64rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text-muted); flex-shrink: 0;
+}
+.desc-chip-item {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .71rem; font-weight: 600;
+  background: var(--status-success-bg);
+  color: var(--status-success-text);
+  border: 1px solid color-mix(in srgb, var(--status-success-text) 18%, transparent);
+  border-radius: 99px;
+  padding: .15rem .45rem .15rem .55rem;
+  white-space: nowrap;
+}
+.desc-chip-item .del-btn {
+  width: 16px; height: 16px; border: none; background: none; cursor: pointer;
+  color: var(--status-success-text);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 99px; padding: 0; opacity: .65;
+  transition: opacity 120ms;
+  flex-shrink: 0;
+}
+.desc-chip-item .del-btn:hover { opacity: 1; }
+
+/* ── Footer ───────────────────────────── */
+.pos-footer {
+  padding: .5rem .75rem; display: flex; gap: .5rem; flex-shrink: 0;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+}
+.btn-cancelar {
+  height: 32px; padding: 0 .875rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 8px);
+  background: transparent; color: var(--text-secondary);
+  font-size: .8125rem; font-weight: 500;
+  cursor: pointer; transition: all 120ms; flex-shrink: 0;
+}
+.btn-cancelar:hover { border-color: var(--text-muted); color: var(--text-primary); }
+.btn-guardar {
+  flex: 1; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  gap: .4rem; font-size: .84rem; font-weight: 600;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-accent); color: #fff; border: none;
+  cursor: pointer; transition: background 120ms, opacity 120ms;
+}
+.btn-guardar:hover:not(:disabled) { background: var(--color-accent-hover, #1D4ED8); }
+.btn-guardar:disabled { opacity: .45; cursor: not-allowed; }
+.spinner-sm {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+  display: inline-block; animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Panel derecho ────────────────────── */
+.pos-right app-pos-catalogo {
+  display: flex; flex-direction: column;
+  flex: 1; min-height: 0; overflow: hidden;
+}
+
+/* ── Header del catálogo — limpio ─────── */
+.cat-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .5rem .875rem;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.cat-header-title {
+  font-size: .8125rem; font-weight: 600;
+  color: var(--text-secondary);
+}
+.cat-header-title strong {
+  color: var(--text-primary); font-weight: 700;
+}
+
+/* ── Modales ──────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1050;
+  background: rgba(0,0,0,.45); display: flex;
+  align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal-box {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg, 12px);
+  width: min(95vw, 480px);
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  overflow: hidden;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .875rem 1.125rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.modal-header h3 { font-size: .9375rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.modal-body { padding: 1.125rem; display: flex; flex-direction: column; gap: .875rem; }
+.modal-footer {
+  padding: .75rem 1.125rem;
+  border-top: 1px solid var(--border-color);
+  display: flex; justify-content: flex-end; gap: .5rem;
+}
+.modal-close {
+  width: 28px; height: 28px; border: none; background: none;
+  border-radius: var(--radius-sm, 4px); cursor: pointer;
+  color: var(--text-muted); font-size: 1.1rem; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 120ms;
+}
+.modal-close:hover { background: var(--bg-surface-2); color: var(--text-primary); }
+.modal-pedidos { max-width: 840px; width: 95vw; max-height: 90vh; overflow-y: auto; }
+
+/* ── Alertas ──────────────────────────── */
+.alert { padding: .5rem .75rem; border-radius: var(--radius-md, 8px); font-size: .84rem; }
+.alert-success { background: var(--status-success-bg); color: var(--status-success-text); }
+.alert-danger  { background: var(--status-danger-bg);  color: var(--status-danger-text); }
+
+/* ── Form helpers ─────────────────────── */
+.form-group { display: flex; flex-direction: column; gap: .3rem; }
+.form-row { flex-direction: row; align-items: center; gap: .75rem; }
+.form-row .form-label { flex-shrink: 0; min-width: 72px; }
+.form-label {
+  font-size: .72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: var(--text-muted);
+}
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .625rem; }
+
+/* ══════════════════════════════════════════
+   MÓVIL — Layout con tabs
+   ══════════════════════════════════════════ */
+
+/* Tab bar — solo visible en móvil */
+.pos-tabs {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  /* En móvil cancelar el margen negativo del host */
+  :host { margin: -1rem; margin-top: 0; }
+
+  .pos-layout {
+    flex-direction: column;
+    height: calc(100dvh - var(--header-height, 56px) - 3.5rem);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .pos-left,
+  .pos-right {
+    position: absolute;
+    inset: 0 0 52px 0;
+    width: 100%; max-width: 100%;
+    height: auto;
+    overflow: hidden;
+    transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity   200ms ease;
+  }
+
+  /* Panel inactivo — deslizado fuera de pantalla */
+  .pos-left.tab-hidden  { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+  .pos-right.tab-hidden { transform: translateX(100%);  opacity: 0; pointer-events: none; }
+
+  /* Selectores en columna en móvil */
+  .pos-selectores { grid-template-columns: 1fr 1fr; }
+
+  /* Tab bar — fija en el fondo */
+  .pos-tabs {
+    display: flex;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 52px;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    z-index: 10;
+  }
+
+  .pos-tab-btn {
+    flex: 1; border: none; background: transparent; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: .2rem; color: var(--text-muted); font-size: .65rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .05em;
+    transition: color 140ms; padding: 0;
+    position: relative;
+  }
+  .pos-tab-btn svg { flex-shrink: 0; }
+  .pos-tab-btn.active {
+    color: var(--color-accent);
+  }
+  /* Línea indicadora en la parte superior del tab activo */
+  .pos-tab-btn.active::before {
+    content: '';
+    position: absolute; top: 0; left: 20%; right: 20%; height: 2px;
+    background: var(--color-accent);
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* Badge contador de ítems en carrito */
+  .pos-tab-badge {
+    position: absolute; top: 6px; right: calc(50% - 20px);
+    min-width: 16px; height: 16px; padding: 0 4px;
+    background: var(--color-accent); color: #fff;
+    font-size: .6rem; font-weight: 700; border-radius: 99px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+}

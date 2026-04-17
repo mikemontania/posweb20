@@ -1,0 +1,106 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="historiales" class="m-b-0 text-white">historiales de premios( {{ totalElementos}})</h4>
+        <h4 *ngIf="!historiales" class="m-b-0 text-white">historiales de premios ( 0 )</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                
+              
+            </div>
+            <div class="col-9">
+                <div class="row col-12 form-group">
+                    <label for="fechaInicio" class="col-form-label col-sm-2">Fecha desde</label>
+                    <div class="col-sm-6">
+                        <input type="date" class="form-control  form-control-sm form-group" [(ngModel)]="fechaInicio" name="fechaInicio" required=""> 
+                    </div>
+                </div>
+                <div class="row col-12 form-group" *ngIf="rol == 'ROLE_ADMIN'">
+                    <label for="sucursales" class="col-form-label col-sm-2">Sucursal</label>
+                    <div class="col-sm-6">
+                        <ng-select-sucursal #searchSucursales id="ngbdtypeaheadSucursales" [cargadorSucursal]="cargadorSucursal" 
+                        style="width: 100%" name="sucursal" (retornoObjeto)="seleccionarSucursal($event)">
+                        </ng-select-sucursal> 
+                    </div>
+                </div>
+                <div class="row col-12 form-group">
+                    <label for="premios" class="col-form-label col-sm-2">Premio</label>
+                    <div class="col-sm-6">
+                        <ng-select-premio #searchPremio id="selectpremio" [cargadorPremio]="cargadorPremio"
+                            style="width: 100%" name="premio" (retornoObjeto)="seleccionarPremio($event)">
+                        </ng-select-premio>
+                    </div>
+                </div>
+                <div class=" form-group button-group col-6">
+                    <button class="btn btn-themecolor waves-effect waves-light" (click)='buscar()' type="button">
+                        <i class="fa fa-search"></i>
+                        Buscar
+                    </button>
+                    <button class="btn btn-secondary waves-effect waves-light" (click)='ngOnInit()' type="button">
+                        <i class="fa fa-close"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="historiales?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="historiales?.length>0">
+                <thead>
+                    <tr> 
+                        <th>Codigo  </th>
+                        <th>Sucursal  </th>
+                        <th>Premio</th>
+                        <th>Movimiento</th>
+                        <th>Fecha</th>
+                        <th>Cantidad</th>
+                        <th>Existencia</th>
+                        <th>Usuario</th>
+                        <th>Cliente</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let hist of historiales | slice: (currentPage * pageSize) - pageSize :currentPage * pageSize">
+                         <td>{{ hist.codigo }}</td>
+                         <td>{{ hist.sucursal.nombreSucursal }}</td>
+                         <td>{{ hist.premio.descripcion }}</td>
+                         <td>{{ hist.operacion }}</td>
+                        <td>{{ hist.fecha}}</td>
+                        <td>{{ hist.cantidad}}</td>
+                        <td>{{ hist.existencia}}</td>
+                        <td>{{ hist.usuario}}</td>
+                        <td>{{ hist.cliente}}</td>
+ 
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container" *ngIf="historiales?.length > 0">
+            <ngb-pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="historiales.length" [(page)]="currentPage" [maxSize]="4" [boundaryLinks]="true">
+                <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+                <ng-template ngbPaginationNext>&raquo;</ng-template>
+                <ng-template ngbPaginationFirst>Primera</ng-template>
+                <ng-template ngbPaginationLast>Última</ng-template>
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

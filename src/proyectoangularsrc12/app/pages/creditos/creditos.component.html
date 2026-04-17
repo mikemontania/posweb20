@@ -1,0 +1,236 @@
+<div class="card">
+  <div class="card-body">
+      <div class="d-flex">
+          <div>
+              <h3 class="card-title m-b-5 center"><span class="lstick"></span>Listado de creditos ({{totalElementos}})</h3>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="form-group row">
+            <div class="col-sm-6">
+              <label for="fechaInicio" class="col-form-label">F. Desde:</label>
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="fechaInicio" name="fechaInicio">
+            </div>
+            <div class="col-sm-6">
+              <label for="fechafin" class="col-form-label">F. Hasta:</label>
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="fechafin" name="fechafin">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-6">
+              <label for="cliente" class="col-form-label">Cliente:</label>
+              <ng-select-clientes
+                #searchClientes
+                id="ngbdtypeaheadClientes"
+                [cargadorCliente]="cargadorCliente"
+                class="w-100"
+                name="cliente"
+                (retornoObjeto)="seleccionarCliente($event)">
+              </ng-select-clientes>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="nroComprobante" class="col-form-label">N° Factura:</label>
+              <input type="text"
+                placeholder="Ej: 008-008-0000072"
+                [textMask]="{ mask: mask, guide: true }"
+                class="form-control form-control-sm"
+                [(ngModel)]="nroComprobante"
+                name="nroComprobante">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <label for="estado" class="col-form-label">Estado:</label>
+              <ng-select
+                [items]="estados"
+                bindLabel="descripcion"
+                bindValue="id"
+                notFoundText="No se ha encontrado estado"
+                placeholder="Seleccione estado"
+                [(ngModel)]="estado"
+                name="estado"
+                class="w-100"
+                [clearable]="false"
+
+                (change)="cambioEstado($event)">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <!-- Loader -->
+          <div class="row" *ngIf="cargando">
+              <div class="col-sm-12">
+                  <div class="alert alert-info text-center">
+                      <strong>Cargando ...</strong>
+                      <br>
+                      <i class="fa fa-refresh fa-spin fa-2x"></i>
+                      <br>
+                      <span>Espere por favor</span>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Resumen Crédito Global -->
+          <h4>Resumen Crédito - Período Completo</h4>
+          <div class="row">
+            <div class="col-md-3" *ngFor="let item of [
+                { titulo: 'Total Monto', valor: resumenCreditoFecha.totalMonto, cantidad: resumenCreditoFecha.totalCreditos, color: 'bg-info' },
+                { titulo: 'Total Pagados', valor: resumenCreditoFecha.totalPagados, cantidad: resumenCreditoFecha.cantidadPagados, color: 'bg-success' },
+                { titulo: 'Total Pendientes', valor: resumenCreditoFecha.totalPendientesACobrar, cantidad: resumenCreditoFecha.cantidadPendientes, color: 'bg-warning' },
+                { titulo: 'Total Vencidos', valor: resumenCreditoFecha.totalVencidos, cantidad: resumenCreditoFecha.cantidadVencidos, color: 'bg-danger' },
+            ]">
+                <div class="card text-white" [ngClass]="item.color">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.titulo }}</h5>
+                        <h3>Gs. {{ item.valor | number }}</h3>
+                        <h6 class="mt-2">Cantidad: {{ item.cantidad }}</h6>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+
+          <!-- Resumen Crédito (Fechas seleccionadas) -->
+          <h4>Resumen Crédito - Fechas Seleccionadas</h4>
+          <div class="row">
+            <div class="col-md-3" *ngFor="let item of [
+                { titulo: 'Total Monto', valor: resumenCredito.totalMonto, cantidad: resumenCredito.totalCreditos, color: 'bg-info' },
+                { titulo: 'Total Pagados', valor: resumenCredito.totalPagados, cantidad: resumenCredito.cantidadPagados, color: 'bg-success' },
+                { titulo: 'Total Pendientes', valor: resumenCredito.totalPendientesACobrar, cantidad: resumenCredito.cantidadPendientes, color: 'bg-warning' },
+                { titulo: 'Total Vencidos', valor: resumenCredito.totalVencidos, cantidad: resumenCredito.cantidadVencidos, color: 'bg-danger' },
+            ]">
+                <div class="card text-white" [ngClass]="item.color">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.titulo }}</h5>
+                        <h3>Gs. {{ item.valor | number }}</h3>
+                        <h6 class="mt-2">Cantidad: {{ item.cantidad }}</h6>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+
+
+      </div>
+      <div class="form-group row button-group">
+          <div class="col-sm-6">
+              <button class="btn btn-themecolor   waves-effect waves-light " (click)='buscar()' type="button ">
+                                          <i class="fa fa-search "></i>
+                                          Buscar
+                                  </button>
+
+              <button type="button" (click)='ngOnInit()' class="btn  btn-secondary   waves-effect waves-light">
+                                      <i class="fa  fa-close"></i> Cancelar
+                                  </button>
+           <!--    <button type="button" (click)='descargar()' class="btn  btn-danger   waves-effect waves-light">
+                                      <i class="fa  fa-download"></i> PDF
+                                  </button> -->
+                                 <!--  <button type="button" (click)='export()' class="btn  btn-success   waves-effect waves-light">
+                                      <i class="fa  fa-download"></i> Excel
+                                  </button> -->
+          </div>
+      </div>
+
+      <div class="form-group row">
+          <label for="filas" class="col-form-label col-sm-2 col-lg-1.5 col-xl-1">Filas:</label>
+          <div class="col-sm-2 col-lg-1.5 col-xl-1">
+              <select class="selectpicker form-control-sm custom-select" name="filas" [(ngModel)]="size" (ngModelChange)="cambioNumero($event)">
+                              <option     *ngFor="let t of numeros" [value]="t.cod" >
+                              {{t.descripcion}}
+                              </option>
+                          </select>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+
+      <div *ngIf="creditos?.length == 0" class="alert alert-info">
+          No se han encontrado registros ...
+      </div>
+
+
+      <div class="row" animated fadeIn *ngIf="cargando">
+          <div class="col-sm-6 col-md-12">
+              <div class="alert alert-info text-center">
+                  <strong>Cargando ...</strong>
+                  <br>
+                  <i class="fa fa-refresh fa-spin fa-2x"></i>
+                  <br>
+                  <span>Espere por favor</span>
+              </div>
+          </div>
+      </div>
+
+      <div class="table-responsive" [hidden]="cargando">
+          <div *ngIf="creditos?.length>0">
+            <table class="table table-sm table-bordered">
+              <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                      <th>Nro Comprobante</th>
+                      <th>Estado</th>
+                      <th>F.Vencimiento</th>
+                      <th>Credito</th>
+                      <th>Dias de Mora</th>
+                      <th>Restantes</th>
+                      <th align="center">Importe Total</th>
+                      <th align="center">Saldo Pendiente</th>
+                      <th>Pagar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of creditos"
+                    [ngClass]="{'table-danger': item.diasMora > 0, 'table-success': item.estado === 'PAGADO'}">
+                    <td align="center">{{ item.codCredito}}</td>
+                    <td>
+                        <h6>{{item.cliente.docNro}}</h6>
+                        <small class="text-muted">{{ item.cliente.razonSocial }}</small>
+                    </td>
+                    <td>{{ item.fecha | date:'dd/MM/yyyy' }}</td>
+                    <td>
+                        <h6>{{item.nroComprobante}}</h6>
+                        <small class="text-muted">{{ item.timbrado }}</small>
+                    </td>
+                    <td>{{ item.estado }}</td>
+                    <td>{{ item.fechaVencimiento }}</td>
+                    <td>{{ item.cantDias }} día</td>
+                    <td>{{ item.diasMora }} día</td>
+                    <td *ngIf="item.diasRestante!== 999" >{{ item.diasRestantes }} día</td>
+                    <td *ngIf="item.diasRestante=== 999" >-</td>
+                    <td align="center">{{ item.importeTotal | number }}</td>
+                    <td align="center">{{ item.saldoPendiente | number }}</td>
+                    <td align="center">
+                      <button
+                      class="btn btn-success btn-circle"
+                      type="button"
+                      [disabled]="item.estado === 'PAGADO'"
+                      (click)="pagarCredito(item)">
+                      <i class="mdi mdi-cash"></i>
+                    </button>
+                    </td>
+                </tr>
+              </tbody>
+          </table>
+
+          </div>
+      </div>
+
+      <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" *ngIf="creditos?.length>0" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="5" [boundaryLinks]="true"
+        (pageChange)="loadPage($event)">
+        <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+        <ng-template ngbPaginationNext>&raquo;</ng-template>
+        <ng-template ngbPaginationFirst>Primera</ng-template>
+        <ng-template ngbPaginationLast>Última</ng-template>
+    </ngb-pagination>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="page-content">
+  <div class="page-header">
+    <div class="page-header-left"><h1 class="page-title">Alianzas</h1>
+      <span class="page-count badge badge-primary" *ngIf="!loading()">{{ itemsFiltrados.length }} registros</span></div>
+    <div class="page-header-actions">
+      <a routerLink="/alianzas/formulario" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nueva
+      </a>
+    </div>
+  </div>
+  <div class="search-bar">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" class="form-control search-input" placeholder="Buscar..." [(ngModel)]="busqueda"/>
+    @if (busqueda) { <button class="search-clear" (click)="busqueda = ''">×</button> }
+  </div>
+  <div class="card tabla-card">
+    @if (loading()) { <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div> }
+    @if (!loading() && itemsFiltrados.length === 0) {
+      <div class="table-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>No se encontraron alianzas</p></div>
+    }
+    @if (!loading() && itemsFiltrados.length > 0) {
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead><tr>
+            <th>Código</th><th>Alianza</th><th>QR</th><th>Descuento</th>
+            <th>Registros</th><th>Válido desde</th><th>Vencimiento</th>
+            <th class="th-acciones">Acciones</th>
+          </tr></thead>
+          <tbody>
+            @for (item of itemsFiltrados; track item.codAlianza) {
+              <tr>
+                <td>{{ item.codAlianza }}</td>
+                <td><strong>{{ item.alianza }}</strong></td>
+                <td><code class="text-xs">{{ item.qr }}</code></td>
+                <td class="text-right">{{ item.descuento }}%</td>
+                <td class="text-right">{{ item.registros }}</td>
+                <td>{{ item.fechaDesde }}</td>
+                <td>{{ item.fechaHasta }}</td>
+                <td class="td-acciones">
+                  <a [routerLink]="['/alianzas/formulario', item.codAlianza]" class="btn-accion btn-editar" title="Editar">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </a>
+                  <button class="btn-accion btn-eliminar" title="Eliminar" (click)="solicitarEliminar(item)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+<app-modal-confirm [open]="showDelModal()" title="Eliminar Alianza"
+  message="¿Confirmar eliminación?" confirmLabel="Eliminar" [confirmDanger]="true"
+  (confirmed)="confirmarEliminar()" (cancelled)="showDelModal.set(false)"/>

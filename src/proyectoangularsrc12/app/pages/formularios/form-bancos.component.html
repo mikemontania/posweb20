@@ -1,0 +1,54 @@
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!bancos.codBanco" class="m-b-0 text-white">Crear banco</h4>
+        <h4 *ngIf="bancos.codBanco" class="m-b-0 text-white">Actualizar banco</h4>
+    </div>
+    <div class="card-body">
+
+        <form #bancosForm="ngForm">
+
+            <div class="form-group row">
+                <label for="codBancoErp" class="col-form-label col-sm-2">Codigo Erp <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="bancos.codBancoErp" (ngModelChange)="bancos.codBancoErp = toUpeCaseEvent($event)" name="codBancoErp" #codBancoErp="ngModel" required minlength="1">
+                    <div class="alert alert-danger" *ngIf="codBancoErp.invalid && (codBancoErp.dirty || codBancoErp.touched)">
+                        <div *ngIf="!!codBancoErp.errors.required">
+                            codBancoErp es requerido
+                        </div>
+                        <div *ngIf="!!codBancoErp.errors.minlength">
+                            codBancoErp debe tener al menos 1 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="descripcion" class="col-form-label col-sm-2">Banco <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="bancos.descripcion" name="descripcion" #descripcion="ngModel" (ngModelChange)="bancos.descripcion =toUpeCaseEvent($event)" required minlength="5">
+                    <div class="alert alert-danger" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                        <div *ngIf="!!descripcion.errors.required">
+                            descripcion es requerido
+                        </div>
+                        <div *ngIf="!!descripcion.errors.minlength">
+                            descripcion debe tener al menos 5 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/bancos']" class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i> Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()' *ngIf="!bancos.codBanco else elseBlock" [disabled]="!bancosForm.form.valid"><i class="fa   fa-floppy-o"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='update()' [disabled]="!bancosForm.form.valid"><i class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+
+
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,119 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Nueva Transferencia</h1>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn btn-secondary" (click)="cancelar()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </button>
+      <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando()">
+        @if (guardando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+        Guardar Transferencia
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Cabecera ────────────────────────────────────────── -->
+  <div class="card" style="padding:1.25rem;margin-bottom:1rem">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem">
+
+      <div class="form-group">
+        <label class="form-label">Fecha <span class="text-danger">*</span></label>
+        <input type="date" class="form-control" [ngModel]="fecha()" (ngModelChange)="fecha.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">N° Comprobante</label>
+        <input type="text" class="form-control" placeholder="ej: 001-001-0000001"
+               [ngModel]="nroComprobante()" (ngModelChange)="nroComprobante.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Depósito Emisor <span class="text-danger">*</span></label>
+        <app-select-search [items]="depositos()" bindLabel="descripcion"
+          bindValue="codDeposito" placeholder="Seleccione depósito emisor"
+          [selected]="selEmisor()" (changed)="selEmisor.set($any($event))"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Depósito Receptor <span class="text-danger">*</span></label>
+        <app-select-search [items]="depositos()" bindLabel="descripcion"
+          bindValue="codDeposito" placeholder="Seleccione depósito receptor"
+          [selected]="selReceptor()" (changed)="selReceptor.set($any($event))"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Motivo de Transferencia <span class="text-danger">*</span></label>
+        <app-select-search [items]="motivos()" bindLabel="descripcion"
+          bindValue="codMotivoTransferencia" placeholder="Seleccione motivo"
+          [selected]="selMotivo()" (changed)="selMotivo.set($any($event))"/>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Líneas ──────────────────────────────────────────── -->
+  <div class="card tabla-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border-color)">
+      <strong>Productos a Transferir &nbsp;<span class="badge badge-primary">{{ totalProducto() }} ítems</span></strong>
+      <button class="btn btn-secondary" style="gap:.35rem" (click)="agregarLinea()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Agregar línea
+      </button>
+    </div>
+    <div class="table-responsive">
+      <table class="table tabla-parametros lineas-table">
+        <thead>
+          <tr>
+            <th style="width:2rem">#</th>
+            <th style="min-width:220px">Producto</th>
+            <th style="min-width:140px">Unid. Medida</th>
+            <th style="width:110px" class="text-right">Cantidad</th>
+            <th style="width:2rem"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of lineas(); track l._id; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>
+                <app-select-search [items]="l.productos" bindLabel="descripcion"
+                  placeholder="Buscar producto" [selected]="l.producto"
+                  (changed)="onProductoChange($any($event), i)"
+                  (search)="buscarProductos($event, i)"/>
+              </td>
+              <td>
+                <app-select-search [items]="unidades()" bindLabel="descripcion"
+                  placeholder="Unidad" [selected]="l.unidadMedida"
+                  (changed)="updateLinea(i, 'unidadMedida', $event)"/>
+              </td>
+              <td>
+                <input type="number" class="form-control text-right" min="1"
+                       [ngModel]="l.cantidadTransferencia"
+                       (ngModelChange)="updateLinea(i, 'cantidadTransferencia', +$event)"/>
+              </td>
+              <td>
+                <button class="btn-accion btn-eliminar" title="Quitar" (click)="quitarLinea(i)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          }
+          @if (lineas().length === 0) {
+            <tr><td colspan="5" class="text-center" style="color:var(--text-muted);padding:1.5rem">
+              Sin líneas. Haga clic en "Agregar línea".
+            </td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

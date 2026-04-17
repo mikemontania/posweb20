@@ -1,0 +1,196 @@
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex">
+            <div>
+                <h3 class="card-title m-b-5 center"><span class="lstick"></span>Listado de cobranza ({{totalElementos}})</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="form-group row">
+                    <label for="fechaInicio" class="col-form-label col-sm-4"> F.Desde:</label>
+                    <div class="col-sm-8">
+                        <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaInicio" name="fechaInicio">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="fechafin" class="col-form-label col-sm-4"> F.Hasta:</label>
+                    <div class="col-sm-8">
+                        <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechafin" name="fechafin">
+                    </div>
+                </div>
+
+                <!-- <div class="form-group row">
+                    <label for="usuario" class="col-form-label col-sm-4">Usuario:</label>
+                    <div class="col-sm-8">
+                        <ng-select-usuario #searchUsuarios id="ngbdtypeaheadUsuarios" [cargadorUsuario]="cargadorUsuario" style="width: 100%" name="usuario" (retornoObjeto)="seleccionarUsuario($event)"></ng-select-usuario>
+                    </div>
+                </div> -->
+                <div class="form-group row">
+                    <label for="medioPago" class="col-form-label col-sm-4"> Medio pago:</label>
+                    <div class="col-sm-8">
+                        <ng-select-medioPago [cargadorMedioPago]="cargadorMedioPago" style="width: 100%" (retornoObjeto)="seleccionarMedioPago($event)"></ng-select-medioPago>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sucursal" class="col-form-label col-sm-4">Sucursal:</label>
+                    <div class="col-sm-8">
+                        <!--    <ng-select-sucursal #searchSucursales id="ngbdtypeaheadSucursales" [cargadorSucursal]="cargadorSucursal" style="width: 100%" name="sucursal" (retornoObjeto)="seleccionarSucursal($event)"></ng-select-sucursal> -->
+                        <ng-select [items]="sucursales" notFoundText="No se ha encontrado sucursal" [clearable]="!cajero" placeholder="Seleccione sucursal" [(ngModel)]="cargadorSucursal" bindLabel="nombreSucursal" (change)="selectedItem($event)">
+                            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                                <b [ngOptionHighlight]="search">{{item.nombreSucursal}}</b>
+                            </ng-template>
+                        </ng-select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-5">
+
+                <div *ngIf="resumenMedioPago?.length == 0" class=" ">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                </div>
+                <div *ngIf="cobranzaResumen?.length == 0" class="alert alert-info">
+                    No se han encontrado registros ...
+                </div>
+                <div class="row" animated fadeIn *ngIf="cargando">
+                    <div class="col-sm-12">
+                        <div class="alert alert-info text-center">
+                            <strong>Cargando ...</strong>
+                            <br>
+                            <i class="fa fa-refresh fa-spin fa-2x"></i>
+                            <br>
+                            <span>Espere por favor</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="table-responsive" [hidden]="cargando">
+                    <div *ngIf="resumenMedioPago?.length>0">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th align="center">Medio pago</th>
+                                    <th align="center">Cant. cobranza</th>
+                                    <th align="center">Importe cobrado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let i of resumenMedioPago">
+                                    <td align="center">{{ i.medioPago }}</td>
+                                    <td align="center">{{ i.cantCobranzas | number }}</td>
+                                    <td align="center">GS. {{ i.importeCobrado | number}}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr [ngClass]=" 'alert-primary'">
+                                    <td align="center">TOTALES:</td>
+                                    <td align="center">{{ sumaCantidad }}</td>
+                                    <td align="center">Gs. {{ sumaToTal | number}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row button-group">
+            <div class="col-sm-6">
+                <button class="btn btn-themecolor   waves-effect waves-light " (click)='buscar()' type="button ">
+                                            <i class="fa fa-search "></i>
+                                            Buscar
+                                    </button>
+                <button type="button" (click)='ngOnInit()' class="btn  btn-secondary   waves-effect waves-light">
+                                        <i class="fa  fa-close"></i> Cancelar
+                                    </button>
+                <button type="button" (click)='descargar()' class="btn  btn-danger   waves-effect waves-light">
+                                        <i class="fa  fa-download"></i> PDF
+                                    </button>
+                                    <button type="button" (click)='export()' class="btn  btn-success   waves-effect waves-light">
+                                        <i class="fa  fa-download"></i> Excel
+                                    </button>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="filas" class="col-form-label col-sm-2 col-lg-1.5 col-xl-1">Filas:</label>
+            <div class="col-sm-2 col-lg-1.5 col-xl-1">
+                <select class="selectpicker form-control-sm custom-select" name="filas" [(ngModel)]="size" (ngModelChange)="cambioNumero($event)">
+                                <option     *ngFor="let t of numeros" [value]="t.cod" >
+                                {{t.descripcion}}
+                                </option>
+                            </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+
+        <div *ngIf="cobranzaResumen?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+
+
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-6 col-md-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive" [hidden]="cargando">
+            <div *ngIf="cobranzaResumen?.length>0">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <!--  <th >Cod.</th> -->
+                            <th>Nro Comprobante</th>
+                            <th>Razon Social</th>
+                            <th>Nro Doc.</th>
+                            <th>Medio Pago</th>
+                            <th>Fecha</th>
+                            <th align="center">Importe cobrado</th>
+                            <th>Detalles</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of cobranzaResumen">
+                            <!--   <td >{{ venta.codVenta }}</td> -->
+                            <td>{{ item.nroComprobante }}</td>
+                            <td>{{ item.razonSocial }}</td>
+                            <td>{{ item.ruc }}</td>
+                            <td>{{ item.medioPago }}</td>
+                            <td>{{ item.fechaVenta | date:'dd/MM/yyyy'}}</td>
+                            <td align="center">{{ item.importeCobrado | number }}</td>
+                            <td align="center">
+                                <button class="btn btn-success btn-circle " [routerLink]="['/ventasLista/id', item.codVenta]" type="button">
+                              <i class="fa fa-list"></i>
+                          </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" *ngIf="cobranzaResumen?.length>0" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="5" [boundaryLinks]="true"
+            (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

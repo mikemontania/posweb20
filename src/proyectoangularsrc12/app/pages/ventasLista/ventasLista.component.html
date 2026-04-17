@@ -1,0 +1,377 @@
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex">
+          <div>
+            <span>
+              <h3 class="card-title m-b-5 center">
+                <span class="lstick"></span>Listado de ventas
+              </h3>
+            </span>
+          </div>
+        </div>
+        <div class="container py-5">
+
+          <form #repartoForm="ngForm">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="fechaInicio" class="col-form-label"> Fecha Desde:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaInicio"
+                  name="fechaInicio" />
+              </div>
+              <div class="col-sm-6">
+                <label for="fechafin" class="col-form-label"> Fecha Hasta:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechafin" name="fechafin" />
+              </div>
+            </div>
+            <!-- =========== Para Role Adm ============== -->
+            <div class="form-group row"
+              *ngIf="rol == 'ROLE_ADMIN' || rol =='ROLE_CONTADOR' || rol == 'ROLE_CAJERO_SUP'">
+              <div class="col-sm-6">
+                <label for="sucursal" class="col-form-label">Sucursal:</label>
+                <ng-select-sucursal #searchSucursales id="ngbdtypeaheadSucursales" [cargadorSucursal]="cargadorSucursal"
+                  style="width: 100%" name="sucursal" (retornoObjeto)="seleccionarSucursal($event)">
+                </ng-select-sucursal>
+              </div>
+              <div class="col-sm-6">
+                <label for="usuario" class="col-form-label">Usuario:</label>
+                <ng-select-usuario #searchUsuarios id="ngbdtypeaheadUsuarios" [cargadorUsuario]="cargadorUsuario"
+                  style="width: 100%" name="usuario" (retornoObjeto)="seleccionarUsuario($event)"></ng-select-usuario>
+              </div>
+            </div>
+            <!-- =========== Para Role cajero ============== -->
+            <div class="form-group row" *ngIf="rol == 'ROLE_CAJERO'">
+              <div class="col-sm-6">
+                <label for="sucursal" class="col-form-label ">Sucursal:</label>
+                <select id="seleccionSucursales" class="form-control form-control-sm custom-select"
+                  [(ngModel)]="seleccionSucursal" style="font-size: 90%;width: 100%; " name="seleccionSucursales"
+                  (ngModelChange)="cambioSucursal($event)">
+                  <option style="font-size: 90%; " *ngFor="let s of sucursales" [value]="s.codSucursal">
+                    {{ s.nombreSucursal }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label for="usuario" class="col-form-label">Usuario:</label>
+                <select id="seleccionUsuario" class="form-control form-control-sm custom-select"
+                  [(ngModel)]="seleccionUsuario" style="font-size: 90%;width: 100%; " name="seleccionUsuario"
+                  (ngModelChange)="cambioUsuario($event)">
+                  <option style="font-size: 90%; " *ngFor="let u of usuarios" [value]="u.codUsuario">
+                    {{ u.nombrePersona }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="cliente" class="col-form-label"> Cliente:</label>
+                <ng-select-clientes #searchClientes id="ngbdtypeaheadClientes" [cargadorCliente]="cargadorCliente"
+                  style="width: 100%" name="cliente" (retornoObjeto)="seleccionarCliente($event)"></ng-select-clientes>
+              </div>
+              <div class="col-sm-6">
+                <label for="tipoVenta" class="col-form-label">
+                  Tipo:</label>
+                <ng-select [(ngModel)]="objeto.tipoVenta" (ngModelChange)="tipoVenta = $event" name="tipoVenta"
+                  id="tipoVenta" [clearable]="false">
+                  <ng-option [value]="''">TODOS</ng-option>
+                  <ng-option [value]="'POS'">POS</ng-option>
+                  <ng-option [value]="'ECOMMERCE'">ECOMMERCE</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="nroComprobante" class="col-form-label">
+                  N° factura:</label>
+                <input type="text " placeholder="Ej: 008-008-0000072" [textMask]="{ mask: mask, guide: true }"
+                  guide="false " class="form-control form-control-sm " [(ngModel)]="nroComprobante"
+                  name="nroComprobante " />
+              </div>
+              <div class="col-sm-6">
+                <label for="estado" class="col-form-label ">Estado:</label>
+                <ng-select [items]="estados" notFoundText="No se ha encontrado estado" placeholder="Seleccione estado"
+                  [(ngModel)]="estado" name="estado" bindLabel="descripcion" (clear)="clean()"
+                  (change)="cambioEstado($event)">
+                </ng-select>
+              </div>
+            </div>
+            <div class="form-group row button-group ">
+              <div class="col-sm-6  " style=" text-align: center;">
+                <button class="btn btn-themecolor   " (click)="buscarVenta()" type="button ">
+                  <i class="fa fa-search "></i> Buscar
+                </button>
+                <button type="button" (click)="ngOnInit()" class="btn  btn-secondary">
+                  <i class="fa  fa-close"></i> Cancelar
+                </button>
+                <button type="button" (click)='export()' class="btn  btn-success   waves-effect waves-light">
+                  <i class="fa  fa-download"></i> Excel
+                </button>
+              </div>
+              <div class="col-sm-6 " style=" text-align: center;">
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                <img src="../../../assets/images/icon/cash.png" class="w50" alt="Income" />
+              </div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Total Gs.</h6>
+                <!--      <h2 *ngIf="reparto.totalGs" class="m-t-0">{{reparto.totalGs| number}} Gs.</h2> -->
+                <h2 class="m-t-0">{{totalGs|number}} Gs.</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                <img src="../../../assets/images/icon/balanza.png" class="w50" alt="Income" />
+              </div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Total Kg.</h6>
+                <!--   <h2 *ngIf="reparto.totalKg" class="m-t-0">{{reparto.totalKg | number}} Kg.</h2> -->
+                <h2 class="m-t-0">{{totalkg|number}} Kg.</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                <img src="../../../assets/images/icon/932602.png" class="w50" alt="Income" />
+              </div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Cantidad</h6>
+                <!--   <h2 *ngIf="reparto.totalKg" class="m-t-0">{{reparto.docs.length | number}}</h2> -->
+                <h2 class="m-t-0">{{ totalElementos |number}} </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--     <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="m-r-20 align-self-center">
+              <div class="form-group row ">
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex">
+      <div>
+        <span>
+          <h3 class="card-title m-b-5 center">
+            <span class="lstick"></span>Detalles
+          </h3>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="filas" class="col-form-label col-sm-2 col-lg-1.5 col-xl-1">Filas:</label>
+      <div class="col-sm-2 col-lg-1.5 col-xl-1">
+        <select class="selectpicker form-control-sm custom-select" name="filas" [(ngModel)]="size"
+          (ngModelChange)="cambioNumero($event)">
+          <option *ngFor="let t of numeros" [value]="t.cod">
+            {{ t.descripcion }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="ventas?.length == 0" class="alert alert-info">
+      No hay registros en la base de datos!
+    </div>
+
+    <div class="row" animated fadeIn *ngIf="cargando">
+      <div class="col-sm-6 col-md-12">
+        <div class="alert alert-info text-center">
+          <strong>Cargando ...</strong>
+          <br />
+          <i class="fa fa-refresh fa-spin fa-2x"></i>
+          <br />
+          <span>Espere por favor</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive" [hidden]="cargando">
+      <div *ngIf="ventas?.length > 0">
+        <table class="table table-sm table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Codigo</th>
+              <th>Venta</th>
+              <th>Estado</th>
+              <!--   <th>Sucursal</th> -->
+              <th>Sucursal</th>
+              <th>Anulado</th>
+              <th>Cliente</th>
+              <th>SubTotal</th>
+              <th>I.Total</th>
+              <th>N.Comprobante</th>
+              <th>Fecha</th>
+              <!--  <th>F.Modificacion</th> -->
+              <th>Porc.Desc.%</th>
+              <th>F.Anulación</th>
+              <th>Tipo</th>
+               <th>Canal</th>
+              <th>Entrega</th>
+              <th>Detalles</th>
+              <th *ngIf="rol == 'ROLE_ADMIN' || rol =='ROLE_CAJERO'">Doc.</th>
+              <th *ngIf="rol == 'ROLE_ADMIN' || rol =='ROLE_CAJERO'">Anular</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let venta of ventas;let i =index" [ngClass]="{
+                'alert-secundary': venta.estado == 'TEMP',
+                'alert-primary': venta.estado == 'CANCEL',
+                'alert-success': venta.estado == 'SYNC',
+                'alert-danger': venta.estado == 'ERROR',
+                'alert-warning': venta.estado == 'WARNING'
+              }">
+              <td> {{i+1}}</td>
+              <td>{{ venta.codVenta }}</td>
+              <td *ngIf="venta.esObsequio == true"><i class="fa fa-gift" aria-hidden="true"></i> </td>
+              <td *ngIf="!venta.esObsequio || venta.esObsequio == false"><i class="mdi mdi-cash" aria-hidden="true"></i>
+              </td>
+              <td>{{ venta.estado }}</td>
+              <td>{{ venta.codSucursalErp }}</td>
+              <td *ngIf="venta.anulado == true">SI</td>
+              <td *ngIf="venta.anulado == false">NO</td>
+              <td>{{ venta.cliente.concatDocNombre }}</td>
+              <td align="center" *ngIf="!venta.subTotal">0</td>
+              <td align="center" *ngIf="venta.subTotal">
+                {{ venta.subTotal | number }}
+              </td>
+              <td align="center" *ngIf="!venta.importeTotal">0</td>
+              <td align="center" *ngIf="venta.importeTotal">
+                {{ venta.importeTotal | number }}
+              </td>
+              <td align="center" *ngIf="!venta.nroComprobante">xxx-xxx-xx</td>
+              <td align="center" *ngIf="venta.nroComprobante">
+                {{ venta.nroComprobante }}
+              </td>
+              <td align="center" *ngIf="!venta.fechaVenta">xx/xx/xx</td>
+              <td align="center" *ngIf="venta.fechaVenta">
+                {{ venta.fechaVenta | date:'dd/MM/yyyy' }}
+              </td>
+              <td align="center" *ngIf="!venta.porcDescuento">0</td>
+              <td align="center" *ngIf="venta.porcDescuento">
+                {{ venta.porcDescuento | number }}
+              </td>
+              <td align="center" *ngIf="!venta.fechaAnulacion">xx/xx/xx</td>
+              <td align="center" *ngIf="venta.fechaAnulacion">
+                {{ venta.fechaAnulacion | date:'dd/MM/yyyy' }}
+              </td>
+              <td align="center">
+                {{ venta.tipoVenta }}
+              </td>
+                <td align="center">
+                {{ venta?.canal?.descripcion }}
+              </td>
+              <td align="center">
+                {{ venta.modoEntrega }}
+              </td>
+              <td align="center">
+                <button class="btn btn-success btn-circle " (click)="editar(venta.codVenta)" type="button">
+                  <i class="fa fa-list"></i>
+                </button>
+              </td>
+              <td align="center" *ngIf="rol == 'ROLE_ADMIN' || rol =='ROLE_CAJERO'">
+                <button class="btn btn-secondary btn-circle " (click)="definirComprobante(venta)" type="button">
+                  <i class="fa fa-file-pdf-o"></i>
+                </button>
+              </td>
+              <td align="center" *ngIf="rol == 'ROLE_ADMIN' || rol =='ROLE_CAJERO'">
+                <button class="btn btn-danger btn-circle " [disabled]="venta.anulado || venta.estado != 'TEMP'"
+                  (click)="mostrarModalAnulacion(venta.codVenta)" type="button">
+                  <i class="fa  fa-times"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="ventas?.length > 0" [size]="tamanhoPag"
+      [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+      [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+      <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+      <ng-template ngbPaginationNext>&raquo;</ng-template>
+      <ng-template ngbPaginationFirst>Primera</ng-template>
+      <ng-template ngbPaginationLast>Última</ng-template>
+    </ngb-pagination>
+  </div>
+</div>
+<!--  ==================================================MOTIVO ANULACION=========================================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="modalAnulacion">
+  <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white ">Motivo Anulación</h4>
+          <button (click)="cerrarModalAnulacion()" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="selectTerminal" class="col-form-label col-sm-2">Motivo
+            </label>
+            <div class="col-sm-6">
+              <select id="selectTerminal" class="custom-select-sm " style="width: 100%; height:36px;" tabindex="-1"
+                aria-hidden="true" [(ngModel)]="seleccionMotivo" #selectTerminal="ngModel" name="seleccionterminales"
+                (ngModelChange)="cambioTerminal($event)">
+                <option *ngFor="let m of motivosAnulacion" [value]="m.codMotivoAnulacion">
+                  {{ m.descripcion }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button (click)="enviarAnulacion()" type="button" class="btn btn-themecolor  text-white">
+              Enviar
+            </button>
+            <button (click)="cerrarModalAnulacion()" type="button" class="btn btn-secondary " data-dismiss="modal">
+              cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

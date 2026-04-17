@@ -1,0 +1,252 @@
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
+  padding: 0 1rem;
+  background: var(--bg-header);
+  color: var(--text-header);
+  gap: .75rem;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.header-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-header);
+  cursor: pointer;
+  transition: background var(--transition);
+  flex-shrink: 0;
+}
+.header-toggle:hover { background: rgba(255,255,255,.12); }
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--text-header);
+}
+.header-brand-icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-accent);
+}
+/* En tema light, si el header es de acento, el ícono va blanco */
+[data-theme="light"] .header-brand-icon,
+[data-theme="light-teal"] .header-brand-icon,
+[data-theme="light-slate"] .header-brand-icon { color: #fff; }
+
+.header-spacer { flex: 1; }
+
+.header-terminal {
+  font-size: .75rem;
+  opacity: .7;
+  white-space: nowrap;
+  display: none;
+}
+@media (min-width: 900px) { .header-terminal { display: block; } }
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.header-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  color: var(--text-header);
+  font-size: .6875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(255,255,255,.3);
+  flex-shrink: 0;
+}
+
+.header-username {
+  font-size: .8125rem;
+  font-weight: 500;
+  max-width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: none;
+}
+@media (min-width: 600px) { .header-username { display: block; } }
+
+.header-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-header);
+  cursor: pointer;
+  opacity: .7;
+  transition: opacity var(--transition), background var(--transition);
+}
+.header-logout:hover { opacity: 1; background: rgba(255,255,255,.12); }
+
+/* FAB Tema */
+.fab-theme {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: var(--color-accent);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 200;
+  transition: transform var(--transition), background var(--transition);
+}
+.fab-theme:hover  { transform: scale(1.1); }
+.fab-theme.active { transform: scale(1.1) rotate(30deg); }
+
+/* Backdrop */
+.theme-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 198;
+  background: rgba(0,0,0,.35);
+}
+
+/* Panel lateral de temas */
+.theme-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 240px;
+  height: 100dvh;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border-color);
+  z-index: 199;
+  overflow-y: auto;
+  padding: 1rem 0;
+  box-shadow: var(--shadow-lg);
+  animation: slideInRight 180ms ease;
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+.theme-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem .75rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: .5rem;
+}
+
+.theme-group-label {
+  font-size: .6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+  padding: .5rem 1rem .25rem;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  width: 100%;
+  padding: .5rem 1rem;
+  background: transparent;
+  border: none;
+  font-size: .875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition), color var(--transition);
+}
+.theme-option:hover  { background: var(--bg-surface-2); color: var(--text-primary); }
+.theme-option.active { color: var(--color-accent); font-weight: 500; }
+
+.theme-swatch {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.theme-swatch-accent {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 40%;
+}
+
+.theme-check {
+  margin-left: auto;
+  color: var(--color-accent);
+}
+
+/* btn-icon en el panel */
+.btn-icon {
+  width: 30px; height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.btn-icon:hover { background: var(--bg-surface-2); color: var(--text-primary); }
+
+/* Logo con imagen real */
+.header-brand-icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.header-brand-text-img {
+  display: block;
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+  /* El logo-mb-ps2 tiene texto negro — invertir en temas oscuros */
+  filter: brightness(0) invert(1);
+}
+
+/* En temas claros el header es de color de acento (azul/teal/violeta)
+   el logo tiene texto negro → invertir a blanco también */
+[data-theme="light"] .header-brand-text-img,
+[data-theme="light-teal"] .header-brand-text-img,
+[data-theme="light-slate"] .header-brand-text-img {
+  filter: brightness(0) invert(1);
+}
+
+/* Ocultar en mobile muy pequeño (< 400px) */
+@media (max-width: 400px) {
+  .header-brand-text-img { display: none; }
+}

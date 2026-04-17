@@ -1,0 +1,73 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de depositos( {{ depositos.length }})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/depositos/formulario']">
+              <i class="fa fa-plus"></i>
+              Nuevo
+            </button>
+            </div>
+
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-6 col-md-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="depositos?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="depositos?.length>0">
+                <thead>
+                    <tr>
+                        <th>CODIGO</th>
+                        <th>Deposito</th>
+                        <th>Sucursal</th>
+                        <th>Tipo</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let deposito of depositos | slice: (currentPage * pageSize) - pageSize :currentPage * pageSize">
+                        <td>{{ deposito.codDepositoErp }}</td>
+                        <td>{{ deposito.nombreDeposito }}</td>
+                        <td>{{ deposito.sucursal.nombreSucursal }}</td>
+                        <td>{{ deposito.tipoDeposito.descripcion }}</td>
+
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/depositos/formulario', deposito.codDeposito]" type="button">
+                     <i class="fa fa-pencil"></i>
+                   </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(deposito)' type="button">
+                     <i class="fa fa-trash-o"></i>
+                     </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container" *ngIf="depositos?.length > 0">
+            <ngb-pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="depositos.length" [(page)]="currentPage" [maxSize]="4" [boundaryLinks]="true">
+                <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+                <ng-template ngbPaginationNext>&raquo;</ng-template>
+                <ng-template ngbPaginationFirst>Primera</ng-template>
+                <ng-template ngbPaginationLast>Última</ng-template>
+            </ngb-pagination>
+        </div>
+
+    </div>
+</div>

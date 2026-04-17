@@ -1,0 +1,92 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de usuarios( {{ totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/usuarios/formulario']">
+              <i class="fa fa-plus"></i>          Nuevo
+            </button>
+            </div>
+            <div class="col-6">
+                <input-debounce delay="500" id="inputusuarios" height="15px" type="text" placeholder="Buscar usuarios..." required="" aria-invalid="false" (value)="buscarusuarios($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div *ngIf="usuarios?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive" [hidden]="cargando">
+
+            <div *ngIf="usuarios?.length>0">
+                <table class="table table-sm table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <!--  <th>codUsuario</th>
+                <th>codEmpresa</th> -->
+                            <th>Rol</th>
+                            <th>Usuario</th>
+                            <th>Username</th>
+                            <th>Sucursal</th>
+                            <th>Bloqueado</th>
+                            <th>Intentos fallidos</th>
+                            <th>F.Creación</th>
+                            <th>Creado Por</th>
+                            <th>F.Modificación</th>
+                            <th>Modificado Por</th>
+                            <th>Editar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let usuario of usuarios">
+                            <td class="w70 img-circle" align="center" style="background: white">
+                                <img *ngIf="usuario.img" [attr.src]="usuario.img | imagen:'usuarios' | async" class="profile-pic img-producto60 img-circle" />
+                                <img *ngIf="!usuario.img" [src]="sinImagen" class="profile-pic img-producto60 img-circle">
+                            </td>
+                            <!--   <td>{{ usuario.codUsuario }}</td>
+                <td>{{ usuario.codEmpresa }}</td> -->
+                            <td>{{ usuario.rol.nombreRol }}</td>
+                            <td>{{ usuario.nombrePersona }}</td>
+                            <td>{{ usuario.username }}</td>
+                            <td>{{ usuario.sucursal.nombreSucursal}}</td>
+                            <td>{{ usuario.bloqueado}}</td>
+                            <td>{{ usuario.intentoFallido}}</td>
+                            <td>{{ usuario.createdAt}}</td>
+                            <td>{{ usuario.createdBy}}</td>
+                            <td>{{ usuario.modifiedAt}}</td>
+                            <td>{{ usuario.modifiedBy}}</td>
+                            <td>
+                                <button class="btn btn-info btn-circle " [routerLink]="['/usuarios/formulario', usuario.codUsuario]" type="button">
+                          <i class="fa fa-pencil"></i>
+                    </button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" *ngIf="usuarios?.length>0" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="7" [boundaryLinks]="true"
+        (pageChange)="loadPage($event)">
+        <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+        <ng-template ngbPaginationNext>&raquo;</ng-template>
+        <ng-template ngbPaginationFirst>Primera</ng-template>
+        <ng-template ngbPaginationLast>Última</ng-template>
+    </ngb-pagination>
+</div>

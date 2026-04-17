@@ -1,0 +1,5 @@
+<ng-select [items]="vehiculos" notFoundText="No se ha encontrado vehiculo" [disabled]="disabled" placeholder="Seleccione vehiculo" [(ngModel)]="cargadorVehiculo" bindLabel="concatMarcaModeloChapa" (change)="selectedItem($event)">
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <b [ngOptionHighlight]="search">{{item.concatMarcaModeloChapa}}</b>
+    </ng-template>
+</ng-select>

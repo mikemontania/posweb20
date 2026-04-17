@@ -1,0 +1,211 @@
+<div class="card ">
+
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">{{ titulo }}</h4>
+    </div>
+    <div class="card-body">
+        <form #usuarioForm="ngForm">
+
+            <div class="col-lg-2 border-dark">
+                <div class="card">
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <img *ngIf="!imagenTemp && !usuario.img" [src]="sinImagen" style="width:242px;height:200px;">
+                        <img *ngIf="!imagenTemp && usuario.img" [attr.src]="usuario.img | imagen:'usuarios' | async"
+                            style="width:242px;height:200px;">
+                        <img *ngIf="imagenTemp" [src]="imagenTemp" style="width:242px;height:200px;">
+                        <div class="caption">
+                            <input id="uploadedfile" (change)="seleccionImage($event.target.files[0])" type="file">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="enabled" class="col-form-label col-sm-2">Activo <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select class=" custom-select  form-control" name="enabled" id="selectEnabled"
+                        [(ngModel)]="usuario.enabled" #enabled="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="codPersonaErp" class="col-form-label col-sm-2">Codigo Erp <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" placeholder="Codigo erp del usuario" class="form-control"
+                        [(ngModel)]="usuario.codPersonaErp" name="codPersonaErp" #codPersonaErp="ngModel" required
+                        minlength="1">
+                    <div class="alert alert-danger"
+                        *ngIf="codPersonaErp.invalid && (codPersonaErp.dirty || codPersonaErp.touched)">
+                        <div *ngIf="!!codPersonaErp.errors.required">
+                            codPersonaErp es requerido
+                        </div>
+                        <div *ngIf="!!codPersonaErp.errors.minlength">
+                            codPersonaErpdebe tener al menos 1 caracter
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="seleccionSucursal" class="col-form-label col-sm-2">Sucursal <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select id="selectSucursal" class="custom-select" style="width: 100%; height:36px;" tabindex="-1"
+                        aria-hidden="true" [(ngModel)]="seleccionSucursal" name="selectSucursal"
+                        (ngModelChange)="cambioSucursal($event)">
+                        <option *ngFor="let sucursal of sucursales" [value]="sucursal.codSucursal">
+                            {{sucursal.nombreSucursal}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="selectRol" class="col-form-label col-sm-2">Rol <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select id="selectRol" class="custom-select" style="width: 100%; height:36px;" tabindex="-1"
+                        aria-hidden="true" [(ngModel)]="seleccionRol" #selectRol="ngModel" name="selectRol"
+                        (ngModelChange)="cambioRol($event)">
+                        <option *ngFor="let rol of roles" [value]="rol.codRol">
+                            {{rol.nombreRol}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="nombrePersona" class="col-form-label col-sm-2">Nombre<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" placeholder="Nombre completo del usuario" class="form-control"
+                        [(ngModel)]="usuario.nombrePersona"
+                        (ngModelChange)="usuario.nombrePersona =  toUpeCaseEvent($event)" name="nombrePersona"
+                        #nombrePersona="ngModel" required minlength="4">
+                    <div class="alert alert-danger"
+                        *ngIf="nombrePersona.invalid && (nombrePersona.dirty || nombrePersona.touched)">
+                        <div *ngIf="!!nombrePersona.errors.required">
+                            nombrePersona es requerido
+                        </div>
+                        <div *ngIf="!!nombrePersona.errors.minlength">
+                            nombrePersona debe tener al menos 4 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label for="username" class="col-form-label col-sm-2">Username<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="email"
+                        pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}"
+                        autocomplete="username" [disabled]="usuario.codUsuario" placeholder="username"
+                        class="form-control" [(ngModel)]="usuario.username" name="username" #username="ngModel" required
+                        minlength="4">
+                    <div class="alert alert-danger" *ngIf="username.invalid && (username.dirty || username.touched)">
+                        <div *ngIf="!!username.errors.required">
+                            username es requerido
+                        </div>
+                        <div *ngIf="!!username.errors">
+                            username debe tener un formato valido
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--       <div class="form-group row" *ngIf="usuario.codUsuario ">
+                    <label for="password" class="col-form-label col-sm-2">Contraseña</label>
+                    <div class="col-sm-6 input-group">
+                        <input name="password" autocomplete="new-password" [(ngModel)]="password" class="form-control" [type]="type1" placeholder="Contraseña" minlength="4">
+                        <span class="input-group-btn ">
+                                            <button class="btn btn-secondary " (click)="mostrar1()">
+                                                    <i class="mdi mdi-eye"></i>
+                                            </button>
+                        </span>
+                    </div>
+                </div> -->
+            <div class="form-group row" *ngIf="!usuario.codUsuario">
+                <label for="password" class="col-form-label col-sm-2">Contraseña<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input name="password" autocomplete="new-password" [(ngModel)]="password" class="form-control"
+                        type="password" required placeholder="Contraseña" minlength="4">
+                </div>
+            </div>
+
+            <div class="form-group row" *ngIf="!usuario.codUsuario">
+                <label for="passwordCfr" class="col-form-label col-sm-2">Contraseña<span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input name="password2" [(ngModel)]="passwordCfr" class="form-control" type="password" required
+                        placeholder="Confirma contraseña" minlength="4">
+                </div>
+            </div>
+
+            <div class="form-group row" *ngIf="usuario.codUsuario ">
+                <label for="password" class="col-form-label col-sm-2">Contraseña</label>
+                <div class="col-sm-6">
+                    <input name="password" autocomplete="new-password" [(ngModel)]="password" class="form-control"
+                        type="password" placeholder="Contraseña" minlength="4">
+                </div>
+            </div>
+            <div class="form-group row" *ngIf="usuario.codUsuario">
+                <label for="passwordCfr" class="col-form-label col-sm-2">Contraseña</label>
+                <div class="col-sm-6">
+                    <input name="password2" [(ngModel)]="passwordCfr" class="form-control" type="password"
+                        placeholder="Confirma contraseña" minlength="4">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="intentoFallido" class="col-form-label col-sm-2">Intento Fallido <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="usuario.intentoFallido" name="intentoFallido" required #intentoFallido="ngModel">
+                </div>
+                <div class="alert alert-danger" *ngIf="intentoFallido.invalid && (intentoFallido.dirty || intentoFallido.touched)">
+                    <div *ngIf="!!intentoFallido?.errors.required">
+                        intentoFallido debe ser 0 como minimo
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="bloqueado" class="col-form-label col-sm-2">Bloqueado <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select class=" custom-select  form-control" name="bloqueado" id="selectEnabled"
+                        [(ngModel)]="usuario.bloqueado" #bloqueado="ngModel">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/usuarios']"
+                        class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i>
+                        Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()'
+                        *ngIf="!usuario.codUsuario else elseBlock" [disabled]="!usuarioForm.form.valid"><i
+                            class="fa   fa-floppy-o"></i>Guardar</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button"
+                            (click)='update()' [disabled]="!usuarioForm.form.valid"><i
+                                class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>

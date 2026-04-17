@@ -1,0 +1,100 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de comprobantes( {{ comprobantes.length}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/comprobantes/formulario']">
+              <i class="fa fa-plus"></i>
+              Nuevo
+            </button>
+            </div>
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-6 col-md-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="comprobantes?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="comprobantes?.length>0">
+                <thead>
+                    <tr>
+                        <!--   <th>Codigo</th>
+              <th>Codigo empresa</th> -->
+                        <!--   <th>Codigo sucursal</th> -->
+                        <th>Inicio T.</th>
+                        <th>Fin T.</th>
+                        <th>Nro comprobante</th>
+                        <th>Nro Inicio</th>
+                        <th>Nro Fin</th>
+                        <th>Serie</th>
+                        <th>Terminal</th>
+                        <th>Timbrado</th>
+                        <th>Tipo comprobante</th>
+                        <th>Max. items</th>
+                        <th>Tipo impresion</th>
+                        <th>Ultimo numero</th>
+                        <th>Activo</th>
+                        <th>Auto impresor</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let comprobante of comprobantes | slice: (currentPage * pageSize) - pageSize :currentPage * pageSize">
+                        <!--   <td>{{ comprobante.codNumeracion }}</td>
+              <td>{{ comprobante.codEmpresa }}</td> -->
+                        <!--  <td>{{ comprobante.codSucursal }}</td> -->
+                        <td>{{ comprobante.inicioTimbrado | date:'dd/MM/y' }}</td>
+                        <td>{{ comprobante.finTimbrado | date:'dd/MM/y' }}</td>
+                        <td>{{ comprobante.nroComprobante }}</td>
+                        <td>{{ comprobante.numeroInicio | number }}</td>
+                        <td>{{ comprobante.numeroFin | number }}</td>
+                        <td>{{ comprobante.serie }}</td>
+                        <td>{{ comprobante.terminal.descripcion }}</td>
+                        <td>{{ comprobante.timbrado | number }}</td>
+                        <td>{{ comprobante.tipoComprobante }}</td>
+                        <td>{{ comprobante.maxItems | number }}</td>
+                        <td>{{ comprobante.tipoImpresion }}</td>
+                        <td>{{ comprobante.ultimoNumero }}</td>
+                        <td *ngIf="comprobante.activo === true">Si</td>
+                        <td *ngIf="comprobante.activo === false">NO</td>
+                        <td *ngIf="comprobante.autoImpresor === true">Si</td>
+                        <td *ngIf="comprobante.autoImpresor === false">NO</td>
+
+
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/comprobantes/formulario', comprobante.codNumeracion]" type="button">
+                        <i class="fa fa-pencil"></i>  
+                   </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(comprobante)' type="button">
+                        <i class="fa fa-trash-o"></i>
+                   </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container" *ngIf="comprobantes?.length > 0">
+            <ngb-pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="comprobantes.length" [(page)]="currentPage" [maxSize]="4" [boundaryLinks]="true">
+                <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+                <ng-template ngbPaginationNext>&raquo;</ng-template>
+                <ng-template ngbPaginationFirst>Primera</ng-template>
+                <ng-template ngbPaginationLast>Última</ng-template>
+            </ngb-pagination>
+        </div>
+
+    </div>

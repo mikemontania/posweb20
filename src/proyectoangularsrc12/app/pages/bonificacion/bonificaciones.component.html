@@ -1,0 +1,102 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de bonificaciones( {{ totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/bonificaciones/formulario']">
+            <i class="fa fa-plus"></i>
+            Nuevo
+          </button>
+            </div>
+            <div class="col-6">
+                <input-debounce delay="500" id="inputbonificaciones" height="15px" type="text" placeholder="Ingrese Bonificacion" required="" aria-invalid="false" (value)="buscarbonificaciones($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor ...</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="bonificaciones?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="bonificaciones?.length>0">
+                <thead>
+                    <tr>
+                        <!--   <th>Codigo</th> -->
+                        <th>#</th>
+                        <th>Descripcion</th>
+                      
+                      <th>Cod Sucursal</th>
+                      <th>Lista precio</th>
+                        <th>Tipo</th>
+                        <th>Material</th>
+                        <th>Bonificacion</th>
+                        <th>F. Desde</th>
+                        <th>F. Hasta</th>
+                        <th>C. Desde</th>
+                        <th>C. Hasta</th>
+                        <th>Activo</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let b of bonificaciones;let i =index">
+                        <!--  <td>{{ b.codBonificacion }}</td> -->
+                        <td> {{i+1}}</td>
+                        <td>{{ b.descripcion }}</td>
+                        <td >{{ b.codSucursal }}</td>
+                        <td>{{ b.listaPrecio.descripcion}}</td>
+                        <td>{{ b.tipoBonificacion }}</td>  
+                        <td>{{ b.materialBonif.nombreProducto }}</td>
+                        <td>{{ b.cantBonif | number }}</td>
+                        <td>{{ b.fechaDesde | date:'dd/MM/y'}}</td>
+                        <td>{{ b.fechaHasta | date:'dd/MM/y' }}</td>
+                        <td>{{ b.cantDesde | number }}</td>
+                        <td>{{ b.cantHasta | number }}</td>
+                        <td *ngIf="b.activo === true">Si</td>
+                        <td *ngIf="b.activo === false">NO</td>
+                        <!--       <td>
+                <button type="button" name="eliminar" (click)='delete(Bonificacion)' class="btn btn-danger btn-sm">Eliminar</button>
+              </td>
+              <td>
+              <button type="button" name="editar" [routerLink]="['/bonificaciones/formulario', Bonificacion.codBonificacion]" class="btn btn-dropbox btn-sm">editar</button>
+            </td> -->
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/bonificaciones/formulario', b.codBonificacion]" type="button">
+                      <i class="fa fa-pencil"></i>
+                </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(b)' type="button">
+                      <i class="fa fa-trash-o"></i>
+                 </button>
+                        </td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+
+</div>

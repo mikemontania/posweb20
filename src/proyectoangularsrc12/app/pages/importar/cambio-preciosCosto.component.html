@@ -1,0 +1,130 @@
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Importar nuevos precios</h4>
+    </div>
+    <div class="card-body">
+        <form #precioForm="ngForm">
+            <div class="form-group row">
+                <label for="sucursal" class="col-form-label col-sm-2">Sucursal <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <ng-select-sucursal #searchSucursales id="ngbdtypeaheadSucursales" [cargadorSucursal]="cargadorSucursal" style="width: 100%" name="input-typeahead-cl" (retornoObjeto)="seleccionarSucursal($event)"></ng-select-sucursal>
+                </div>
+            </div>
+            <div class="form-group row" *ngIf="cargadorSucursal">
+                <label class="col-form-label col-sm-2"> </label>
+                <div class="col-sm-6">
+
+                    <input type="file" id="uploadedfile" accept=".xlsx" multiple="false" (change)="onFileChange($event)"
+                        [disabled]="!editable" />
+
+                </div>
+            </div>
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" (click)='cambioPrecios()' *ngIf="preciosEncontrados?.length>0"
+                        class="btn btn-themecolor waves-effect waves-light"><i class="fa  fa-pencil"></i> Cambiar
+                        precios</button>
+                    <button type="button" [routerLink]="['/preciosMateriales']" class="btn btn-danger waves-effect waves-light"><i
+                            class="fa  fa-arrow-circle-left"></i> Atrás</button>
+                    <button type="button" (click)='ngOnInit()' class="btn btn-secondary waves-effect waves-light"><i
+                            class="fa fa-ban fa-fw"></i> Cancelar</button>
+
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosNoEncontrados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <strong> No se han encontrado precios para {{preciosNoEncontrados.length}} productos </strong>
+                        <button class="btn btn-success" (click)='confirmarFormulario()' type="button">
+                            <i class="fa fa-plus"></i> Agregar precios desde excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosEncontrados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-info text-center">
+                        <strong>{{preciosEncontrados.length}} Precios encontrados a ser modificados </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosModificados?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-success text-center">
+                        <strong>{{preciosModificados.length}} Precios nuevos  </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="row" animated fadeIn *ngIf="preciosSinCambios?.length>0">
+                <div class="col-sm-6 col-md-12">
+                    <div class="alert alert-warning text-center">
+                        <strong>{{preciosSinCambios.length}} Precios que no tendran cambios</strong>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <perfect-scrollbar class="scroll-container"
+                        style="position: relative; max-width: 100%; max-height: 400px;" [scrollIndicators]="true">
+                        <div class="scrollable-content table-responsive">
+                            <table class="table table-sm table-bordered " *ngIf="preciosMateriales?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Codigo Ref.</th>
+                                        <th>Producto </th>
+                                        <th>Precio Actual</th>
+                                        <th>Precio Nuevo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of preciosMateriales;let i =index" [ngClass]="{
+                                        'alert-success':p.encontrado == true,
+                                        'alert-danger':p.encontrado == false
+                                      }">
+                                        <td> {{i+1}}</td>
+                                        <td>{{ p.codigo }}</td>
+                                        <td>{{ p.producto }}</td>
+                                        <td>{{ p.precioActual | number }}</td>
+                                        <td>{{ p.precioNuevo | number }}</td>
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
+                </div>
+                <div class="card-body">
+                    <perfect-scrollbar class="scroll-container"
+                        style="position: relative; max-width: 100%; max-height: 400px;" [scrollIndicators]="true">
+                        <div class="scrollable-content table-responsive">
+                            <table class="table table-sm table-bordered " *ngIf="preciosModificados?.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Codigo Ref.</th>
+                                        <th>Producto </th>
+                                        <th>Precio</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of preciosModificados;let i =index" [ngClass]="{
+                                        'alert-info':p.producto.codProductoErp}">
+                                        <td> {{i+1}}</td>
+                                        <td>{{ p.producto.codProductoErp }}</td>
+                                        <td>{{ p.producto.nombreProducto }}</td>
+                                        <td>{{ p.precioCosto | number }}</td>
+
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
+                </div>
+            </div>
+
+
+
+
+        </form>
+
+    </div>
+</div>
+ 

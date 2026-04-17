@@ -1,0 +1,25 @@
+<ng-template #rt let-r="result" let-t="term">
+    <ngb-highlight [result]="r.concatDocNombre" [term]="t"></ngb-highlight>
+</ng-template>
+<div class="form-group">
+
+
+
+
+    <div class="input-group" style="width: 100%;">
+        <input id="typeahead-http" type="text" style="width: 100%;" [class.is-invalid]="searchFailed" class="form-control" (selectItem)="selectedItem($event.item)" (ngModel)="model" [resultTemplate]="rt" [inputFormatter]="formatter" [ngbTypeahead]="search" (focus)="onFocus($event)"
+            placeholder="Ingrese Razon social o Ruc" />
+        <!-- <span class="input-group-btn">
+            <button class="btn btn-info  "   type="button" style="height: 36px" [routerLink]="['/clientes/formulario']"><i class="fa fa-plus"></i>
+            </button>
+          </span> -->
+        <!--   <div class="input-group-addon" ><i class="fa fa-search"></i></div> -->
+    </div>
+
+    <span *ngIf="searching">Buscando...</span>
+    <div class="invalid-feedback" *ngIf="searchFailed">
+        Lo sentimos, no se pudieron cargar las sugerencias.</div>
+</div>
+
+<!--   <hr>
+  <pre>Model: {{ model | json }}</pre> -->

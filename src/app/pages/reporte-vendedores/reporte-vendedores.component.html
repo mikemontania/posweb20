@@ -1,0 +1,63 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Reporte de Ventas por Vendedor</h1>
+    </div>
+  </div>
+
+  <div class="card" style="padding:1.5rem;max-width:700px">
+    <div class="form-grid-2">
+
+      <div class="form-group">
+        <label class="form-label">Fecha Desde</label>
+        <input type="date" class="form-control" [ngModel]="fechaDesde()" (ngModelChange)="fechaDesde.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Fecha Hasta</label>
+        <input type="date" class="form-control" [ngModel]="fechaHasta()" (ngModelChange)="fechaHasta.set($event)"/>
+      </div>
+
+      @if (isAdmin()) {
+        <div class="form-group">
+          <label class="form-label">Sucursal</label>
+          <app-select-search [items]="sucursales()" bindLabel="nombreSucursal"
+            bindValue="codSucursal" placeholder="Todas"
+            [selected]="selSucursal()" (changed)="selSucursal.set($any($event))"/>
+        </div>
+      }
+
+      <div class="form-group">
+        <label class="form-label">Vendedor</label>
+        <app-select-search [items]="vendedores()" bindLabel="vendedor"
+          bindValue="codVendedor" placeholder="Todos"
+          [selected]="selVendedor()" (changed)="selVendedor.set($any($event))"/>
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:.75rem;margin-top:1rem">
+      <button class="btn btn-primary" (click)="verReporte()" [disabled]="cargando()">
+        @if (cargando()) {
+          <span class="spinner" style="width:14px;height:14px;border-width:2px"></span>
+        } @else {
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        }
+        Ver Reporte PDF
+      </button>
+      <button class="btn btn-secondary" (click)="limpiar()" [disabled]="cargando()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Limpiar
+      </button>
+    </div>
+  </div>
+
+</div>

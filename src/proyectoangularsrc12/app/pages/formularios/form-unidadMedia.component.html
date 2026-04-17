@@ -1,0 +1,74 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err.field +" "+ err.defaultMessage}}
+    </li>
+</ul>
+
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!unidadMedida.codUnidad" class="m-b-0 text-white">Crear unidad</h4>
+        <h4 *ngIf="unidadMedida.codUnidad" class="m-b-0 text-white">Actualizar unidad</h4>
+    </div>
+    <div class="card-body">
+
+        <form #unidadForm="ngForm">
+
+            <div class="form-group row">
+                <label for="codUnidadErp" class="col-form-label col-sm-2">Codigo Erp <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="unidadMedida.codUnidadErp" (ngModelChange)="unidadMedida.codUnidadErp =  toUpeCaseEvent($event)" name="codUnidadErp" #codUnidadErp="ngModel" required minlength="1">
+                    <div class="alert alert-danger" *ngIf="codUnidadErp.invalid && (codUnidadErp.dirty || codUnidadErp.touched)">
+                        <div *ngIf="!!codUnidadErp.errors.required">
+                            codUnidadErp es requerido
+                        </div>
+                        <div *ngIf="!!codUnidadErp.errors.minlength">
+                            codUnidadErp debe tener al menos 1 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cantidad" class="col-form-label col-sm-2">Cantidad <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="unidadMedida.cantidad" name="cantidad" #cantidad="ngModel" required>
+                    <div class="alert alert-danger" *ngIf="cantidad.invalid && (cantidad.dirty || cantidad.touched)">
+                        <div *ngIf="!!cantidad.errors.required">
+                            cantidad es requerido
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="nombreUnidad" class="col-form-label col-sm-2">Unidad de medida <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="unidadMedida.nombreUnidad" (ngModelChange)="unidadMedida.nombreUnidad =  toUpeCaseEvent($event)" name="nombreUnidad" #nombreUnidad="ngModel" required minlength="5">
+                    <div class="alert alert-danger" *ngIf="nombreUnidad.invalid && (nombreUnidad.dirty || nombreUnidad.touched)">
+                        <div *ngIf="!!nombreUnidad.errors.required">
+                            nombreUnidad es requerido
+                        </div>
+                        <div *ngIf="!!nombreUnidad.errors.minlength">
+                            nombreUnidad debe tener al menos 5 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/unidadMedida']" class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i> Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()' *ngIf="!unidadMedida.codUnidad else elseBlock" [disabled]="!unidadForm.form.valid"><i class="fa   fa-floppy-o"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='update()' [disabled]="!unidadForm.form.valid"><i class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+
+
+        </form>
+
+    </div>
+</div>

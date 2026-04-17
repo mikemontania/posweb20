@@ -1,0 +1,205 @@
+<div class="page-content">
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Créditos</h1>
+      <span class="page-count badge badge-primary">{{ totalElements() }} registros</span>
+    </div>
+  </div>
+
+  <!-- ── Filtros ─────────────────────────────────────── -->
+  <div class="card filter-card">
+    <div class="filters-grid">
+
+      <div class="form-group">
+        <label class="form-label">Fecha Desde</label>
+        <input type="date" class="form-control" [ngModel]="fechaDesde()"
+               (ngModelChange)="fechaDesde.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Fecha Hasta</label>
+        <input type="date" class="form-control" [ngModel]="fechaHasta()"
+               (ngModelChange)="fechaHasta.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Cliente</label>
+        <app-select-search [items]="clientes()" bindLabel="concatDocNombre"
+          placeholder="Buscar por CI/RUC o nombre"
+          [selected]="selCliente()"
+          (changed)="selCliente.set($any($event))"
+          (search)="buscarClientes($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">N° Comprobante</label>
+        <input type="text" class="form-control" placeholder="ej: 001-001-00001"
+               [ngModel]="nroComprobante()" (ngModelChange)="nroComprobante.set($event)"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-control" [ngModel]="estado()" (ngModelChange)="estado.set($event)">
+          @for (e of estadoOpts; track e) { <option [value]="e">{{ e }}</option> }
+        </select>
+      </div>
+
+      <div class="form-group-action" style="display:flex;gap:.5rem;align-items:flex-end;padding-bottom:.15rem">
+        <button class="btn btn-primary" (click)="buscar(0)" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Buscar
+        </button>
+        <button class="btn btn-secondary" (click)="limpiar()" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── KPIs (del resumen del servidor) ─────────────── -->
+  @if (resumen()) {
+    <div class="kpi-row">
+      <div class="kpi-card kpi-gs">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Total Crédito</div>
+        <div class="kpi-value">{{ (resumen()?.totalMonto ?? 0) | number:'1.0-0' }}<span class="kpi-unit"> Gs.</span></div>
+      </div>
+      <div class="kpi-card kpi-pagado">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Pagados</div>
+        <div class="kpi-value">{{ (resumen()?.totalPagados ?? 0) | number:'1.0-0' }}<span class="kpi-unit"> Gs. ({{ resumen()?.cantidadPagados ?? 0 }})</span></div>
+      </div>
+      <div class="kpi-card kpi-saldo">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Pendientes</div>
+        <div class="kpi-value">{{ (resumen()?.totalPendientesACobrar ?? 0) | number:'1.0-0' }}<span class="kpi-unit"> Gs. ({{ resumen()?.cantidadPendientes ?? 0 }})</span></div>
+      </div>
+      <div class="kpi-card kpi-mora">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Vencidos</div>
+        <div class="kpi-value">{{ (resumen()?.totalVencidos ?? 0) | number:'1.0-0' }}<span class="kpi-unit"> Gs. ({{ resumen()?.cantidadVencidos ?? 0 }})</span></div>
+      </div>
+    </div>
+  }
+
+  <!-- ── Tabla ────────────────────────────────────────── -->
+  <div class="card tabla-card">
+    @if (loading()) {
+      <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+    }
+    @if (!loading() && items().length === 0) {
+      <div class="table-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>No se encontraron créditos</p>
+      </div>
+    }
+    @if (!loading() && items().length > 0) {
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead>
+            <tr>
+              <th>Cód.</th>
+              <th>N° Comprobante</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>F. Vencimiento</th>
+              <th>Días</th>
+              <th>Total</th>
+              <th>Saldo</th>
+              <th>Mora</th>
+              <th>Estado</th>
+              <th>F. Pago</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.codCredito) {
+              <tr [class.row-mora]="item.diasMora > 0 && item.estado !== 'PAGADO'"
+                  [class.row-pagado]="item.estado === 'PAGADO'">
+                <td><code>{{ item.codCredito }}</code></td>
+                <td>
+                  <div>{{ item.nroComprobante ?? '—' }}</div>
+                  @if (item.timbrado) { <small class="text-muted">{{ item.timbrado }}</small> }
+                </td>
+                <td>
+                  <div>{{ item.cliente?.razonSocial ?? '—' }}</div>
+                  @if (item.cliente?.docNro) { <small class="text-muted">{{ item.cliente.docNro }}</small> }
+                </td>
+                <td>{{ item.fecha | date:'dd/MM/yyyy' }}</td>
+                <td [class.text-mora]="item.diasMora > 0 && item.estado !== 'PAGADO'">
+                  {{ item.fechaVencimiento | date:'dd/MM/yyyy' }}
+                </td>
+                <td class="text-right">{{ item.cantDias }}</td>
+                <td class="text-right">{{ item.importeTotal | number:'1.0-0' }} Gs.</td>
+                <td class="text-right">
+                  <strong [class.text-mora]="item.saldoPendiente > 0 && item.estado !== 'PAGADO'">
+                    {{ item.saldoPendiente | number:'1.0-0' }} Gs.
+                  </strong>
+                </td>
+                <td class="text-right">
+                  @if (item.diasMora > 0 && item.estado !== 'PAGADO') {
+                    <span class="badge badge-danger">{{ item.diasMora }}d</span>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </td>
+                <td>
+                  <span class="badge"
+                    [class]="item.diasMora > 0 && item.estado !== 'PAGADO' ? 'badge-danger'
+                           : item.estado === 'PAGADO' ? 'badge-success' : 'badge-warning'">
+                    {{ item.diasMora > 0 && item.estado !== 'PAGADO' ? 'VENCIDO' : item.estado }}
+                  </span>
+                </td>
+                <td>{{ item.fechaPago ? (item.fechaPago | date:'dd/MM/yyyy') : '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Paginación ──────────────────────────────── -->
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button class="page-btn" [disabled]="currentPage() === 0" (click)="buscar(currentPage() - 1)">‹</button>
+          @for (p of pageNumbers(); track $index) {
+            @if (p === '...') {
+              <span class="page-ellipsis">…</span>
+            } @else {
+              <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p + 1 }}</button>
+            }
+          }
+          <button class="page-btn" [disabled]="currentPage() === totalPages() - 1" (click)="buscar(currentPage() + 1)">›</button>
+        </div>
+      }
+    }
+  </div>
+
+</div>

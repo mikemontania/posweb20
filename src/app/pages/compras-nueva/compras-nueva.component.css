@@ -1,0 +1,30 @@
+.lineas-table th,
+.lineas-table td { padding: .4rem .6rem; }
+
+.totales-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: .75rem;
+  margin-top: 1rem;
+}
+.total-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: .65rem 1rem;
+  text-align: right;
+}
+.total-box .total-label {
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  margin-bottom: .2rem;
+}
+.total-box .total-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.total-box.total-principal { border-color: var(--color-accent); }
+.total-box.total-principal .total-value { color: var(--color-accent); font-size: 1.2rem; }

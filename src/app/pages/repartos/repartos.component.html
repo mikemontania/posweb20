@@ -1,0 +1,301 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Nuevo Reparto</h1>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn btn-secondary" (click)="cancelar()" [disabled]="guardando()">Cancelar</button>
+      @if (modo() === 'REPARTO') {
+        <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando() || repartoDocs().length === 0">
+          @if (guardando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+          @else {
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            </svg>
+          }
+          Guardar Reparto
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Tabs de modo -->
+  <div style="display:flex;gap:0;border-bottom:2px solid var(--border-color);margin-bottom:1rem">
+    <button class="tab-btn" [class.active]="modo()==='REPARTO'" (click)="irReparto()">
+      Reparto {{ repartoDocs().length > 0 ? '(' + repartoDocs().length + ' docs)' : '' }}
+    </button>
+    <button class="tab-btn" [class.active]="modo()==='PEDIDOS'" (click)="irPedidos()">Agregar Pedidos</button>
+    <button class="tab-btn" [class.active]="modo()==='VENTAS'"  (click)="irVentas()">Agregar Ventas</button>
+  </div>
+
+  <!-- ══ MODO REPARTO ══════════════════════════════════════════ -->
+  @if (modo() === 'REPARTO') {
+
+    <!-- Cabecera -->
+    <div class="card" style="padding:1.25rem;margin-bottom:1rem">
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:1rem">
+        Datos del Reparto
+      </div>
+      <div class="form-grid-2" style="max-width:860px">
+        <div class="form-group">
+          <label class="form-label">Fecha Reparto <span style="color:var(--color-danger)">*</span></label>
+          <input type="date" class="form-control"
+            [ngModel]="fechaReparto()" (ngModelChange)="fechaReparto.set($event)"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sucursal</label>
+          <app-select-search [items]="sucursales()" bindLabel="nombreSucursal"
+            bindValue="codSucursal" placeholder="Seleccione sucursal"
+            [selected]="selSucursal()" (changed)="selSucursal.set($any($event))"
+            [disabled]="!isAdmin()"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Chofer <span style="color:var(--color-danger)">*</span></label>
+          <app-select-search [items]="choferes()" bindLabel="chofer"
+            bindValue="codChofer" placeholder="Seleccione chofer"
+            [selected]="selChofer()" (changed)="onChoferChange($any($event), 'chofer')"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Vehículo <span style="color:var(--color-danger)">*</span></label>
+          <app-select-search [items]="vehiculos()" bindLabel="concatMarcaModeloChapa"
+            bindValue="codVehiculo" placeholder="Seleccione vehículo"
+            [selected]="selVehiculo()" (changed)="selVehiculo.set($any($event))"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ayudante 1</label>
+          <app-select-search [items]="choferes()" bindLabel="chofer"
+            bindValue="codChofer" placeholder="Opcional"
+            [selected]="selAyudante1()" (changed)="onChoferChange($any($event), 'ay1')"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ayudante 2</label>
+          <app-select-search [items]="choferes()" bindLabel="chofer"
+            bindValue="codChofer" placeholder="Opcional"
+            [selected]="selAyudante2()" (changed)="onChoferChange($any($event), 'ay2')"/>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Observación</label>
+          <input type="text" class="form-control"
+            [ngModel]="obs()" (ngModelChange)="obs.set($event)" placeholder="Observaciones..."/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Totales -->
+    @if (repartoDocs().length > 0) {
+      <div style="display:flex;gap:1rem;margin-bottom:.75rem">
+        <div class="card" style="padding:.75rem 1.25rem;flex:1;text-align:center">
+          <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">Total Gs.</div>
+          <div style="font-size:1.2rem;font-weight:700">{{ totalGs() | number:'1.0-0' }} Gs.</div>
+        </div>
+        <div class="card" style="padding:.75rem 1.25rem;flex:1;text-align:center">
+          <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">Total Kg</div>
+          <div style="font-size:1.2rem;font-weight:700">{{ totalKg() | number:'1.2-2' }} kg</div>
+        </div>
+        <div class="card" style="padding:.75rem 1.25rem;flex:1;text-align:center">
+          <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">Documentos</div>
+          <div style="font-size:1.2rem;font-weight:700">{{ repartoDocs().length }}</div>
+        </div>
+      </div>
+    }
+
+    <!-- Documentos agregados -->
+    <div class="card tabla-card">
+      @if (repartoDocs().length === 0) {
+        <div class="table-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="1" y="3" width="15" height="13" rx="1"/>
+            <path d="M16 8h6M19 5v6"/>
+          </svg>
+          <p>No hay documentos. Use "Agregar Pedidos" o "Agregar Ventas" para cargar documentos.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table tabla-parametros">
+            <thead>
+              <tr>
+                <th>#</th><th>Tipo</th><th>Cliente</th><th>Documento</th>
+                <th class="text-right">Total Gs.</th><th class="text-right">Total Kg</th>
+                <th class="th-acciones">Quitar</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (doc of repartoDocs(); track $index; let i = $index) {
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    <span [class]="doc.tipo === 'PEDIDO' ? 'badge badge-info' : 'badge badge-success'">
+                      {{ doc.tipo }}
+                    </span>
+                  </td>
+                  <td>{{ doc.cliente?.razonSocial ?? '—' }}</td>
+                  <td><code>{{ doc.docNro }}</code></td>
+                  <td class="text-right">{{ (doc.totalGs ?? 0) | number:'1.0-0' }} Gs.</td>
+                  <td class="text-right">{{ (doc.totalKg ?? 0) | number:'1.2-2' }}</td>
+                  <td class="td-acciones">
+                    <button class="btn-accion btn-eliminar" title="Quitar" (click)="quitarDoc(i)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ══ MODO PEDIDOS ══════════════════════════════════════════ -->
+  @if (modo() === 'PEDIDOS') {
+    <div class="card" style="padding:1rem 1.25rem;margin-bottom:1rem">
+      <div class="form-grid-2" style="max-width:640px">
+        <div class="form-group">
+          <label class="form-label">Fecha Desde</label>
+          <input type="date" class="form-control" [ngModel]="fechaDesdePed()" (ngModelChange)="fechaDesdePed.set($event)"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha Hasta</label>
+          <input type="date" class="form-control" [ngModel]="fechaHastaPed()" (ngModelChange)="fechaHastaPed.set($event)"/>
+        </div>
+      </div>
+      <button class="btn btn-primary" (click)="buscarPedidos(0)" [disabled]="cargandoDocs()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Buscar
+      </button>
+    </div>
+
+    <div class="card tabla-card">
+      @if (cargandoDocs()) {
+        <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+      } @else if (listaPedidos().length === 0) {
+        <div class="table-empty"><p>No se encontraron pedidos pendientes</p></div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table tabla-parametros">
+            <thead>
+              <tr>
+                <th>Nº Pedido</th><th>Cliente</th><th>Fecha</th>
+                <th class="text-right">Total Gs.</th><th>Estado</th><th class="th-acciones">Agregar</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ped of listaPedidos(); track ped.codPedido) {
+                <tr [class.row-anulado]="pedidoEnReparto(ped.codPedido)">
+                  <td><code>{{ ped.nroPedido }}</code></td>
+                  <td>{{ ped.cliente?.razonSocial ?? '—' }}</td>
+                  <td>{{ ped.fechaPedido | date:'dd/MM/yyyy' }}</td>
+                  <td class="text-right">{{ (ped.importeTotal ?? 0) | number:'1.0-0' }} Gs.</td>
+                  <td><span class="badge badge-info">{{ ped.estado }}</span></td>
+                  <td class="td-acciones">
+                    @if (!pedidoEnReparto(ped.codPedido)) {
+                      <button class="btn-accion btn-editar" title="Agregar" (click)="agregarPedido(ped)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                      </button>
+                    } @else {
+                      <span class="badge badge-success" style="font-size:.7rem">✓</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination-bar">
+          <span class="pagination-info">{{ totalPed() }} pedidos — página {{ pagePed() + 1 }} de {{ totalPagesPed() }}</span>
+          <div class="pagination-controls">
+            <button class="pag-btn" [disabled]="pagePed() === 0" (click)="buscarPedidos(pagePed()-1)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="pag-btn" [disabled]="pagePed() >= totalPagesPed()-1" (click)="buscarPedidos(pagePed()+1)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ══ MODO VENTAS ═══════════════════════════════════════════ -->
+  @if (modo() === 'VENTAS') {
+    <div class="card" style="padding:1rem 1.25rem;margin-bottom:1rem">
+      <div class="form-grid-2" style="max-width:640px">
+        <div class="form-group">
+          <label class="form-label">Fecha Desde</label>
+          <input type="date" class="form-control" [ngModel]="fechaDesdeV()" (ngModelChange)="fechaDesdeV.set($event)"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha Hasta</label>
+          <input type="date" class="form-control" [ngModel]="fechaHastaV()" (ngModelChange)="fechaHastaV.set($event)"/>
+        </div>
+      </div>
+      <button class="btn btn-primary" (click)="buscarVentas(0)" [disabled]="cargandoDocs()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Buscar
+      </button>
+    </div>
+
+    <div class="card tabla-card">
+      @if (cargandoDocs()) {
+        <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+      } @else if (listaVentas().length === 0) {
+        <div class="table-empty"><p>No se encontraron ventas</p></div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table tabla-parametros">
+            <thead>
+              <tr>
+                <th>Comprobante</th><th>Cliente</th><th>Fecha</th>
+                <th class="text-right">Total Gs.</th><th>Estado</th><th class="th-acciones">Agregar</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (v of listaVentas(); track v.codVenta) {
+                <tr [class.row-anulado]="ventaEnReparto(v.codVenta)">
+                  <td><code>{{ v.nroComprobante }}</code></td>
+                  <td>{{ v.cliente?.razonSocial ?? '—' }}</td>
+                  <td>{{ v.fechaVenta | date:'dd/MM/yyyy' }}</td>
+                  <td class="text-right">{{ (v.importeTotal ?? 0) | number:'1.0-0' }} Gs.</td>
+                  <td><span class="badge badge-success">{{ v.estado ?? 'ACTIVO' }}</span></td>
+                  <td class="td-acciones">
+                    @if (!ventaEnReparto(v.codVenta)) {
+                      <button class="btn-accion btn-editar" title="Agregar" (click)="agregarVenta(v)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                      </button>
+                    } @else {
+                      <span class="badge badge-success" style="font-size:.7rem">✓</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination-bar">
+          <span class="pagination-info">{{ totalV() }} ventas — página {{ pageV() + 1 }} de {{ totalPagesV() }}</span>
+          <div class="pagination-controls">
+            <button class="pag-btn" [disabled]="pageV() === 0" (click)="buscarVentas(pageV()-1)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="pag-btn" [disabled]="pageV() >= totalPagesV()-1" (click)="buscarVentas(pageV()+1)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>

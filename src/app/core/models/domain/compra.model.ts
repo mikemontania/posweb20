@@ -1,0 +1,32 @@
+import { CompraDetalle } from './compra-detalle.model';
+import { MotivoAnulacion } from './motivo-anulacion.model';
+import { Proveedor } from './proveedor.model';
+export interface Compra {
+  codCompra: number;
+  anulado: boolean;
+  codEmpresa: number;
+  estado: string;
+  fechaAnulacion: Date;
+  fechaCreacion: Date;
+  fechaVencimiento: Date;
+  fechaCompra: string;
+  fechaModificacion: string;
+  porcDescuento: number;
+  importeDescuento: number;
+  importeIva5: number;
+  importeIva10: number;
+  importeIvaExenta: number;
+  importeNeto: number;
+  importeTotal: number;
+  subTotal: number;
+  timbrado: string;
+  inicioTimbrado: string;
+  finTimbrado: string;
+  codUsuarioAnulacion: number;
+  nroComprobante: string;
+  tipoComprobante: string;
+  codUsuarioCreacion: number;
+  proveedor: Proveedor;
+  detalle: CompraDetalle[];
+  motivoAnulacion: MotivoAnulacion;
+}

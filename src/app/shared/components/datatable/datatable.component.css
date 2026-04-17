@@ -1,0 +1,307 @@
+/* ── Host ────────────────────────────────────────────────── */
+.dt-host {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────── */
+.dt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .875rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+.dt-toolbar-left  { display: flex; align-items: center; gap: .75rem; }
+.dt-toolbar-right { display: flex; align-items: center; gap: .625rem; flex-wrap: wrap; }
+
+.dt-title {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+}
+
+.dt-selection-badge {
+  background: var(--color-accent-light); color: var(--color-accent);
+  font-size: .75rem; font-weight: 500;
+  padding: .2rem .625rem; border-radius: 99px;
+}
+
+/* ── Búsqueda ────────────────────────────────────────────── */
+.dt-search {
+  position: relative;
+  display: flex; align-items: center;
+  gap: .4rem;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0 .625rem;
+  height: 34px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.dt-search:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+.dt-search svg { color: var(--text-muted); flex-shrink: 0; }
+.dt-search-input {
+  border: none; background: transparent;
+  color: var(--text-primary); font-size: .875rem;
+  outline: none; width: 180px;
+}
+.dt-search-input::placeholder { color: var(--text-muted); }
+.dt-search-clear {
+  border: none; background: transparent; cursor: pointer;
+  color: var(--text-muted); padding: 2px;
+  display: flex; align-items: center;
+  border-radius: 50%;
+  transition: color var(--transition);
+}
+.dt-search-clear:hover { color: var(--text-primary); }
+
+/* ── Wrapper de tabla ────────────────────────────────────── */
+.dt-wrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+.dt-wrapper::-webkit-scrollbar { height: 4px; }
+.dt-wrapper::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
+
+/* ── Tabla ───────────────────────────────────────────────── */
+.dt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .8125rem;
+  color: var(--text-secondary);
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.dt-thead { background: var(--bg-surface-2); }
+.dt-sticky { position: sticky; top: 0; z-index: 2; }
+
+.dt-th {
+  padding: .625rem .875rem;
+  font-size: .6875rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+  user-select: none;
+}
+.dt-th-check, .dt-th-expand { width: 36px; padding: .625rem .5rem; }
+.dt-th-actions { width: 90px; text-align: center; }
+
+.dt-sortable { cursor: pointer; }
+.dt-sortable:hover { color: var(--text-primary); }
+.dt-sorted-asc .dt-th-content,
+.dt-sorted-desc .dt-th-content { color: var(--color-accent); }
+
+.dt-th-content {
+  display: inline-flex; align-items: center; gap: .25rem;
+}
+.dt-sort-icon { display: flex; align-items: center; }
+
+/* ── Filas ───────────────────────────────────────────────── */
+.dt-row {
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition);
+  cursor: default;
+}
+.dt-row:last-child { border-bottom: none; }
+.dt-row:hover { background: var(--bg-surface-2); }
+.dt-row-selected { background: color-mix(in srgb, var(--color-accent) 8%, transparent) !important; }
+.dt-row-expanded { background: var(--bg-surface-2); }
+.dt-row-anulado  { opacity: .55; text-decoration: line-through; }
+
+.dt-td {
+  padding: .5625rem .875rem;
+  color: var(--text-secondary);
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+.dt-td-check, .dt-td-expand { padding: .5rem .5rem; width: 36px; }
+.dt-td-actions { padding: .375rem .625rem; width: 90px; text-align: center; }
+
+/* Checkbox */
+.dt-check {
+  width: 15px; height: 15px; cursor: pointer;
+  accent-color: var(--color-accent);
+}
+
+/* Expandir */
+.dt-expand-icon {
+  transition: transform var(--transition); color: var(--text-muted); cursor: pointer;
+}
+.dt-expand-icon.open { transform: rotate(180deg); color: var(--color-accent); }
+
+/* Fila de detalle */
+.dt-row-detail { background: var(--bg-surface-2); }
+.dt-detail-content { padding: .875rem 1rem; }
+
+/* ── Skeleton ────────────────────────────────────────────── */
+.dt-row-skeleton td { padding: .625rem .875rem; }
+
+/* ── Empty state ─────────────────────────────────────────── */
+.dt-empty { padding: 3rem 1rem; }
+.dt-empty-content {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: .625rem; color: var(--text-muted); font-size: .875rem;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.dt-tfoot td {
+  padding: .625rem .875rem;
+  border-top: 2px solid var(--border-color);
+  font-size: .8125rem;
+}
+
+/* ── Badges ──────────────────────────────────────────────── */
+.dt-badge {
+  display: inline-flex; align-items: center;
+  padding: .1875rem .5rem;
+  border-radius: 99px;
+  font-size: .6875rem; font-weight: 500;
+  white-space: nowrap;
+}
+.dt-badge--success { background: var(--status-success-bg); color: var(--status-success-text); }
+.dt-badge--danger  { background: var(--status-danger-bg);  color: var(--status-danger-text); }
+.dt-badge--warning { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.dt-badge--info    { background: var(--status-info-bg);    color: var(--status-info-text); }
+.dt-badge--neutral { background: var(--bg-surface-2);      color: var(--text-muted); }
+
+/* ── Botón de acción simple ──────────────────────────────── */
+.dt-action-btn {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .25rem .625rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: .75rem; cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.dt-action-btn:hover { background: var(--bg-surface-2); color: var(--text-primary); }
+.dt-action-btn--danger:hover  { border-color: var(--status-danger-text); color: var(--status-danger-text); background: var(--status-danger-bg); }
+.dt-action-btn--warning:hover { border-color: var(--status-warning-text); color: var(--status-warning-text); }
+.dt-action-btn--success:hover { border-color: var(--status-success-text); color: var(--status-success-text); }
+.dt-action-label { display: none; }
+
+/* ── Menú dropdown de acciones ───────────────────────────── */
+.dt-actions-wrap { position: relative; display: inline-flex; justify-content: center; }
+
+.dt-menu-btn {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.dt-menu-btn:hover, .dt-menu-btn.open {
+  background: var(--bg-surface-2); color: var(--text-primary);
+  border-color: var(--color-accent);
+}
+
+.dt-dropdown {
+  position: absolute;
+  right: 0; top: calc(100% + 4px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  min-width: 160px;
+  overflow: hidden;
+  animation: dtDropDown 120ms ease;
+}
+@keyframes dtDropDown {
+  from { opacity:0; transform:translateY(-4px) }
+  to   { opacity:1; transform:translateY(0) }
+}
+
+.dt-dropdown-item {
+  display: flex; align-items: center; gap: .5rem;
+  width: 100%; padding: .5rem .875rem;
+  border: none; background: transparent;
+  color: var(--text-secondary); font-size: .8125rem;
+  cursor: pointer; text-align: left;
+  transition: background var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+.dt-dropdown-item:hover { background: var(--bg-surface-2); color: var(--text-primary); }
+.dt-dropdown-item--danger:hover { color: var(--status-danger-text); background: var(--status-danger-bg); }
+.dt-dropdown-item--warning:hover { color: var(--status-warning-text); background: var(--status-warning-bg); }
+.dt-dropdown-item--success:hover { color: var(--status-success-text); background: var(--status-success-bg); }
+
+/* ── Paginación ──────────────────────────────────────────── */
+.dt-pagination {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: .625rem .875rem;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap; gap: .5rem;
+  background: var(--bg-surface);
+}
+.dt-pagination-info {
+  font-size: .8125rem; color: var(--text-muted);
+  display: flex; align-items: center; gap: .375rem;
+}
+.dt-filter-note {
+  font-size: .75rem;
+  background: var(--color-accent-light); color: var(--color-accent);
+  padding: .1rem .5rem; border-radius: 99px;
+}
+.dt-pagination-controls {
+  display: flex; align-items: center; gap: .5rem;
+}
+
+.dt-page-size {
+  height: 30px; padding: 0 .5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-secondary); font-size: .8125rem;
+  cursor: pointer; outline: none;
+}
+
+.dt-pages { display: flex; align-items: center; gap: .1875rem; }
+
+.dt-page-btn {
+  min-width: 30px; height: 30px; padding: 0 .375rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: transparent; cursor: pointer;
+  color: var(--text-secondary); font-size: .8125rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+}
+.dt-page-btn:hover:not(:disabled) { background: var(--bg-surface-2); color: var(--text-primary); }
+.dt-page-btn:disabled { opacity: .4; cursor: not-allowed; }
+.dt-page-num.active {
+  background: var(--color-accent); color: var(--color-accent-text);
+  border-color: var(--color-accent);
+  font-weight: 600;
+}
+.dt-page-ellipsis {
+  padding: 0 .25rem; color: var(--text-muted); font-size: .875rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dt-search-input { width: 140px; }
+  .dt-action-label { display: none !important; }
+  .dt-pagination { flex-direction: column; align-items: flex-start; }
+  .dt-page-btn:not(.active):not(:first-child):not(:last-child) { display: none; }
+}

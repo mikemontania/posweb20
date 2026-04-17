@@ -1,0 +1,115 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de descuentos( {{ totalElementos}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/descuentos/formulario']">
+            <i class="fa fa-plus"></i>
+            Nuevo
+          </button>
+            </div>
+            <div class="col-6">
+                <input-debounce delay="500" id="inputDescuentos" height="15px" type="text" placeholder="Ingrese descuento" required="" aria-invalid="false" (value)="buscarDescuentos($event)"></input-debounce>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor ...</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="descuentos?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="descuentos?.length>0">
+                <thead>
+                    <tr>
+                        <!--   <th>Codigo</th> -->
+                        <th>#</th>
+                        <th>Descripcion</th>
+                        <th>Lista precio</th>
+                        <th>Tipo</th>
+                       <!--  <th>Sucursal</th> -->
+                        <th>Descuento</th>
+                        <th>F. Desde</th>
+                        <th>F. Hasta</th>
+                        <th>C. Desde</th>
+                        <th>C. Hasta</th>
+                        <th>Activo</th>
+                        <th>Act/Des</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let descuento of descuentos;let i =index">
+                        <!--  <td>{{ descuento.codDescuento }}</td> -->
+                        <td> {{i+1}}</td>
+                        <td>{{ descuento.descripcion }}</td>
+                        <td>{{ descuento.listaPrecio.descripcion}}</td>
+                        <td>{{ descuento.tipoDescuento }}</td>
+                       <!--  <td *ngIf="descuento.codSucursal == null">TODOS</td>
+                        <td *ngIf="descuento.codSucursal === 1">CAPIATA</td>      
+                        <td *ngIf="descuento.codSucursal === 2">MRA</td>      
+                        <td *ngIf="descuento.codSucursal === 3">ASUNCION</td>      
+                        <td *ngIf="descuento.codSucursal > 3">{{descuento.codSucursal}}</td>       -->
+                        <td>{{ descuento.descuento | number }}</td>
+                        <td>{{ descuento.fechaDesde | date:'dd/MM/y'}}</td>
+                        <td>{{ descuento.fechaHasta | date:'dd/MM/y' }}</td>
+                        <td>{{ descuento.cantDesde | number }}</td>
+                        <td>{{ descuento.cantHasta | number }}</td>
+                        <td *ngIf="descuento.activo === true">Si</td>
+                        <td *ngIf="descuento.activo === false">NO</td>
+                        <!--       <td>
+                <button type="button" name="eliminar" (click)='delete(descuento)' class="btn btn-danger btn-sm">Eliminar</button>
+              </td>
+              <td>
+              <button type="button" name="editar" [routerLink]="['/descuentos/formulario', descuento.codDescuento]" class="btn btn-dropbox btn-sm">editar</button>
+            </td> -->
+            <td *ngIf="descuento.activo === true">
+                <button class="btn btn-info btn-circle " (click)='updateEstado(descuento)' type="button">
+                    <i class="fa fa-toggle-on"></i>
+                </button>
+            </td>
+            <td *ngIf="descuento.activo === false">
+                <button class="btn btn-info btn-circle " (click)='updateEstado(descuento)' type="button">
+                    <i class="fa fa-toggle-off"></i>
+                </button>
+            </td>
+
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/descuentos/formulario', descuento.codDescuento]" type="button">
+                      <i class="fa fa-pencil"></i>
+                </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(descuento)' type="button">
+                      <i class="fa fa-trash-o"></i>
+                 </button>
+                        </td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina" [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+
+</div>

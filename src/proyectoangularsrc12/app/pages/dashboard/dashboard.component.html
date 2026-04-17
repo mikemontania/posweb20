@@ -1,0 +1,66 @@
+<dashFiltro (dashTema)="dashTema = $event" (fecha_desde)="fechaDesde = $event" (fecha_hasta)="fechaHasta = $event" (cod_sucursal)="codSucursal = $event" (cod_usuario)="codUsuario = $event">
+</dashFiltro>
+
+
+
+
+<div class="row">
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <chartDashResumen-sucursal [dashTema]="dashTema" [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal"></chartDashResumen-sucursal>
+    </div>
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <chartDashResumen-mediopago [dashTema]="dashTema" [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></chartDashResumen-mediopago>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <chartdashResumen-usuario [dashTema]="dashTema" [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></chartdashResumen-usuario>
+    </div>
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <chartTopProductos [dashTema]="dashTema" [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></chartTopProductos>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <chartDashTopClientes [dashTema]="dashTema" [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></chartDashTopClientes>
+    </div>
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+      <chartDashResumen-reparto [dashTema]="dashTema" [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal"></chartDashResumen-reparto>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+      <chartDashResumen-canal [dashTema]="dashTema" [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal"></chartDashResumen-canal>
+    </div>
+
+</div>
+
+<!--
+
+<div class="row">
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <dashResumen-sucursal [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal"></dashResumen-sucursal>
+    </div>
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <dashResumen-mediopago [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></dashResumen-mediopago>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <dashResumen-usuario [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></dashResumen-usuario>
+    </div>
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <dashTopProductos [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></dashTopProductos>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-xs-12  col-md-12">
+        <dashTopClientes [fechaDesde]="fechaDesde" [fechaHasta]="fechaHasta" [codSucursal]="codSucursal" [codUsuario]="codUsuario"></dashTopClientes>
+    </div>
+
+</div> -->

@@ -1,0 +1,140 @@
+* {
+    font-size: 12px;
+    color: black;
+    font-family: Georgia, 'Times New Roman', Times, sans-serif;
+}
+
+thead,
+tfoot {
+    border-bottom: 1px dashed black;
+    border-collapse: collapse;
+}
+
+
+/*   td.producto,
+   th.producto {
+       width: 75px;
+       max-width: 75px;
+   }
+   
+   td.cantidad,
+   th.cantidad {
+       width: 40px;
+       max-width: 40px;
+       word-break: break-all;
+   }
+   
+   td.precio,
+   th.precio {
+       width: 40px;
+       max-width: 40px;
+       word-break: break-all;
+   }
+   
+   .centrado {
+       text-align: center;
+       align-content: center;
+   }
+   
+   .ticket {
+       width: 155px;
+       max-width: 155px;
+   }*/
+
+td.producto,
+th.producto {
+    text-align: center;
+    vertical-align: top;
+    align-content: center;
+    width: 140px;
+    max-width: 140px;
+}
+
+td.cantidad,
+th.cantidad {
+    text-align: center;
+    vertical-align: top;
+    align-content: center;
+    width: 40px;
+    max-width: 40px;
+    word-break: break-all;
+}
+
+td.precio,
+th.precio {
+    text-align: center;
+    vertical-align: top;
+    align-content: center;
+    width: 54px;
+    max-width: 54px;
+    word-break: break-all;
+}
+
+td.total,
+th.total {
+    text-align: center;
+    vertical-align: top;
+    align-content: center;
+    width: 54px;
+    max-width: 54px;
+    word-break: break-all;
+}
+
+td.titulo,
+th.titulo {
+    text-align: left;
+    align-content: left;
+    width: 100;
+    max-width: 10;
+    word-break: break-all;
+}
+
+td.espacio,
+th.espacio {
+    text-align: center;
+    align-content: center;
+    width: 87;
+    max-width: 87;
+    word-break: break-all;
+}
+
+td.monto,
+th.monto {
+    text-align: center;
+    align-content: center;
+    width: 100;
+    max-width: 100;
+    word-break: break-all;
+}
+
+.centrado {
+    text-align: center;
+    align-content: center;
+}
+
+.izquierda {
+    text-align: left;
+    align-content: left;
+}
+
+.derecha {
+    text-align: right;
+    align-content: right;
+}
+
+.ticket {
+    width: 287px;
+    max-width: 287px;
+}
+
+img {
+    max-width: inherit;
+    width: inherit;
+}
+
+@media print {
+    .oculto-impresion,
+    .oculto-impresion * {
+        display: none !important;
+    }
+}

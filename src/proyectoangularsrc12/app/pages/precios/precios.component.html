@@ -1,0 +1,142 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="precios" class="m-b-0 text-white">Listado de precios( {{ totalElementos}})</h4>
+        <h4 *ngIf="!precios" class="m-b-0 text-white">Listado de precios( 0)</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/precios/formulario']">
+                    <i class="fa fa-plus"></i>
+                    Nuevo
+                </button>
+                <button *ngIf="user.authorities[0] == 'ROLE_ADMIN'" class="btn btn-rounded   btn-secondary"
+                    type="button" [routerLink]="['/precios/importar']">
+                    <i class="fa fa-paperclip"></i>
+                    Importar
+                </button>
+            </div>
+            <div class="col-9">
+                <div class="row col-12 form-group">
+                    <label for="listaPrecio" class="col-form-label col-sm-2">Lista Precio</label>
+                    <div class="col-sm-6">
+                        <select id="selectListaPrecio" class="custom-select " style="width: 100%; height:36px;"
+                            tabindex="-1" aria-hidden="true" [(ngModel)]="seleccionListaPrecio"
+                            #selectListaPrecio="ngModel" name="selectListaPrecio"
+                            (ngModelChange)="cambioListaPrecio($event)">
+                            <option *ngFor="let m of listaPrecio" [value]="m.codListaPrecio">
+                                {{m.descripcion}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row col-12 form-group">
+                    <label for="productos" class="col-form-label col-sm-2">Productos</label>
+                    <div class="col-sm-6">
+                        <ng-select-producto #searchProductos id="selectproducto" [cargadorProducto]="cargadorProducto"
+                            style="width: 100%" name="producto" (retornoObjeto)="seleccionarProducto($event)">
+                        </ng-select-producto>
+                    </div>
+                </div>
+                <div class=" form-group button-group col-6">
+                    <button class="btn btn-themecolor waves-effect waves-light" (click)='buscarPrecios()' type="button">
+                        <i class="fa fa-search"></i>
+                        Buscar
+                    </button>
+                    <button class="btn btn-secondary waves-effect waves-light" (click)='ngOnInit()' type="button">
+                        <i class="fa fa-close"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="precios?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="precios?.length>0">
+                <thead>
+                    <tr>
+                        <!-- <th>Imagen</th> -->
+                        <!--   <th>Codigo</th> -->
+                        <th>Codigo Ref.</th>
+                        <th>C. Desde </th>
+                        <th>C. Hasta</th>
+                        <th>L. precio</th>
+                        <th>U. Medida</th>
+                        <th>Producto</th>
+                        <th>Cliente</th>
+                        <th>Activo</th>
+                        <th>Precio</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let precio of precios">
+                        <!--  <td>{{ precio.codPrecio }}</td> -->
+                        <td>{{ precio.codPrecioErp }}</td>
+                        <td>{{ precio.cantDesde | number}}</td>
+                        <td>{{ precio.cantHasta | number }}</td>
+
+                        <td *ngIf="precio.listaPrecio">{{ precio.listaPrecio.descripcion }}</td>
+                        <td *ngIf="!precio.listaPrecio">XXXXXXXXX</td>
+
+                        <td *ngIf="precio.unidadMedida">{{ precio.unidadMedida.nombreUnidad }}</td>
+                        <td *ngIf="!precio.unidadMedida">XXXXXXXXX</td>
+
+                        <td *ngIf="precio.producto">{{ precio.producto.nombreProducto }}</td>
+                        <td *ngIf="!precio.producto">XXXXXXXXX</td>
+                        <td *ngIf="precio.cliente">{{ precio.cliente.razonSocial }}</td>
+                        <td *ngIf="!precio.cliente">XXXXXXXXX</td>
+                        <td *ngIf="precio.activo == true">SI</td>
+                        <td *ngIf="precio.activo == false">NO</td>
+                        <td>{{ precio.precio | number }}</td>
+                        <td>
+                            <button class="btn btn-info btn-circle "
+                                [routerLink]="['/precios/formulario', precio.codPrecio]" type="button">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(precio)' type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </td>
+
+                        <!--  <td>
+                  <button type="button" name="eliminar" (click)='delete(descuento)' class="btn btn-danger btn-sm">Eliminar</button>
+                </td> -->
+                        <!-- <td>
+                <button type="button" name="editar" [routerLink]="['/clientes/formulario', cliente.codCliente]" class="btn btn-dropbox btn-sm">editar</button>
+              </td>
+              -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ngb-pagination #pagination class="d-flex justify-content-center" [size]="tamanhoPag"
+            [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+            [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+        </ngb-pagination>
+    </div>
+</div>

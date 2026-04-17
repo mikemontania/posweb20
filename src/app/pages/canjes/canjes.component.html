@@ -1,0 +1,360 @@
+<!-- ══════════════════════════════════════════════
+     POS LAYOUT — idéntico a ventas
+══════════════════════════════════════════════ -->
+<div class="pos-layout">
+
+  <!-- ════════ IZQUIERDA — Carrito ════════ -->
+  <aside class="pos-left" [class.tab-hidden]="tabActivo !== 'carrito'">
+
+    <!-- Cabecera -->
+    <div class="pos-header">
+      <div class="pos-header-left">
+        <span class="pos-icon">🎁</span>
+        <span class="pos-title">Canje</span>
+      </div>
+      @if (cliente()) {
+        <span class="lp-badge">
+          {{ cliente()?.puntos ?? 0 | number:'1.0-0' }} pts.
+        </span>
+      }
+    </div>
+
+    <!-- Zona cliente -->
+    <div class="pc-wrap">
+      @if (mostrandoBusquedaCliente()) {
+        <div class="pc-search-hdr">
+          <span class="label-xs">Buscar cliente</span>
+          <button class="pc-cancel-btn" (click)="mostrandoBusquedaCliente.set(false)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            Cancelar
+          </button>
+        </div>
+        <app-select-search
+          [items]="clientesBusqueda()"
+          bindLabel="concatDocNombre"
+          placeholder="Escriba CI/RUC o nombre..."
+          (changed)="seleccionarCliente($any($event))"
+          (search)="buscarClientes($event)"/>
+      } @else {
+        <div class="pc-row">
+          @if (loading()) {
+            <div class="pc-nombre-wrap">
+              <span class="pc-razon" style="opacity:.4">Cargando...</span>
+            </div>
+          } @else {
+            <div class="pc-nombre-wrap" [title]="cliente()?.concatDocNombre ?? ''">
+              <span class="pc-razon">{{ cliente()?.razonSocial ?? '—' }}</span>
+              <span class="pc-doc">{{ cliente()?.tipoDoc }} {{ cliente()?.docNro }}</span>
+            </div>
+          }
+          <div class="pc-btns">
+            <button class="pc-btn" title="Buscar otro cliente" (click)="verificarCambioCliente()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Lista carrito -->
+    <div class="pd-wrap">
+      @if (canjeDetalle().length === 0) {
+        <div class="pd-empty">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <span>Sin premios seleccionados</span>
+        </div>
+      } @else {
+        <ul class="pd-list">
+          @for (item of canjeDetalle(); track item.premio.codPremio) {
+            <li class="pd-item">
+
+              <!-- Miniatura -->
+              <div class="pd-thumb">
+                @if (!item.premio.img) {
+                  <div class="pd-thumb-ph">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  </div>
+                } @else {
+                  <img [src]="item.premio.img | imagen : 'premios' | async"
+                       class="pd-thumb-img" [alt]="item.premio.descripcion" loading="lazy"/>
+                }
+              </div>
+
+              <!-- Info -->
+              <div class="pd-item-info">
+                <span class="pd-item-nombre" [title]="item.premio.descripcion">
+                  {{ item.premio.descripcion }}
+                </span>
+                <span class="pd-item-meta">
+                  #{{ item.premio.codPremioErp }} · {{ item.puntos | number:'1.0-0' }} pts. c/u
+                </span>
+              </div>
+
+              <!-- Controles -->
+              <div class="pd-item-controls">
+                <div class="qty-ctrl">
+                  <button class="qty-btn-sm" (click)="restarPremio(item)" [disabled]="item.cantidad <= 1">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  </button>
+                  <span class="qty-val">{{ item.cantidad }}</span>
+                  <button class="qty-btn-sm" (click)="seleccionarPremio(item.premio)">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  </button>
+                </div>
+                <span class="pd-item-total">{{ item.totalPuntos | number:'1.0-0' }}</span>
+                <button class="del-btn" (click)="quitarPremioCompleto(item)" title="Quitar">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                  </svg>
+                </button>
+              </div>
+
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Totales puntos -->
+    <div class="pt-wrap">
+      <div class="pt-subtotales">
+        <div class="pt-row">
+          <span class="pt-label">Puntos del cliente</span>
+          <span class="pt-value">{{ cliente()?.puntos ?? 0 | number:'1.0-0' }}</span>
+        </div>
+        <div class="pt-row">
+          <span class="pt-label">Puntos a descontar</span>
+          <span class="pt-value">{{ totalPuntosDetalle() | number:'1.0-0' }}</span>
+        </div>
+      </div>
+      <div class="pt-total"
+        [class.pt-total-ok]="puntosRestantes() >= 0"
+        [class.pt-total-error]="puntosRestantes() < 0">
+        <span class="pt-total-label">Puntos sobrantes</span>
+        <span class="pt-total-value">{{ puntosRestantes() | number:'1.0-0' }} pts.</span>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="pos-footer">
+      <button class="btn-cancelar" (click)="limpiar()" [disabled]="guardando()">Cancelar</button>
+      <button class="btn-guardar"
+              (click)="solicitarGuardar()"
+              [disabled]="guardando() || canjeDetalle().length === 0 || loading()">
+        @if (guardando()) { <span class="spinner-sm"></span> }
+        Guardar
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ════════ DERECHA — Catálogo premios ════════ -->
+  <section class="pos-right" [class.tab-hidden]="tabActivo !== 'catalogo'">
+    <div class="cat-wrap">
+
+      <!-- Barra de controles -->
+      <div class="cat-bar">
+        <div class="cat-search-box">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input class="cat-search-input"
+                 placeholder="Buscar premio..."
+                 [value]="textoBusqueda()"
+                 (input)="onBusquedaChange($any($event.target).value)"/>
+        </div>
+
+        <div class="cat-pts-range">
+          <input type="number" class="pts-input" min="0" placeholder="Pts. desde"
+                 [ngModel]="puntosDesde()" (ngModelChange)="puntosDesde.set(+$event)"/>
+          <span class="pts-sep">–</span>
+          <input type="number" class="pts-input" min="0" placeholder="Pts. hasta"
+                 [ngModel]="puntosHasta()" (ngModelChange)="puntosHasta.set(+$event)"/>
+          <button class="cat-filter-btn" (click)="filtrarPremios()" title="Filtrar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="21" y1="6" x2="3" y2="6"/>
+              <line x1="15" y1="12" x2="9" y2="12"/>
+              <line x1="11" y1="18" x2="13" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Control cantidad -->
+        <div class="cat-cantidad-wrap">
+          <div class="qty-ctrl qty-ctrl-lg">
+            <button class="qty-btn-sm" (click)="cambiarCantidad(-1)" [disabled]="cantidad() <= 1">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <span class="qty-val qty-val-lg">{{ cantidad() }}</span>
+            <button class="qty-btn-sm" (click)="cambiarCantidad(1)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contador -->
+      @if (!loading()) {
+        <div class="cat-count">{{ totalPremios() | number:'1.0-0' }} premios</div>
+      }
+
+      <!-- Cargando inicial -->
+      @if (loading()) {
+        <div class="cat-status cat-status-waiting">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          Seleccione un cliente para ver premios
+        </div>
+      }
+
+      <!-- Loading premios -->
+      @if (!loading() && loadingPremios()) {
+        <div class="cat-status">
+          <span class="cat-spinner"></span> Cargando...
+        </div>
+      }
+
+      <!-- Sin resultados -->
+      @if (!loading() && !loadingPremios() && premios().length === 0) {
+        <div class="cat-status">No se encontraron premios</div>
+      }
+
+      <!-- Grid -->
+      @if (!loading() && !loadingPremios() && premios().length > 0) {
+        <div class="cat-grid">
+          @for (premio of premios(); track premio.codPremio) {
+            <div class="cat-card" (click)="seleccionarPremio(premio)" [title]="premio.descripcion">
+              <div class="cat-img-container">
+                @if (!premio.img) {
+                  <div class="cat-img-ph">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  </div>
+                } @else {
+                  <div class="cat-img-wrap">
+                    <img [src]="premio.img | imagen : 'premios' | async"
+                         class="cat-img" [alt]="premio.descripcion" loading="lazy"/>
+                  </div>
+                }
+                <span class="cat-erp-badge">{{ premio.codPremioErp }}</span>
+              </div>
+              <div class="cat-label">
+                {{ premio.descripcion }}
+                <span class="cat-pts-label">⭐ {{ premio.puntos | number:'1.0-0' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Paginador -->
+        @if (totalPremios() > 16) {
+          <div class="cat-pager">
+            <button class="pag-btn" [disabled]="currentPagePremios() === 0"
+                    (click)="irPagina(currentPagePremios() - 1)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            @for (p of pageNumbers(); track $index) {
+              @if (p === '...') { <span class="pag-ellipsis">…</span> }
+              @else {
+                <button class="pag-btn" [class.active]="p === currentPagePremios()"
+                        (click)="irPagina(p)">{{ +p + 1 }}</button>
+              }
+            }
+            <button class="pag-btn" [disabled]="currentPagePremios() >= totalPagesPremios() - 1"
+                    (click)="irPagina(currentPagePremios() + 1)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        }
+      }
+
+    </div>
+  </section>
+
+  <!-- ════════ TAB BAR MÓVIL ════════ -->
+  <nav class="pos-tabs">
+    <button class="pos-tab-btn" [class.active]="tabActivo === 'catalogo'"
+            (click)="tabActivo = 'catalogo'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      Premios
+    </button>
+    <button class="pos-tab-btn" [class.active]="tabActivo === 'carrito'"
+            (click)="tabActivo = 'carrito'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      Carrito
+      @if (canjeDetalle().length > 0) {
+        <span class="pos-tab-badge">{{ canjeDetalle().length }}</span>
+      }
+    </button>
+  </nav>
+
+</div><!-- /pos-layout -->
+
+
+<!-- ════════════════════════════════════
+     MODAL — Confirmar guardar
+════════════════════════════════════ -->
+@if (showConfirmModal()) {
+  <div class="modal-overlay" (click)="cancelarGuardar()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Confirmar canje</h3>
+        <button class="modal-close" (click)="cancelarGuardar()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>¿Confirmar el canje de <strong>{{ totalPuntosDetalle() | number:'1.0-0' }} puntos</strong>
+           para <strong>{{ cliente()?.concatDocNombre ?? cliente()?.razonSocial }}</strong>?</p>
+        <p style="font-size:.8rem;color:var(--text-muted)">
+          {{ canjeDetalle().length }} premio(s) seleccionado(s).
+          Puntos sobrantes: {{ puntosRestantes() | number:'1.0-0' }}.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cancelarGuardar()">Volver</button>
+        <button class="btn btn-primary" (click)="confirmarGuardar()" [disabled]="guardando()">
+          @if (guardando()) { <span class="spinner-sm"></span> }
+          Sí, guardar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+
+<!-- ════════════════════════════════════
+     MODAL — Confirmar cambio de cliente
+════════════════════════════════════ -->
+@if (showCambioClienteModal()) {
+  <div class="modal-overlay" (click)="cancelarCambioCliente()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Cambiar cliente</h3>
+        <button class="modal-close" (click)="cancelarCambioCliente()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Tiene <strong>{{ canjeDetalle().length }} premio(s)</strong> en el carrito.</p>
+        <p>¿Desea descartar el carrito y buscar otro cliente?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cancelarCambioCliente()">Cancelar</button>
+        <button class="btn btn-danger" (click)="confirmarCambioCliente()">Sí, cambiar cliente</button>
+      </div>
+    </div>
+  </div>
+}

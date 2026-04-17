@@ -1,0 +1,96 @@
+<div class="card ">
+
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!stock.codStock" class="m-b-0 text-white">Crear stock</h4>
+        <h4 *ngIf="stock.codStock" class="m-b-0 text-white">Actualizar stock</h4>
+    </div>
+    <div class="card-body">
+        <form #stockForm="ngForm">
+
+            <!-- <div class="col-lg-2 border-dark">
+                <div class="card">
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <img *ngIf="!imagenTemp && !producto.img" [src]="sinImagen" style="width:242px;height:200px;">
+                        <img *ngIf="!imagenTemp && producto.img" [attr.src]="producto.img | imagen:'productos' | async" style="width:242px;height:200px;">
+                        <img *ngIf="imagenTemp" [src]="imagenTemp" style="width:242px;height:200px;">
+                        <div class="caption">
+                            <input id="uploadedfile" (change)="seleccionImage($event.target.files[0])" type="file">
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="col-lg-2 border-dark">
+                <div class="card" *ngIf="stock.producto">
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <img *ngIf="!stock.producto.img" [src]="sinImagen" style="width:242px;height:200px;">
+                        <img *ngIf="stock.producto.img" [attr.src]="stock.producto.img | imagen:'productos' | async" style="width:242px;height:200px;">
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-group row">
+                <label for="producto" class="col-form-label col-sm-2">Producto <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <ng-select-producto #searchSucursales id="ngselectproducto" [cargadorProducto]="cargadorProducto" style="width: 100%" name="input-typeahead-cl" (retornoObjeto)="seleccionarProducto($event)">
+                    </ng-select-producto>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="deposito" class="col-form-label col-sm-2">Deposito <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <ng-select-deposito #searchSucursales id="ngselectdeposito" [cargadorDeposito]="cargadorDeposito" style="width: 100%" name="input-typeahead-cl" (retornoObjeto)="seleccionarDeposito($event)">
+                    </ng-select-deposito>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="unidad" class="col-form-label col-sm-2">Unidad <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <ng-select-unidad #searchSucursales id="unidad" [cargadorUnidad]="cargadorUnidad" style="width: 100%" name="input-typeahead-cl" (retornoObjeto)="seleccionarUnidad($event)">
+                    </ng-select-unidad>
+                </div>
+            </div>
+
+            <div *ngIf="stock.codStock"  class="form-group row">
+                <label for="comprometido" class="col-form-label col-sm-2">Comprometido<span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="stock.comprometido" name="comprometido" #cantidad="ngModel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="minimo" class="col-form-label col-sm-2">Minimo<span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="stock.minimo" name="minimo" #cantidad="ngModel">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="existencia" class="col-form-label col-sm-2">Existencia<span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="stock.existencia" name="existencia" #cantidad="ngModel">
+                </div>
+            </div>
+
+
+
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/stock']" class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i> Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()' *ngIf="!stock.codStock else elseBlock" [disabled]="!stockForm.form.valid"><i class="fa   fa-floppy-o"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='update()' [disabled]="!stockForm.form.valid"><i class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,61 @@
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+<div class="container" align="center">
+    <div class="row col-xl-4 col-lg-5 col-md-7">
+        <div class="col-xl-12 col-xl-12">
+            <div class="card card-body printableArea">
+
+                <div class="ticket printableArea centrado" id="documento" *ngIf="listo">
+
+                    <p class="centrado">{{empresa.razonSocial}} S.A
+                        <br>R.U.C: {{empresa.ruc}}
+                        <br>Tel.:(021)999-999
+                        <br>({{sucursal.nombreSucursal}})
+                        <br>{{sucursal.direccion}}
+                        <br>I.V.A. INCLUIDO </p>
+                    <p class="izquierda">
+                        <br>Timbrado:{{venta.timbrado}}
+                        <br>Fecha inicio:{{venta.inicioTimbrado | date:'dd/MM/y'}}
+                        <br>Fecha fin:{{venta.finTimbrado | date:'dd/MM/y'}}
+                        <br>FACTURA CONTADO
+                        <br>Nro:{{venta.nroComprobante}}
+                        <br>Fecha:{{venta.fechaVenta | date:'dd/MM/y'}} </p>
+
+                    <table>
+                        <thead class="centrado">
+                            <tr>
+                                <th class="cantidad">Cant.</th>
+                                <th class="producto">Descripcion</th>
+                                <th class="precio">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let d of detalles" class="centrado">
+                            <tr>
+                                <td class="cantidad">{{d.cantidad}}</td>
+                                <td class="producto">{{d.producto.nombreProducto}}</td>
+                                <td class="precio">{{d.importeTotal | number}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+
+                            <tr>
+                                <td class="cantidad"> </td>
+                                <td class="producto">Total a pagar:</td>
+                                <td class="precio"> {{venta.importeTotal | number}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <p class="centrado">¡Gracias por su compra!
+                        <br>{{sucursal.email}}</p>
+                </div>
+
+                <button class="btn btn-secondary" [useExistingCss]="true" styleSheetFile="ticket.css" printSectionId="documento" ngxPrint>Imprimir</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- End Page Content Duplicado: archivo tributario -->
+<!-- ============================================================== -->

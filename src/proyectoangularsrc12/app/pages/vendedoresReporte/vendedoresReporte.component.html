@@ -1,0 +1,120 @@
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex">
+          <div>
+            <span>
+              <h3 class="card-title m-b-5 center">
+                <span class="lstick"></span>Ventas por vendedor
+              </h3>
+            </span>
+          </div>
+        </div>
+        <div class="container py-5">
+
+          <form #repartoForm="ngForm">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="fechaInicio" class="col-form-label"> Fecha Desde:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaInicio"
+                  name="fechaInicio" />
+              </div>
+              <div class="col-sm-6">
+                <label for="fechafin" class="col-form-label"> Fecha Hasta:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechafin" name="fechafin" />
+              </div>
+            </div>
+             <div class="form-group row" >
+              <div class="col-sm-6" *ngIf="rol == 'ROLE_ADMIN'">
+                <label for="sucursal" class="col-form-label">Sucursal:</label>
+                <ng-select-sucursal #searchSucursales id="ngbdtypeaheadSucursales" [cargadorSucursal]="cargadorSucursal"
+                  style="width: 100%" name="sucursal" (retornoObjeto)="seleccionarSucursal($event)">
+                </ng-select-sucursal>
+              </div>
+              <div class="col-sm-6" *ngIf="rol == 'ROLE_CAJERO'">
+                <label for="sucursal" class="col-form-label ">Sucursal:</label>
+                <select id="seleccionSucursales" class="form-control form-control-sm custom-select"
+                  [(ngModel)]="seleccionSucursal" style="font-size: 90%;width: 100%; " name="seleccionSucursales"
+                  (ngModelChange)="cambioSucursal($event)">
+                  <option style="font-size: 90%; " *ngFor="let s of sucursales" [value]="s.codSucursal">
+                    {{ s.nombreSucursal }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label for="vendedor" class="col-form-label">Vendedor:</label>
+                <ng-select-vendedor #searchVendedor id="vendedor" [cargadorVendedor]="cargadorVendedor"
+                name="vendedor" (retornoObjeto)="seleccionarVendedor($event)"></ng-select-vendedor>
+              </div>
+            </div>
+ 
+     
+            <div class="form-group row button-group ">
+              <div class="col-sm-6  " style=" text-align: center;">
+                <button class="btn btn-themecolor   " (click)="verReporte()" type="button ">
+                  <i class="fa fa-search "></i> Ver reporte
+                </button>
+                <button type="button" (click)="ngOnInit()" class="btn  btn-secondary">
+                  <i class="fa  fa-close"></i> Cancelar
+                </button>
+              </div>
+              <div class="col-sm-6 " style=" text-align: center;">
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+<!--   <div class="col-lg-4">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                <img src="../../../assets/images/icon/cash.png" class="w50" alt="Income" /></div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Total Gs.</h6>
+                 <h2 class="m-t-0">{{totalGs|number}} Gs.</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                <img src="../../../assets/images/icon/balanza.png" class="w50" alt="Income" /></div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Total Kg.</h6>
+                 <h2 class="m-t-0">{{totalkg|number}} Kg.</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex no-block">
+              <div class="m-r-20 align-self-center"><span class="lstick m-r-20"> </span>
+                <img src="../../../assets/images/icon/932602.png" class="w50" alt="Income" /></div>
+              <div class="align-self-center">
+                <h6 class="text-muted m-t-10 m-b-0">Cantidad</h6>
+                 <h2 class="m-t-0">{{ totalElementos |number}} </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+    </div>
+  </div> -->
+</div>

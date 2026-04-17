@@ -1,0 +1,75 @@
+<div class="card border-primary mb-3">
+    <div class="card-header label-themecolor">
+        <h4 class="m-b-0 text-white">Listado de terminales( {{ terminales.length}})</h4>
+    </div>
+    <div class="card-body text-dark">
+        <div class="row form-group">
+            <div class="col-3">
+                <button class="btn btn-rounded   btn-success" type="button" [routerLink]="['/terminales/formulario']">
+              <i class="fa fa-plus"></i>
+              Nuevo
+            </button>
+            </div>
+
+            <div class="col-3"></div>
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+            <div class="col-sm-12">
+                <div class="alert alert-info text-center">
+                    <strong>Cargando ...</strong>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-2x"></i>
+                    <br>
+                    <span>Espere por favor</span>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="terminales?.length == 0" class="alert alert-info">
+            No se han encontrado registros ...
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-striped" *ngIf="terminales?.length>0">
+                <thead>
+                    <tr>
+                        <!--  <th>Codigo</th>
+              <th>Codigo empresa</th> -->
+                        <th>Id</th>
+                        <th>Terminal</th>
+                        <th>Disponible</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let terminal of terminales | slice: (currentPage * pageSize) - pageSize :currentPage * pageSize">
+                        <!--  <td>{{ terminal.codTerminalVenta }}</td>
+              <td>{{ terminal.codEmpresa }}</td> -->
+                        <td>{{ terminal.id }}</td>
+                        <td>{{ terminal.descripcion }}</td>
+                        <td *ngIf="terminal.disponible === true">Si</td>
+                        <td *ngIf="terminal.disponible === false">NO</td>
+
+                        <td>
+                            <button class="btn btn-info btn-circle " [routerLink]="['/terminales/formulario', terminal.codTerminalVenta]" type="button">
+                        <i class="fa fa-pencil"></i>
+                  </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-circle " (click)='delete(terminal)' type="button">
+                        <i class="fa fa-trash-o"></i>
+                   </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container" *ngIf="terminales?.length > 0">
+            <ngb-pagination class="d-flex justify-content-center" [size]="tamanhoPag" [collectionSize]="terminales.length" [(page)]="currentPage" [maxSize]="4" [boundaryLinks]="true">
+                <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+                <ng-template ngbPaginationNext>&raquo;</ng-template>
+                <ng-template ngbPaginationFirst>Primera</ng-template>
+                <ng-template ngbPaginationLast>Última</ng-template>
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

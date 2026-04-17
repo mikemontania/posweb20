@@ -1,0 +1,177 @@
+<form #clienteForm="ngForm">
+  <fieldset>
+      <div class="row show-grid">
+          <div class="col-lg-4">
+              <div class="form-group d-flex align-items-center">
+                  <label for="tipoDoc" class="me-2 mb-0">Tipo Doc. <span style="color: red">(*)</span></label>
+                  <ng-select [(ngModel)]="cliente.tipoDoc" name="tipoDoc" id="selectTipoDoc" (ngModelChange)="verificarDoc()"
+                  #tipoDoc="ngModel" [clearable]="false" class="flex-grow-1">
+                  <ng-option [value]="'RUC'">RUC</ng-option>
+                  <ng-option [value]="'CI'">CI</ng-option>
+                  <ng-option [value]="'CE'">CE</ng-option>
+              </ng-select>
+              </div>
+          </div>
+
+          <app-nro-docu
+          *ngIf="mostrarDoc"
+          [tipoDoc]="cliente.tipoDoc"
+          [docNro]="cliente.docNro"
+          (docNroChange)="setNroDoc($event)"
+        ></app-nro-docu>
+
+          <div class="col-lg-6">
+              <div class="form-group d-flex align-items-center">
+                  <label for="razonSocial" class="me-2 mb-0">Razon Social <span style="color: red">(*)</span></label>
+                  <input type="text" class="form-control flex-grow-1" [(ngModel)]="cliente.razonSocial"
+                      (ngModelChange)="cliente.razonSocial =toUpeCaseEvent($event)" name="razonSocial">
+              </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="form-group d-flex align-items-center">
+                <label for="email" class="me-2 mb-0">Email: <span style="color: red">(*)</span> </label>
+                <input type="text" class="form-control flex-grow-1" [(ngModel)]="cliente.email" name="email">
+            </div>
+        </div>
+
+          <div class="col-lg-4">
+              <div class="form-group d-flex align-items-center">
+                  <label for="telefono" class="me-2 mb-0">Tel: <span style="color: red">(*)</span></label>
+                  <input type="text" class="form-control flex-grow-1" [(ngModel)]="cliente.telefono"
+                      (ngModelChange)="cliente.telefono =toUpeCaseEvent($event)" name="telefono">
+              </div>
+          </div>
+
+
+
+          <div class="col-lg-8">
+              <div class="form-group d-flex align-items-center">
+                  <label for="direccion" class="me-2 mb-0">Direccion <span style="color: red">(*)</span></label>
+                  <input type="text" class="form-control flex-grow-1" [(ngModel)]="cliente.direccion"
+                      (ngModelChange)="cliente.direccion = toUpeCaseEvent($event)" name="direccion">
+              </div>
+          </div>
+
+          <div class="col-lg-12" *ngIf="_loginService?.user.codEmpresa == 6">
+            <div class="form-group d-flex align-items-center" >
+
+                <input
+                type="text"class="form-control flex-grow-1"
+                style="width: 80%;"
+                [(ngModel)]="urlGoogle"
+                placeholder="Pegar URL aquí"name="urlGoogle"
+              />
+
+
+              <button class="btn btn-success waves-effect waves-light" type="button" role="button" (click)='analizarUrl()'
+               > Analizar</button>
+
+               <button class="btn btn-warning waves-effect waves-light" type="button" role="button" (click)="urlGoogle =''"
+               > limpiar</button>
+
+
+            </div>
+        </div>
+          <div class="col-lg-6" *ngIf="_loginService?.user.codEmpresa == 6">
+            <div class="form-group d-flex align-items-center">
+                <label for="latitud" class="me-2 mb-0">Latitud:  </label>
+                <input type="number" class="form-control flex-grow-1" [(ngModel)]="cliente.latitud"
+                   name="latitud">
+            </div>
+        </div>
+
+        <div class="col-lg-6" *ngIf="_loginService?.user.codEmpresa == 6">
+          <div class="form-group d-flex align-items-center" >
+              <label for="longitud" class="me-2 mb-0">Longitud:  </label>
+              <input type="number" class="form-control flex-grow-1" [(ngModel)]="cliente.longitud"
+                 name="longitud">
+          </div>
+      </div>
+
+
+
+
+          <div class="col-lg-4">
+              <div class="form-group d-flex align-items-center">
+                  <label for="listaPrecio" class="me-2 mb-0">Lista Precio <span style="color: red">(*)</span></label>
+                  <ng-select [items]="listaPrecio" notFoundText="No se ha encontrado lista"
+                      placeholder="Seleccione lista" [(ngModel)]="cliente.listaPrecio" name="listaPrecio"
+                      bindLabel="descripcion" (clear)="cleanLista()" (change)="cambioListaPrecio($event)" class="flex-grow-1">
+                  </ng-select>
+              </div>
+          </div>
+   <!--        <div class="col-lg-4">
+              <div class="form-group d-flex align-items-center">
+                  <label for="sucursal" class="me-2 mb-0">Sucursal <span style="color: red">(*)</span></label>
+                  <ng-select [items]="sucursales" notFoundText="No se ha encontrado sucursal"
+                      placeholder="Seleccione sucursal" [(ngModel)]="cliente.sucursalPref" name="sucursal"
+                      bindLabel="nombreSucursal" (clear)="cleanSucursal()" (change)="cambioSucursal($event)" class="flex-grow-1">
+                  </ng-select>
+              </div>
+          </div> -->
+
+          <div class="col-lg-4">
+              <div class="form-group d-flex align-items-center">
+                  <label for="medioPago" class="me-2 mb-0">Medio Pago<span style="color: red">(*)</span></label>
+                  <ng-select [items]="medioPago" notFoundText="No se ha encontrado medio pago"
+                      placeholder="Seleccione medio pago" [(ngModel)]="cliente.medioPagoPref" name="selectMedio"
+                      bindLabel="descripcion" (clear)="cleanMedio()" (change)="cambioMedioPago($event)" class="flex-grow-1">
+                  </ng-select>
+              </div>
+          </div>
+
+          <div class="col-lg-4">
+              <div class="form-group d-flex align-items-center">
+                  <label for="formaVenta" class="me-2 mb-0">F. venta <span style="color: red">(*)</span></label>
+                  <ng-select [items]="formaVenta" notFoundText="No se ha encontrado forma venta"
+                      placeholder="Seleccione forma venta" [(ngModel)]="cliente.formaVentaPref" name="formaVentaPref"
+                      bindLabel="descripcion" (clear)="cleanForma()" (change)="cargarForma($event)" class="flex-grow-1">
+                  </ng-select>
+              </div>
+          </div>
+            <div class="col-lg-12">
+              <div class="form-group d-flex align-items-center">
+                  <label for="obs" class="me-2 mb-0">Observación </label>
+                  <input type="text" class="form-control flex-grow-1" [(ngModel)]="cliente.obs"            name="obs">
+              </div>
+          </div>
+
+          <div class="col-lg-4 alert-warning">
+              <div class="form-group d-flex align-items-center">
+                  <label for="categoria" class="me-2 mb-0">Grupo descuento</label>
+                  <ng-select [items]="grupos" notFoundText="No se ha encontrado grupo" placeholder="Seleccione estado"
+                      [(ngModel)]="cliente.grupoDescuento" name="estado" bindLabel="descripcion"
+                      (clear)="cleanGrupo()" (change)="cambioGrupo($event)" class="flex-grow-1">
+                  </ng-select>
+              </div>
+          </div>
+          <div class="col-lg-4 alert-warning">
+              <div class="form-group d-flex align-items-center">
+                  <label for="carnetGrupo" class="me-2 mb-0">Nº carnet</label>
+                  <input type="text" class="form-control flex-grow-1" [(ngModel)]="cliente.carnetGrupo"
+                      (ngModelChange)="cliente.carnetGrupo = toUpeCaseEvent($event)" name="carnetGrupo"
+                      #carnetGrupo="ngModel" />
+              </div>
+          </div>
+
+          <div class="col-lg-4 alert-warning">
+              <div class="form-group d-flex align-items-center">
+                  <label for="carnetVencimiento" class="me-2 mb-0">F.exp.:</label>
+                  <input type="date" class="form-control flex-grow-1" [(ngModel)]="cliente.carnetVencimiento"
+                      name="carnetVencimiento" #carnetVencimiento="ngModel">
+              </div>
+          </div>
+
+
+
+
+
+      </div>
+  </fieldset>
+  <div class="form-group">
+      <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()'
+          *ngIf="deshabilitarBoton == false" [disabled]="!clienteForm.form.valid"><i
+              class="fa   fa-floppy-o"></i>Crear</button>
+  </div>
+</form>

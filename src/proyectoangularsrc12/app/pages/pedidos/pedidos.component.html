@@ -1,0 +1,1130 @@
+<!-- ======================================================================================================================================================================================================================================================= -->
+<div class="row animated ventas-fila">
+  <!--  ===========================================================Pedido====================================== -->
+  <aside class="col-lg-5">
+    <div class="card">
+      <div class="card-header label-themecolor" style="display: flex">
+        <h4 class="text-white">
+          Pedido&nbsp;<i
+            class="fa fa-lg fa-fw fa-shopping-cart"
+            aria-hidden="true"
+          ></i>
+        </h4>
+        <h4
+          *ngIf="cliente"
+          style="margin-left: auto"
+          class="text-white"
+          [ngClass]="{
+            'bg-success': cliente.listaPrecio.descripcion != 'EMPLEADOS',
+            'bg-warning': cliente.listaPrecio.descripcion == 'EMPLEADOS'
+          }"
+        >
+          &nbsp; LISTA DE PRECIO: {{ cliente.listaPrecio.descripcion }}&nbsp;
+        </h4>
+      </div>
+      <div class="card-body ventas-tarjeta-body" align="center">
+        <div class="ventas-contenedor-body-30">
+          <div class="input-group" [hidden]="mostrarCliente">
+            <ngbd-typeahead-http
+              #search
+              id="ngbdtypeaheadhttp"
+              class="letras10-7"
+              style="width: 100%"
+              name="input-typeahead"
+              (retornoObjeto)="seleccionarCliente($event)"
+            >
+            </ngbd-typeahead-http>
+          </div>
+          <div class="input-group" [hidden]="!mostrarCliente">
+            <span class="form-control form-group"
+              ><b>{{ razonSocial }} </b></span
+            >
+            <button
+              class="btn btn-secondary"
+              data-toggle="tooltip"
+              title="Buscar cliente"
+              type="button"
+              (click)="verificarPedido()"
+            >
+              <i class="fa fa-search"></i>
+            </button>
+            <button
+              class="btn btn-secondary"
+              data-toggle="tooltip"
+              title="Crear cliente"
+              type="button"
+              (click)="mostrarModalCliente()"
+            >
+              <i class="fa fa-user"></i>
+            </button>
+            <button
+              class="btn btn-secondary"
+              data-toggle="tooltip"
+              title="Editar Obs"
+              type="button"
+              (click)="mostrarModalObservacion()"
+            >
+              <i class="fa fa-sticky-note"></i>
+            </button>
+
+
+            <button
+              class="btn btn-secondary"
+              data-toggle="tooltip"
+              title="Cargar pedido"
+              type="button"
+              (click)="mostrarModalPedidos()"
+            >
+              <i class="fa fa-pencil"></i>
+            </button>
+          </div>
+          <br [hidden]="!mostrarCliente" />
+
+          <div class="row">
+            <div class="col-xl-4">
+              <ng-select
+                [items]="sucursales"
+                notFoundText="No se ha encontrado sucursal"
+                placeholder="Seleccione sucursal"
+                [(ngModel)]="sucursal"
+                name="sucursal"
+                [clearable]="false"
+                bindLabel="nombreSucursal"
+                (change)="cambioSucursal($event)"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <span> Sucursal: </span>
+                  <span> {{ item.nombreSucursal }} </span>
+                </ng-template>
+              </ng-select>
+            </div>
+              <div class="col-xl-4">
+             <ng-select
+            [items]="canales"
+            notFoundText="No se ha encontrado canal"
+            placeholder="Seleccione canal"
+            [(ngModel)]="canal"
+            name="canal"
+            [clearable]="false"
+            bindLabel="descripcion"
+            (change)="cambioCanal($event)"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <span> Canal: </span> <span> {{ item.descripcion }} </span>
+            </ng-template>
+          </ng-select>
+            </div>
+          </div>
+
+          <br />
+        </div>
+
+        <div class="table-responsive">
+          <!-- <perfect-scrollbar class="scroll-container" style="position: relative; max-height: 250px;"
+                [scrollIndicators]="true"> -->
+          <div
+            class="scrollable-content"
+            style="
+              min-height: 300px;
+              max-height: 300px;
+              overflow: scroll;
+              height: yz;
+            "
+            #scrollBody
+            [scrollTop]="scrollBody.scrollHeight"
+          >
+            <table class="table table-bordered">
+              <thead>
+                <tr class="small text-uppercase">
+                  <th scope="col">Producto</th>
+                  <th scope="col" width="100">Cantidad</th>
+                  <th scope="col" width="100">Precio</th>
+                  <th scope="col" width="100">Total</th>
+                  <!-- <th scope="col"  *ngIf="modoVendedor == 'DETALLE'" width="70"> Vend. </th> -->
+                  <th scope="col" class="d-none d-md-block" width="50">
+                    <i class="fa fa-trash"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of pedidoDetalles">
+                  <td>{{ item.producto.concatCodErpNombre }}</td>
+                  <td>
+                    <div class="btn-group center" role="group">
+                      <button
+                        type="button"
+                        align="left"
+                        (click)="restarProducto(item)"
+                        class="btn btn-secondary btn-sm"
+                      >
+                        <i class="fa fa-minus"></i>
+                      </button>
+                      <span align="center"
+                        >&nbsp;{{ item.cantidad | number }}&nbsp;</span
+                      >
+                      <button
+                        type="button"
+                        align="right"
+                        (click)="seleccionarProducto(item.producto)"
+                        class="btn btn-secondary btn-sm"
+                      >
+                        <i class="fa fa-plus"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td>{{ item.importePrecio | number }}</td>
+                  <td>{{ item.importeTotal | number }}</td>
+                  <!-- <td  *ngIf="modoVendedor == 'DETALLE'">
+                    <button (click)="cambiaVendedorDet(item)" class="btn btn-success btn-sm center"
+                      title="{{item.vendedor.vendedor}}">
+                      <i class="fa fa-user-circle"></i>
+                    </button>
+                  </td> -->
+                  <td>
+                    <button
+                      (click)="quitarProductoCompleto(item)"
+                      class="btn btn-danger btn-sm center"
+                      title="eliminar"
+                    >
+                      <i class="fa fa-trash-o"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- </perfect-scrollbar> -->
+          <div style="min-height: 150px">
+            <table
+              id="myTable2"
+              class="table .table-responsive table-bordered"
+              *ngIf="!deshabilitarBuscador"
+            >
+              <thead>
+                <tr class="small text-uppercase">
+                  <th scope="col" width="50">Codigo</th>
+                  <th scope="col">Descripcion</th>
+                  <th scope="col" width="100">Descuento</th>
+                  <th scope="col" width="50"><i class="fa fa-trash"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let descuento of descuentos">
+                  <td>{{ descuento.codDescuento | number }}</td>
+                  <td>{{ descuento.descripcion }}</td>
+                  <td>{{ descuento.descuento | number }}%</td>
+                  <td>
+                    <button
+                      (click)="quitarDescuento(descuento)"
+                      class="btn btn-danger btn-sm"
+                    >
+                      <i class="fa fa-trash-o" title="eliminar"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <table class="table table-hover" *ngIf="!deshabilitarBuscador">
+              <tbody>
+                <tr>
+                  <td><b>DESCUENTO</b></td>
+                  <td>
+                    : <b>{{ porcentajeDescuento | number }} %</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>TOTAL PEDIDO</b></td>
+                  <td>
+                    :
+                    <b
+                      >{{
+                        pedido.importeTotal + pedido.importeDescuento | number
+                      }}Gs.</b
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>TOTAL DESCUENTO</b></td>
+                  <td>
+                    : <b>{{ pedido.importeDescuento | number }}Gs.</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h1>TOTAL A PAGAR:</h1>
+                  </td>
+                  <td>
+                    <h1>
+                      <span class="badge badge-secondary">
+                        <b>{{ pedido.importeTotal | number }} Gs.</b></span
+                      >
+                    </h1>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div align="right">
+              <br />
+              <button
+                type="submit"
+                data-toggle="modal"
+                data-target=".cobranza-modal"
+                style="margin-right: 0.2rem"
+                class="btn btn-info text-white"
+                (click)="verificarTipoPedido()"
+              >
+                Guardar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-secondary"
+                (click)="limpiar()"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+        <!--table responsive-->
+      </div>
+    </div>
+  </aside>
+
+  <!--  ===========================================================Producto====================================== -->
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header label-themecolor">
+        <h4 class="text-white">Productos({{ totalElementos }})</h4>
+      </div>
+      <div class="card-body ventas-tarjeta-body">
+        <div class="ventas-contenedor-body-30 row">
+          <div class="col-xl-9 col-lg-9 col-md-9">
+            <label class="small text-uppercase my-1" for="categorias"
+              >Buscar:</label
+            >
+            <input-debounce
+              #inputProducto
+              *ngIf="!deshabilitarBuscador"
+              delay="500"
+              id="inputProducto"
+              height="15px"
+              type="text"
+              placeholder="Ingrese descripción"
+              required=""
+              aria-invalid="false"
+              (value)="buscarProducto($event)"
+            >
+            </input-debounce>
+          </div>
+          <div class="col-xl-3 col-lg-1 col-md-3">
+            <label class="small text-uppercase m-1" for="categorias"
+              >Cantidad:</label
+            >
+            <div class="input-group mb-3">
+              <div class="input-group" id="button-addon3">
+                <button
+                  *ngIf="!deshabilitarBuscador"
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="cambiarValor(-1)"
+                >
+                  <i class="mdi mdi-minus"></i>
+                </button>
+                <input
+                  *ngIf="!deshabilitarBuscador"
+                  onclick="this.cantidad=''"
+                  type="number"
+                  class="form-control"
+                  name="cantidad"
+                  id="inputCantidad"
+                  [(ngModel)]="cantidad"
+                  min="1"
+                />
+                <button
+                  *ngIf="!deshabilitarBuscador"
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="cambiarValor(+1)"
+                >
+                  <i class="mdi mdi-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
+            <label class="small text-uppercase m-1" for="categorias"
+              >Categorías:</label
+            >
+            <ng-select-categoria
+              *ngIf="!deshabilitarBuscador"
+              #searchCategoria
+              id="ngSelectCategoria"
+              [cargadorCategoria]="categoriaSeleccionada"
+              name="ngSelectCategoria"
+              (retornoObjeto)="filtrarCategoria($event)"
+            >
+            </ng-select-categoria>
+          </div>
+        </div>
+
+        <div *ngIf="productos?.length == 0" class="alert alert-info">
+          No se han encontrado registros ...
+        </div>
+        <div class="row" animated fadeIn *ngIf="cargando">
+          <div class="col-sm-12">
+            <div class="alert alert-info text-center">
+              <strong>Cargando ...</strong>
+              <br />
+              <i class="fa fa-refresh fa-spin fa-2x"></i>
+              <br />
+              <span>Espere por favor</span>
+            </div>
+          </div>
+        </div>
+        <!--  <label class="small text-uppercase my-3 mx-3" for="categorias">Categorías:</label>
+                  <app-barra-categoria *ngIf="categorias?.length>0" [items]="categorias"
+                    (retornoCategoria)="filtrarCategoria($event)" [categoriaSeleccionada]="categoriaSeleccionada">
+                  </app-barra-categoria> -->
+        <perfect-scrollbar
+          class="scroll-container"
+          style="position: relative; max-width: 100%; max-height: 600px"
+          [scrollIndicators]="true"
+        >
+          <div class="container">
+            <div class="row mr-0">
+              <div
+                class="box-product col-lg-3 col-md-4 col-6 pointer"
+                *ngFor="let producto of productos"
+                (click)="seleccionarProducto(producto)"
+              >
+                <img
+                  *ngIf="!producto.img"
+                  [src]="sinImagen"
+                  class="img-producto80 mt-3"
+                />
+                <img
+                  *ngIf="producto.img"
+                  [attr.src]="producto.img | imagen: 'productos' | async"
+                  class="img-producto80 mt-3"
+                />
+                <br />
+                <span class="product-card-body ellipsis-title">
+                  {{ producto.concatCodErpNombre }}
+                </span>
+              </div>
+            </div>
+            <!-- /.row -->
+          </div>
+          <!-- /.container -->
+        </perfect-scrollbar>
+        <div
+          class="table table-responsive container-fluid"
+          *ngIf="!deshabilitarBuscador"
+        >
+          <ngb-pagination
+            #pagination
+            class="d-flex justify-content-center"
+            *ngIf="productos?.length > 0"
+            [size]="size"
+            [collectionSize]="totalElementos"
+            [ellipses]="ellipses"
+            [pageSize]="cantidadElementos"
+            [(page)]="pagina"
+            [maxSize]="3"
+            [boundaryLinks]="true"
+            (pageChange)="loadPage($event)"
+          >
+            <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+            <ng-template ngbPaginationNext>&raquo;</ng-template>
+            <ng-template ngbPaginationFirst>Primera</ng-template>
+            <ng-template ngbPaginationLast>Última</ng-template>
+          </ngb-pagination>
+        </div>
+        <!--card ventas-contenedor-->
+      </div>
+    </div>
+  </div>
+  <!--col-lg-7-->
+</div>
+
+<!--  ==================================================Observacion=========================================================== -->
+<div class="fondo-negro animated fadeIn" *ngIf="mostrarModal">
+  <div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white">Cargar Observación</h4>
+          <button
+            type="button"
+            (click)="cerrarModalObs()"
+            class="btn btn-secondary waves-effect waves-light"
+          >
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input
+            type="text"
+            class="form-control flex-grow-1"
+            [(ngModel)]="pedido.observacion"
+            (ngModelChange)="pedido.observacion = toUpeCaseEvent($event)"
+            name="observacion"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  ==================================================Observacion=========================================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="modalCanal">
+  <div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white">Canal</h4>
+          <button
+            type="button"
+            (click)="cerrarModalCanal()"
+            class="btn btn-secondary waves-effect waves-light"
+          >
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="modalCanal != 'oculto'">
+          <ng-select
+            [items]="canales"
+            notFoundText="No se ha encontrado canal"
+            placeholder="Seleccione canal"
+            [(ngModel)]="canal"
+            name="canal"
+            [clearable]="false"
+            bindLabel="descripcion"
+            (change)="cambioCanal($event)"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <span> Canal: </span> <span> {{ item.descripcion }} </span>
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  ==================================================Cliente=========================================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="modalCliente">
+  <div class="modal" style="display: block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white">Crear nuevo cliente</h4>
+
+          <button
+            type="button"
+            (click)="cerrarModalCliente()"
+            class="btn btn-secondary waves-effect waves-light"
+          >
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form-cliente></form-cliente>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  ===========================================================Modal Cobranzas====================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="oculto">
+  <div class="modal" style="display: block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white">Cobranza</h4>
+        </div>
+        <perfect-scrollbar
+          class="scroll-container"
+          style="position: relative; max-height: 600px"
+          [scrollIndicators]="true"
+        >
+          <div class="scrollable-content">
+            <div class="modal-body" *ngIf="oculto == ''">
+              <div class="card-body">
+                <div>
+                  <div class="widget-body">
+                    <form #CobranzaForm="ngForm" role="form">
+                      <fieldset>
+                        <div class="row show-grid">
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label>Medio Pago Pref.</label>
+                              <select
+                                id="selectMedioPago"
+                                class="custom-select"
+                                style="width: 100%"
+                                tabindex="-1"
+                                aria-hidden="true"
+                                [(ngModel)]="seleccionMedioPago"
+                                #selectMedio="ngModel"
+                                name="selectMedio"
+                                (ngModelChange)="cambioMedioPago($event)"
+                              >
+                                <option
+                                  *ngFor="let m of medioPago"
+                                  [value]="m.codMedioPago"
+                                >
+                                  {{ m.descripcion }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                          <div
+                            class="col-md-3"
+                            *ngIf="selectModelMedio.tieneTipo"
+                          >
+                            <div
+                              class="form-group"
+                              *ngIf="selectModelMedio.tieneTipo"
+                            >
+                              <label>Tipo</label>
+                              <select
+                                id="selectTipoMedioPago"
+                                class="form-control custom-select form-group"
+                                style="width: 100%"
+                                tabindex="-1"
+                                aria-hidden="true"
+                                [(ngModel)]="selectModelTipoMedioPago"
+                                (ngModelChange)="cambioTipo($event)"
+                                name="selectModelTipoMedio"
+                              >
+                                <option
+                                  [ngValue]="t"
+                                  *ngFor="let t of tipoMedioPago"
+                                >
+                                  {{ t.descripcion }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                          <div
+                            class="col-md-3"
+                            *ngIf="selectModelMedio.tieneBanco"
+                          >
+                            <div
+                              class="form-group"
+                              *ngIf="selectModelMedio.tieneBanco"
+                            >
+                              <label>Banco </label>
+                              <select
+                                id="selectBanco"
+                                class="form-control custom-select form-group"
+                                style="width: 100%"
+                                tabindex="-1"
+                                aria-hidden="true"
+                                [(ngModel)]="selectModelBanco"
+                                (ngModelChange)="cambioBanco($event)"
+                                name="selectBanco"
+                              >
+                                <option [ngValue]="b" *ngFor="let b of bancos">
+                                  {{ b.descripcion }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div
+                            class="col-md-3"
+                            *ngIf="selectModelMedio.esCheque"
+                          >
+                            <div
+                              class="form-group"
+                              *ngIf="selectModelMedio.esCheque"
+                            >
+                              <label>Fecha Emision </label>
+                              <input
+                                type="date"
+                                class="form-control"
+                                [(ngModel)]="fechaEmision"
+                                name="fechaEmision"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div
+                            class="col-md-3"
+                            *ngIf="selectModelMedio.esCheque"
+                          >
+                            <div
+                              class="form-group"
+                              *ngIf="selectModelMedio.esCheque"
+                            >
+                              <label>Fecha Vencimiento </label>
+                              <input
+                                type="date"
+                                class="form-control"
+                                [(ngModel)]="fechaVencimiento"
+                                name="fechaVencimiento"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div
+                            class="col-md-3"
+                            *ngIf="
+                              selectModelMedio.esCheque ||
+                              selectModelMedio.tieneRef
+                            "
+                          >
+                            <div
+                              class="form-group"
+                              *ngIf="
+                                selectModelMedio.esCheque ||
+                                selectModelMedio.tieneRef
+                              "
+                            >
+                              <label>Nro referencia</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                [(ngModel)]="nroRef"
+                                (ngModelChange)="
+                                  nroRef = toUpeCaseEvent($event)
+                                "
+                                name="nroRef"
+                                required
+                                minlength="4"
+                              />
+                              <div *ngIf="nroRef">
+                                <div
+                                  *ngIf="nroRef.length > 0 || 4 > nroRef.length"
+                                >
+                                  <div
+                                    *ngIf="4 > nroRef.length"
+                                    class="alert alert-danger"
+                                  >
+                                    Nro referencia debe tener al menos 4
+                                    caracteres y se han ingresado
+                                    {{ nroRef.length }}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            class="col-md-3"
+                            *ngIf="selectModelMedio.esCheque"
+                          >
+                            <div
+                              class="form-group"
+                              *ngIf="selectModelMedio.esCheque"
+                            >
+                              <label>Nro cuenta</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                [(ngModel)]="nroCuenta"
+                                (ngModelChange)="
+                                  nroCuenta = toUpeCaseEvent($event)
+                                "
+                                name="nroCuenta"
+                                required
+                                minlength="12"
+                              />
+                              <div *ngIf="nroCuenta">
+                                <div
+                                  *ngIf="
+                                    nroCuenta.length > 0 ||
+                                    12 > nroCuenta.length
+                                  "
+                                >
+                                  <div
+                                    *ngIf="12 > nroCuenta.length"
+                                    class="alert alert-danger"
+                                  >
+                                    Nro cuenta debe tener al menos 12 caracteres
+                                    y se han ingresado {{ nroCuenta.length }}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label>Monto </label>
+                              <input
+                                type="number"
+                                min="100"
+                                class="form-control currency"
+                                name="montoAbonado"
+                                id="inputmontoAbonado"
+                                [(ngModel)]="montoAbonado"
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="form-group row button-group">
+                  <div class="col-md-3">
+                    <button
+                      type="button"
+                      align="right"
+                      (click)="agregarCobranza()"
+                      [disabled]="!CobranzaForm.form.valid"
+                      class="btn btn-success text-white"
+                    >
+                      Agregar
+                    </button>
+                  </div>
+                </div>
+
+                <div class="ventas-contenedor-body-20">
+                  <table
+                    id="myTable2"
+                    class="font-weight-bold table table-fixedheader table-bordered table-striped"
+                  >
+                    <thead style="overflow-y: hidden">
+                      <tr>
+                        <th width="45%">Medio Pago</th>
+                        <th width="45%">Importe</th>
+                        <th height="120%" width="10%">
+                          <i class="fa fa-trash-o"></i>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody style="height: 120px">
+                      <tr *ngFor="let item of cobranzasDetalle">
+                        <td width="45%">{{ item.medioPago.descripcion }}</td>
+                        <td width="45%">{{ item.importeAbonado | number }}</td>
+                        <td width="10%">
+                          <button
+                            (click)="quitarCobranza(item)"
+                            class="brn btn-danger"
+                          >
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-md-12">
+                  <div class="row">
+                    <div
+                      class="col-md-6 full-color-table full-muted-table hover-table"
+                      style="width: 100%; padding: 1rem; border: 15% raddius"
+                    >
+                      <table class="font-weight-bold">
+                        <thead>
+                          <tr *ngIf="cobranza">
+                            <td width="40%" class="bg-success">
+                              Total a Pagar
+                            </td>
+                            <td width="10%"></td>
+                            <td width="40%" class="bg-success">
+                              : Gs. {{ pedido.importeTotal | number }}
+                            </td>
+                            <td width="10%">
+                              <button
+                                (click)="usar(pedido.importeTotal)"
+                                title="Click para agregar a Monto"
+                                *ngIf="
+                                  pedido.importeTotal > totalAbonado &&
+                                  totalAbonado + pedido.importeTotal ==
+                                    pedido.importeTotal
+                                "
+                                type="button"
+                                class="btn btn-sm btn-success"
+                              >
+                                <i class="fa fa-plus"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="40%" class="bg-info">Total Abonado</td>
+                            <td width="10%"></td>
+                            <td width="40%" class="bg-info">
+                              : Gs. {{ totalAbonado | number }}
+                            </td>
+                            <td width="10%"></td>
+                          </tr>
+                          <tr
+                            class="alert-warning"
+                            *ngIf="
+                              pedido.importeTotal > totalAbonado &&
+                              totalAbonado > 0
+                            "
+                          >
+                            <td class="bold" width="40%">Diferencia</td>
+                            <td class="bold" width="10%"></td>
+                            <td class="bold" width="40%">
+                              : Gs.
+                              {{ pedido.importeTotal - totalAbonado | number }}
+                            </td>
+                            <td width="10%">
+                              <button
+                                (click)="
+                                  usar(pedido.importeTotal - totalAbonado)
+                                "
+                                *ngIf="pedido.importeTotal - totalAbonado > 0"
+                                type="button"
+                                class="btn btn-sm btn-success"
+                              >
+                                <i class="fa fa-plus"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr *ngIf="vuelto >= 1">
+                            <td width="40%" class="bg-warning">Vuelto</td>
+                            <td width="10%"></td>
+                            <td width="40%" class="bg-warning">
+                              : Gs. {{ vuelto | number }}
+                            </td>
+                            <td width="10%"></td>
+                          </tr>
+                          <tr *ngIf="1 > vuelto">
+                            <td width="40%">Vuelto</td>
+                            <td width="10%"></td>
+                            <td width="40%">: Gs. 0,0</td>
+                            <td width="10%"></td>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    <div
+                      class="col-md-6 full-color-table full-muted-table hover-table"
+                      style="width: 100%; padding: 1rem; border: 15% raddius"
+                    >
+                      <table class="font-weight-bold">
+                        <thead>
+                          <tr>
+                            <td width="40%">Total iva 5%</td>
+                            <td width="10%"></td>
+                            <td width="40%">
+                              : Gs. {{ pedido.importeIva5 | number }}
+                            </td>
+                            <td width="10%"></td>
+                          </tr>
+                          <tr>
+                            <td width="40%">Total iva 10%</td>
+                            <td width="10%"></td>
+                            <td width="40%">
+                              : Gs. {{ pedido.importeIva10 | number }}
+                            </td>
+                            <td width="10%"></td>
+                          </tr>
+                          <tr>
+                            <td width="40%">Total exenta</td>
+                            <td width="10%"></td>
+                            <td width="40%">
+                              : Gs. {{ pedido.importeIvaExenta | number }}
+                            </td>
+                            <td width="10%"></td>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  (click)="guardarCobranza()"
+                  type="button"
+                  class="btn btn-themecolor text-white"
+                >
+                  Guardar
+                </button>
+                <button
+                  (click)="cancelarModal()"
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Volver
+                </button>
+              </div>
+            </div>
+          </div>
+        </perfect-scrollbar>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  ===========================================================Modal Pedidos====================================== -->
+<div class="fondo-negro-t animated fadeIn" [ngClass]="modalPedidos">
+  <div class="modal" style="display: block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white">Pedidos</h4>
+          <button
+            (click)="cancelarModalPedidos()"
+            type="button"
+            class="close"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #ModalPedidoForm="ngForm">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="fechaInicio" class="col-form-label">
+                  F.Desde:</label
+                >
+                <input
+                  type="date"
+                  class="form-control form-control"
+                  [(ngModel)]="fechaInicio"
+                  name="fechaInicio"
+                />
+              </div>
+              <div class="col-sm-6">
+                <label for="fechafin" class="col-form-label">
+                  Fecha Hasta:</label
+                >
+                <input
+                  type="date"
+                  class="form-control form-control"
+                  [(ngModel)]="fechaFin"
+                  name="fechafin"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="cliente" class="col-form-label"> Cliente:</label>
+                <ng-select-clientes
+                  #searchClientes
+                  id="ngbdtypeaheadClientes"
+                  [cargadorCliente]="client"
+                  style="width: 100%"
+                  name="cliente"
+                  (retornoObjeto)="seleccionCliente($event)"
+                ></ng-select-clientes>
+              </div>
+              <div class="col-sm-6">
+                <label for="nroPedido" class="col-form-label">
+                  Nro pedido:</label
+                >
+                <input
+                  type="number"
+                  class="form-control form-control"
+                  name="nroPedido"
+                  id="nroPedido"
+                  [(ngModel)]="nroPedido"
+                  min="0"
+                />
+              </div>
+            </div>
+            <div class="form-group row button-group">
+              <div class="col-sm-6">
+                <button
+                  class="btn btn-info btn-sm waves-effect waves-light"
+                  (click)="buscarPedido()"
+                  type="button "
+                >
+                  <i class="fa fa-search"></i>
+                  Buscar
+                </button>
+                <button
+                  type="button"
+                  (click)="mostrarModalPedidos()"
+                  class="btn btn-secondary btn-sm waves-effect waves-light"
+                >
+                  <i class="fa fa-close"></i>
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </form>
+          <div class="card-body">
+            <div class="table-responsive-sm">
+              <table
+                class="table table-sm table-bordered table-hover"
+                *ngIf="listaPedidos?.length > 0"
+              >
+                <thead>
+                  <tr class="small text-uppercase">
+                    <th scope="col">Nro.</th>
+                    <th scope="col">R.Social</th>
+                    <th scope="col">Sub.Total</th>
+                    <th scope="col">Imp.Total</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Desc.%</th>
+                    <th scope="col">Editar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let i of listaPedidos">
+                    <td>
+                      {{ i.nroPedido.toString().padStart(8, '00000000') }}
+                    </td>
+                    <td>{{ i.cliente.razonSocial }}</td>
+                    <td align="center">{{ i.subTotal | number }}</td>
+                    <td align="center">{{ i.importeTotal | number }}</td>
+                    <td align="center">{{ i.tipoPedido }}</td>
+                    <td align="center">
+                      {{ i.fechaPedido | date: 'dd/MM/yy' }}
+                    </td>
+                    <td align="center">{{ i.porcDescuento | number }}</td>
+                    <td align="center">
+                      <button
+                        class="btn btn-sm btn-success"
+                        (click)="editarPedido(i)"
+                      >
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <ngb-pagination
+              #pagination
+              class="d-flex justify-content-center"
+              *ngIf="listaPedidos?.length > 0"
+              [collectionSize]="totalElementosPed"
+              [size]="tamanhoPag"
+              [pageSize]="pageSizePed"
+              [(page)]="paginaPedido"
+              [maxSize]="5"
+              [boundaryLinks]="true"
+              (pageChange)="cargarPaginaPedidos($event)"
+            >
+              <ng-template ngbPaginationFirst>Primera</ng-template>
+              <ng-template ngbPaginationEllipsis>...</ng-template>
+              <ng-template ngbPaginationLast>Última</ng-template>
+            </ngb-pagination>
+          </div>
+          <div class="modal-footer">
+            <button
+              (click)="cancelarModalPedidos()"
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

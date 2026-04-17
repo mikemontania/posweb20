@@ -1,0 +1,186 @@
+@if (open) {
+  <div class="cobr-overlay">
+    <div class="cobr-box">
+
+      <div class="cobr-header"><h3>Cobranza</h3></div>
+
+      <div class="cobr-body">
+
+        <!-- Formulario medio de pago -->
+        <div class="cobr-form">
+          <div class="cobr-grid">
+
+            <div class="form-group form-row">
+              <label class="form-label">Medio Pago Pref.</label>
+              <select class="form-control" [(ngModel)]="seleccionMedioPago"
+                      name="mp" (ngModelChange)="cambioMedio($event)">
+                @for (m of medioPago; track m.codMedioPago) {
+                  <option [value]="m.codMedioPago">{{ m.descripcion }}</option>
+                }
+              </select>
+            </div>
+
+            @if (selectModelMedio?.tieneTipo) {
+              <div class="form-group form-row">
+                <label class="form-label">Tipo</label>
+                <select class="form-control" [(ngModel)]="selectModelTipoMedioPago" name="tipo">
+                  @for (t of tipoMedioPago; track t.codTipoMedioPago) {
+                    <option [ngValue]="t">{{ t.descripcion }}</option>
+                  }
+                </select>
+              </div>
+            }
+
+            @if (selectModelMedio?.tieneBanco) {
+              <div class="form-group form-row">
+                <label class="form-label">Banco</label>
+                <select class="form-control" [(ngModel)]="selectModelBanco" name="banco">
+                  @for (b of bancos; track b.codBanco) {
+                    <option [ngValue]="b">{{ b.descripcion }}</option>
+                  }
+                </select>
+              </div>
+            }
+
+            @if (selectModelMedio?.esCheque) {
+              <div class="form-group form-row">
+                <label class="form-label">Fecha Emision</label>
+                <input type="date" class="form-control" [(ngModel)]="fechaEmision" name="fe"/>
+              </div>
+              <div class="form-group form-row">
+                <label class="form-label">Fecha Vencimiento</label>
+                <input type="date" class="form-control" [(ngModel)]="fechaVencimiento" name="fv"/>
+              </div>
+            }
+
+            @if (selectModelMedio?.esCheque || selectModelMedio?.tieneRef) {
+              <div class="form-group form-row">
+                <label class="form-label">Nro referencia</label>
+                <input type="text" class="form-control"
+                       [(ngModel)]="nroRef" name="ref"
+                       (ngModelChange)="nroRef = toUpc($event)"/>
+                @if (nroRef && nroRef.length < 4) {
+                  <small class="err-txt">Mínimo 4 caracteres ({{ nroRef.length }})</small>
+                }
+              </div>
+            }
+
+            @if (selectModelMedio?.esCheque) {
+              <div class="form-group form-row">
+                <label class="form-label">Nro cuenta</label>
+                <input type="text" class="form-control"
+                       [(ngModel)]="nroCuenta" name="cta"
+                       (ngModelChange)="nroCuenta = toUpc($event)"/>
+                @if (nroCuenta && nroCuenta.length < 12) {
+                  <small class="err-txt">Mínimo 12 caracteres ({{ nroCuenta.length }})</small>
+                }
+              </div>
+            }
+
+            <div class="form-group form-row">
+              <label class="form-label">Monto</label>
+              <input type="number" class="form-control" min="100"
+                     [(ngModel)]="montoAbonado" name="monto"/>
+            </div>
+
+          </div>
+
+          <button class="btn btn-success btn-sm cobr-agregar" (click)="agregar()"
+                  [disabled]="(selectModelMedio?.tieneRef || selectModelMedio?.esCheque) && (!nroRef || nroRef.length < 4)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Agregar
+          </button>
+        </div>
+
+        <!-- Tabla medios -->
+        @if (cobranzasDetalle.length > 0) {
+          <div class="cobr-lista">
+            <table class="table tabla-parametros">
+              <thead>
+                <tr>
+                  <th>Medio Pago</th>
+                  <th class="text-right">Importe</th>
+                  <th>Nro Referencia</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of cobranzasDetalle; track $index) {
+                  <tr>
+                    <td><strong>{{ c.medioPago?.descripcion }}</strong></td>
+                    <td class="text-right">{{ c.importeAbonado | number:'1.0-0' }}</td>
+                    <td>{{ c.nroRef ?? '—' }}</td>
+                    <td>
+                      <button class="del-btn-cobr" (click)="quitar(c)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5">
+                          <line x1="18" y1="6" x2="6" y2="18"/>
+                          <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        <!-- Resumen -->
+        @if (venta) {
+          <div class="cobr-resumen">
+            <div class="cobr-col">
+              <div class="cobr-fila bg-success">
+                <span>Total a Pagar</span>
+                <span>
+                  : Gs. {{ venta.importeTotal | number:'1.0-0' }}
+                  @if (totalAbonado === 0) {
+                    <button class="cobr-mas" (click)="usar(venta.importeTotal)">+</button>
+                  }
+                </span>
+              </div>
+              <div class="cobr-fila bg-info">
+                <span>Total Abonado</span>
+                <span>: Gs. {{ totalAbonado | number:'1.0-0' }}</span>
+              </div>
+              @if (venta.importeTotal > totalAbonado && totalAbonado > 0) {
+                <div class="cobr-fila bg-warning">
+                  <span>Diferencia</span>
+                  <span>
+                    : Gs. {{ venta.importeTotal - totalAbonado | number:'1.0-0' }}
+                    <button class="cobr-mas" (click)="usar(venta.importeTotal - totalAbonado)">+</button>
+                  </span>
+                </div>
+              }
+              @if (vuelto >= 1) {
+                <div class="cobr-fila bg-warning"><span>Vuelto</span><span>: Gs. {{ vuelto | number:'1.0-0' }}</span></div>
+              } @else {
+                <div class="cobr-fila"><span>Vuelto</span><span>: Gs. 0,0</span></div>
+              }
+            </div>
+            <div class="cobr-col">
+              <div class="cobr-fila"><span>Total iva 5%</span><span>: Gs. {{ venta.importeIva5 | number:'1.0-0' }}</span></div>
+              <div class="cobr-fila"><span>Total iva 10%</span><span>: Gs. {{ venta.importeIva10 | number:'1.0-0' }}</span></div>
+              <div class="cobr-fila"><span>Total exenta</span><span>: Gs. {{ venta.importeIvaExenta | number:'1.0-0' }}</span></div>
+            </div>
+          </div>
+        }
+
+      </div>
+
+      <div class="cobr-footer">
+        <button class="btn btn-secondary" (click)="cerrar.emit()">Volver a venta</button>
+        <button class="btn btn-primary"
+                [disabled]="cobranzasDetalle.length === 0 || importeCobrado > totalAbonado"
+                (click)="onGuardar()">
+          Guardar
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

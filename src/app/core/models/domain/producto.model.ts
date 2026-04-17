@@ -1,0 +1,33 @@
+import { CategoriaProducto } from './categoria-producto.model';
+import { Empresas } from './empresas.model';
+import { UnidadMedida } from './unidad-medida.model';
+export interface Producto {
+  codProducto: number;
+  codProductoErp: string;
+  nombreProducto: string;
+  descripcion: string;
+  codBarra: string;
+  marca: string;
+  grupo: string;
+  subGrupo: string;
+  presentacion: string;
+  color: string;
+  peso: number;
+  catABC: string;
+  concatCodNombre: string;
+  concatCodErpNombre: string;
+  destacado: boolean;
+  activo: boolean;
+  cantidadMax: number;
+  cantidadMin: number;
+  categoriaProducto: CategoriaProducto;
+  empresa: Empresas;
+  inventariable: boolean;
+  iva: number;
+  ivaEspecial: boolean;
+  obs: string;
+  unidad: UnidadMedida;
+  sinDescuento: boolean;
+  img: string;
+  grpMaterial: string;
+}

@@ -1,0 +1,279 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Detalle de Pedido</h1>
+    </div>
+    <div class="page-header-actions">
+      @if (pedido()?.observacion) {
+        <button class="btn" [class.btn-success]="copiado()" [class.btn-secondary]="!copiado()" (click)="copiarDelivery()">
+          @if (!copiado()) {
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            COPIAR DATOS DELIVERY
+          } @else {
+            ✓ ¡COPIADO!
+          }
+        </button>
+      }
+      <button class="btn btn-secondary" (click)="atras()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Volver
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="form-loading"><span class="spinner"></span> Cargando...</div>
+  }
+
+  @if (!loading() && pedido()) {
+
+    <!-- ── Acciones de estado (solo cajero/admin, si no anulado) ── -->
+    @if (isCajero() && !pedido()?.anulado) {
+      <div class="card" style="padding:.75rem 1.25rem;display:flex;gap:.625rem;flex-wrap:wrap;align-items:center">
+        <span style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-right:.25rem">Acciones:</span>
+
+        @if (pedido()?.estado === 'PENDIENTE') {
+          <button class="btn btn-primary" (click)="confirmar()" [disabled]="actualizando()">
+            @if (actualizando()) { <span class="spinner" style="width:13px;height:13px;border-width:2px"></span> }
+            ✓ Confirmar
+          </button>
+        }
+        @if (pedido()?.estado === 'CONFIRMADO') {
+          <button class="btn btn-primary" (click)="procesar()" [disabled]="actualizando()">
+            @if (actualizando()) { <span class="spinner" style="width:13px;height:13px;border-width:2px"></span> }
+            ⚙ Procesar
+          </button>
+        }
+        @if (pedido()?.estado === 'PROCESADO') {
+          <button class="btn btn-primary" (click)="entregar()" [disabled]="actualizando()">
+            @if (actualizando()) { <span class="spinner" style="width:13px;height:13px;border-width:2px"></span> }
+            📦 Entregar
+          </button>
+        }
+        <button class="btn btn-danger" (click)="solicitarAnular()" [disabled]="actualizando()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          Anular
+        </button>
+      </div>
+    }
+
+    <!-- ── Cabecera ── -->
+    <div class="card" style="padding:1.25rem">
+      <div class="form-grid-2">
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Código</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.codPedido }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">N° Pedido</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.nroPedido }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Estado</div>
+          <div>
+            <span class="badge" [class]="'badge-'+(pedido()?.estado==='CONFIRMADO'||pedido()?.estado==='ENTREGADO'?'success':pedido()?.estado==='PENDIENTE'?'warning':pedido()?.estado==='ANULADO'?'danger':'secondary')">
+              {{ pedido()?.estado }}
+            </span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Tipo Pedido</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.tipoPedido ?? '—' }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Canal</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.canal?.descripcion ?? '—' }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Modo Entrega</div>
+          <div style="font-size:.875rem">
+            <span class="badge" [class]="pedido()?.modoEntrega === 'CONTRA_ENTREGA' ? 'badge-info' : 'badge-secondary'">
+              {{ pedido()?.modoEntrega ?? '—' }}
+            </span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Fecha</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.fechaPedido | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">F. Retiro</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.fechaPedidoReal ? (pedido()?.fechaPedidoReal | date:'dd/MM/yyyy') : '—' }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Anulado</div>
+          <div style="font-size:.875rem">
+            @if (pedido()?.anulado) {
+              <span class="badge badge-danger">Sí — {{ pedido()?.fechaAnulacion | date:'dd/MM/yyyy' }}</span>
+            } @else {
+              <span class="badge badge-success">No</span>
+            }
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Sucursal</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.codSucursalErp }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Cliente</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.cliente?.razonSocial }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Doc.</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.cliente?.docNro }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Teléfono</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.cliente?.telefono ?? '—' }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Dirección</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.cliente?.direccion ?? '—' }}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Sub Total</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.subTotal | number:'1.0-0' }} Gs.</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Descuento</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.importeDescuento | number:'1.0-0' }} Gs. ({{ pedido()?.porcDescuento ?? 0 }}%)</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Total</div>
+          <div style="font-size:.875rem;font-weight:700;color:var(--text-primary)">{{ pedido()?.importeTotal | number:'1.0-0' }} Gs.</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">IVA 5%</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.importeIva5 | number:'1.0-0' }} Gs.</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">IVA 10%</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.importeIva10 | number:'1.0-0' }} Gs.</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Exenta</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.importeIvaExenta | number:'1.0-0' }} Gs.</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Observación</div>
+          <div style="font-size:.875rem;color:var(--text-primary)">{{ pedido()?.observacion ?? '—' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Líneas de detalle ── -->
+    <div class="card tabla-card">
+      <div style="padding:.75rem 1.25rem .25rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)">
+        Detalle de líneas
+      </div>
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead><tr>
+            <th style="width:52px"></th>
+            <th>Producto</th><th>Cód. ERP</th><th>Cant.</th>
+            <th>Precio</th><th>% Desc.</th><th>Total</th>
+          </tr></thead>
+          <tbody>
+            @for (d of detalles(); track $index) {
+              <tr>
+                <td style="padding:.25rem .5rem;text-align:center;vertical-align:middle">
+                  @if (d.producto?.img) {
+                    <img [src]="d.producto.img | imagen : 'productos' | async" style="width:40px;height:40px;object-fit:contain;border-radius:4px"/>
+                  } @else {
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="opacity:.4">
+                      <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                  }
+                </td>
+                <td class="td-wrap">{{ d.producto?.nombreProducto }}</td>
+                <td><code>{{ d.producto?.codProductoErp ?? '—' }}</code></td>
+                <td class="text-right">{{ d.cantidad }}</td>
+                <td class="text-right">{{ d.importePrecio | number:'1.0-0' }}</td>
+                <td class="text-right">{{ d.porcDescuento ?? 0 }}%</td>
+                <td class="text-right"><strong>{{ d.importeTotal | number:'1.0-0' }}</strong></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Cobranza ── -->
+    @if (pagado() && cobranza()) {
+      <div class="card" style="padding:1.25rem">
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:.75rem">
+          Cobro / Pago
+        </div>
+        <div class="form-grid-3">
+          <div>
+            <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Abonado</div>
+            <div style="font-size:1rem;font-weight:700;color:var(--color-accent)">{{ cobranza()?.importeAbonado | number:'1.0-0' }} Gs.</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Vuelto</div>
+            <div style="font-size:.875rem;color:var(--text-primary)">{{ (cobranza()?.importeAbonado ?? 0) - (pedido()?.importeTotal ?? 0) | number:'1.0-0' }} Gs.</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:.2rem">Estado</div>
+            <span class="badge badge-success">✓ PAGADO</span>
+          </div>
+        </div>
+        @if (cobDet().length > 0) {
+          <div class="table-responsive" style="margin-top:.75rem">
+            <table class="table tabla-parametros">
+              <thead><tr><th>Medio de Pago</th><th>Importe</th><th>Referencia</th></tr></thead>
+              <tbody>
+                @for (d of cobDet(); track $index) {
+                  <tr>
+                    <td><span class="badge badge-info">{{ d.medioPago?.descripcion }}</span></td>
+                    <td class="text-right"><strong>{{ d.importeAbonado | number:'1.0-0' }} Gs.</strong></td>
+                    <td>{{ d.referencia ?? d.nroReferencia ?? '—' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="card" style="padding:.875rem 1.25rem">
+        <span class="badge badge-warning" style="font-size:.8rem;padding:.35rem .75rem">⚠ PENDIENTE DE COBRO</span>
+      </div>
+    }
+
+  }
+</div>
+
+<!-- ── Modal Anular ── -->
+@if (showAnularModal()) {
+  <div class="modal-overlay" (click)="showAnularModal.set(false)">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Anular Pedido #{{ pedido()?.codPedido }}</h3>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro que desea anular este pedido?</p>
+        <div class="form-group form-row" style="margin-top:.75rem">
+          <label class="form-label">Motivo de Anulación</label>
+          <app-select-search [items]="motivos()" bindLabel="descripcion"
+            bindValue="codMotivoAnulacion" placeholder="Seleccione motivo (opcional)"
+            [selected]="selMotivo()" (changed)="selMotivo.set($any($event))"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showAnularModal.set(false)">Cancelar</button>
+        <button class="btn btn-danger" (click)="confirmarAnular()" [disabled]="anulando()">
+          @if (anulando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+          Anular
+        </button>
+      </div>
+    </div>
+  </div>
+}

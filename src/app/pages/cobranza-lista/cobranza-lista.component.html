@@ -1,0 +1,173 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Cobranzas</h1>
+      <span class="page-count badge badge-primary">{{ totalElements() }} registros</span>
+    </div>
+  </div>
+
+  <!-- ── Filtros ─────────────────────────────────────── -->
+  <div class="card filter-card">
+    <div class="filters-grid">
+      <div class="form-group">
+        <label class="form-label">Fecha Desde</label>
+        <input type="date" class="form-control" [ngModel]="fechaDesde()" (ngModelChange)="fechaDesde.set($event)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha Hasta</label>
+        <input type="date" class="form-control" [ngModel]="fechaHasta()" (ngModelChange)="fechaHasta.set($event)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sucursal</label>
+        <app-select-search [items]="sucursales()" bindLabel="nombreSucursal" bindValue="codSucursal"
+          placeholder="Todas" [selected]="selSucursal()" (changed)="selSucursal.set($any($event))"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Usuario</label>
+        <app-select-search [items]="usuarios()" bindLabel="nombrePersona" bindValue="codUsuario"
+          placeholder="Todos" [selected]="selUsuario()" (changed)="selUsuario.set($any($event))"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Medio de Pago</label>
+        <app-select-search [items]="mediosPago()" bindLabel="descripcion" bindValue="codMedioPago"
+          placeholder="Todos" [selected]="selMedioPago()" (changed)="selMedioPago.set($any($event))"/>
+      </div>
+      <div class="form-group-action" style="display:flex;gap:.5rem;align-items:flex-end;padding-bottom:.15rem">
+        <button class="btn btn-primary" (click)="buscar(0)" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg> Buscar
+        </button>
+        <button class="btn btn-secondary" (click)="limpiar()" [disabled]="loading()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KPI Totales ─────────────────────────────────── -->
+  @if (resumen().length > 0) {
+    <div class="kpi-row">
+      <div class="kpi-card kpi-cob">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Total Cobrado</div>
+        <div class="kpi-value">{{ totalResumen() | number:'1.0-0' }}<span class="kpi-unit"> Gs.</span></div>
+      </div>
+      <div class="kpi-card kpi-cant">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Cobranzas</div>
+        <div class="kpi-value">{{ totalCantidad() | number }}</div>
+      </div>
+    </div>
+  }
+
+  <!-- ── Resumen por Medio de Pago ───────────────────── -->
+  @if (resumen().length > 0) {
+    <div class="card" style="padding:1rem 1.25rem">
+      <h4 style="font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin:0 0 .75rem">
+        Resumen por Medio de Pago
+      </h4>
+      <div class="table-responsive">
+        <table class="table tabla-parametros" style="width:auto;min-width:400px">
+          <thead>
+            <tr>
+              <th>Medio de Pago</th>
+              <th class="text-right">Cant. Cobranzas</th>
+              <th class="text-right">Importe Cobrado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of resumen(); track r.medioPago) {
+              <tr>
+                <td><strong>{{ r.medioPago }}</strong></td>
+                <td class="text-right">{{ r.cantCobranzas | number:'1.0-0' }}</td>
+                <td class="text-right">{{ r.importeCobrado | number:'1.0-0' }} Gs.</td>
+              </tr>
+            }
+            <tr style="border-top:2px solid var(--border-color);font-weight:700">
+              <td>TOTAL</td>
+              <td class="text-right">{{ totalCantidad() | number:'1.0-0' }}</td>
+              <td class="text-right">{{ totalResumen() | number:'1.0-0' }} Gs.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- ── Tabla detalle ────────────────────────────────── -->
+  <div class="card tabla-card">
+    @if (loading()) {
+      <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+    }
+    @if (!loading() && items().length === 0) {
+      <div class="table-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>No se encontraron cobranzas</p>
+      </div>
+    }
+    @if (!loading() && items().length > 0) {
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead>
+            <tr>
+              <th>Nro Comprobante</th>
+              <th>Razón Social</th>
+              <th>Nro Doc.</th>
+              <th>Medio de Pago</th>
+              <th>Fecha</th>
+              <th class="text-right">Importe Cobrado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track $index) {
+              <tr>
+                <td>{{ item.nroComprobante ?? '—' }}</td>
+                <td><strong>{{ item.razonSocial ?? item.cliente?.razonSocial ?? '—' }}</strong></td>
+                <td>{{ item.nroDoc ?? item.cliente?.docNro ?? '—' }}</td>
+                <td><span class="badge badge-info">{{ item.medioPago ?? item.medioPago?.descripcion ?? '—' }}</span></td>
+                <td>{{ (item.fechaCobranza ?? item.fechaCreacion) ? ((item.fechaCobranza ?? item.fechaCreacion) | date:'dd/MM/yy') : '—' }}</td>
+                <td class="text-right"><strong>{{ (item.importeAbonado ?? item.importeCobrado ?? 0) | number:'1.0-0' }} Gs.</strong></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar">
+        <span class="pagination-info">
+          Página {{ currentPage() + 1 }} de {{ totalPages() }} &nbsp;·&nbsp; {{ totalElements() }} registros
+        </span>
+        <div class="pagination-controls">
+          <button class="pag-btn" [disabled]="currentPage() === 0" (click)="goToPage(currentPage()-1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          @for (p of pageNumbers(); track $index) {
+            @if (p === '...') { <span class="pag-ellipsis">…</span> }
+            @else { <button class="pag-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ +p+1 }}</button> }
+          }
+          <button class="pag-btn" [disabled]="currentPage() >= totalPages()-1" (click)="goToPage(currentPage()+1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>

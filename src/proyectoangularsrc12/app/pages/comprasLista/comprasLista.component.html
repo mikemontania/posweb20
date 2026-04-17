@@ -1,0 +1,261 @@
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex">
+          <div>
+            <span>
+              <h3 class="card-title m-b-5 center">
+                <span class="lstick"></span>Listado de compras
+              </h3>
+            </span>
+          </div>
+        </div>
+        <div class="container py-5">
+
+          <form #repartoForm="ngForm">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <label for="fechaInicio" class="col-form-label"> Fecha Desde:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechaInicio"
+                  name="fechaInicio" />
+              </div>
+              <div class="col-sm-6">
+                <label for="fechafin" class="col-form-label"> Fecha Hasta:</label>
+                <input type="date" class="form-control form-control-sm  " [(ngModel)]="fechafin" name="fechafin" />
+              </div>
+            </div>
+            <!-- =========== Para Role Adm ============== -->
+            <div class="form-group row"  >
+ 
+              <!-- <div class="col-sm-6">
+                <label for="usuario" class="col-form-label">Usuario:</label>
+                <ng-select-usuario #searchUsuarios id="ngbdtypeaheadUsuarios" [cargadorUsuario]="cargadorUsuario"
+                  style="width: 100%" name="usuario" (retornoObjeto)="seleccionarUsuario($event)"></ng-select-usuario>
+              </div> -->
+              <div class="col-sm-6">
+                <label for="proveedor" class="col-form-label"> Proveedor:</label>
+                <ng-select-proveedor #searchProveedor id="ngbdtypeaheadProveedor" [cargadorProveedor]="cargadorProveedor"
+                  style="width: 100%" name="proveedor" (retornoObjeto)="seleccionarProveedor($event)"></ng-select-proveedor>
+              </div>
+              <div class="col-sm-3">
+                <label for="nroComprobante" class="col-form-label">
+                  N° factura:</label>
+                <input type="text " placeholder="Ej: 008-008-0000072" [textMask]="{ mask: mask, guide: true }"
+                  guide="false " class="form-control form-control-sm " [(ngModel)]="nroComprobante"
+                  name="nroComprobante " />
+              </div>
+              <div class="col-sm-3">
+                <label for="estado" class="col-form-label ">Estado:</label>
+                <ng-select [items]="estados" notFoundText="No se ha encontrado estado" placeholder="Seleccione estado"
+                  [(ngModel)]="estado" name="estado" bindLabel="descripcion" (clear)="clean()"
+                  (change)="cambioEstado($event)">
+                </ng-select>
+              </div>
+            </div>
+     
+            
+            <div class="form-group row button-group ">
+              <div class="col-sm-6  " style=" text-align: center;">
+                <button class="btn btn-themecolor   " (click)="buscar()" type="button ">
+                  <i class="fa fa-search "></i> Buscar
+                </button>
+                <button type="button" (click)="ngOnInit()" class="btn  btn-secondary">
+                  <i class="fa  fa-close"></i> Cancelar
+                </button>
+              </div>
+              <div class="col-sm-6 " style=" text-align: center;">
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+ 
+  </div>
+</div>
+
+ 
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex">
+      <div>
+        <span>
+          <h3 class="card-title m-b-5 center">
+            <span class="lstick"></span>Detalles
+          </h3>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="filas" class="col-form-label col-sm-2 col-lg-1.5 col-xl-1">Filas:</label>
+      <div class="col-sm-2 col-lg-1.5 col-xl-1">
+        <select class="selectpicker form-control-sm custom-select" name="filas" [(ngModel)]="size"
+          (ngModelChange)="cambioNumero($event)">
+          <option *ngFor="let t of numeros" [value]="t.cod">
+            {{ t.descripcion }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="compras?.length == 0" class="alert alert-info">
+      No hay registros en la base de datos!
+    </div>
+
+    <div class="row" animated fadeIn *ngIf="cargando">
+      <div class="col-sm-6 col-md-12">
+        <div class="alert alert-info text-center">
+          <strong>Cargando ...</strong>
+          <br />
+          <i class="fa fa-refresh fa-spin fa-2x"></i>
+          <br />
+          <span>Espere por favor</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive" [hidden]="cargando">
+      <div *ngIf="compras?.length > 0">
+        <table class="table table-sm table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Codigo</th>
+               <th>Estado</th>
+              <th>Anulado</th>
+              <th>Cliente</th>
+              <th>SubTotal</th>
+              <th>I.Total</th>
+              <th>N.Comprobante</th>
+              <th>Fecha</th>
+               <th>Porc.Desc.%</th>
+              <th>F.Anulación</th>
+              <th>Obs.</th>
+              <th>Detalles</th>
+<!--               <th>Doc.</th>
+ -->              <th>Anular</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let compra of compras;let i =index" [ngClass]="{
+                'alert-secundary': compra.estado == 'TEMP',
+                'alert-primary': compra.estado == 'CANCEL',
+                'alert-success': compra.estado == 'SYNC',
+                'alert-danger': compra.estado == 'ERROR',
+                'alert-warning': compra.estado == 'WARNING'
+              }">
+              <td> {{i+1}}</td>
+              <td>{{ compra.codCompra }}</td>
+                <td>{{ compra.estado }}</td>
+              <td *ngIf="compra.anulado == true">SI</td>
+              <td *ngIf="compra.anulado == false">NO</td>
+              <td>{{ compra.proveedor.concatDocNombre }}</td>
+              <td align="center" *ngIf="!compra.subTotal">0</td>
+              <td align="center" *ngIf="compra.subTotal">
+                {{ compra.subTotal | number }}
+              </td>
+              <td align="center" *ngIf="!compra.importeTotal">0</td>
+              <td align="center" *ngIf="compra.importeTotal">
+                {{ compra.importeTotal | number }}
+              </td>
+              <td align="center" *ngIf="!compra.nroComprobante">xxx-xxx-xx</td>
+              <td align="center" *ngIf="compra.nroComprobante">
+                {{ compra.nroComprobante }}
+              </td>
+              <td align="center" *ngIf="!compra.fechaCompra">xx/xx/xx</td>
+              <td align="center" *ngIf="compra.fechaCompra">
+                {{ compra.fechaCompra | date:'dd/MM/yyyy' }}
+              </td>
+            
+              <td align="center" *ngIf="!compra.porcDescuento">0</td>
+              <td align="center" *ngIf="compra.porcDescuento">
+                {{ compra.porcDescuento | number }}
+              </td>
+              <td align="center" *ngIf="!compra.fechaAnulacion">xx/xx/xx</td>
+              <td align="center" *ngIf="compra.fechaAnulacion">
+                {{ compra.fechaAnulacion }}
+              </td>
+              <td align="center" *ngIf="!compra.motivoAnulacion">xxxxxx</td>
+              <td align="center" *ngIf="compra.motivoAnulacion">
+                {{ compra.motivoAnulacion.descripcion }}
+              </td>
+              <td align="center">
+                <button class="btn btn-success btn-circle " (click)="editar(compra.codCompra)" type="button">
+                  <i class="fa fa-list"></i>
+                </button>
+       
+              </td>
+            <!--   <td align="center">
+                <button class="btn btn-secondary btn-circle " (click)="definirComprobante(compra)" type="button">
+                  <i class="fa fa-file-pdf-o"></i>
+                </button>
+               
+              </td> -->
+              <td align="center">
+                <button class="btn btn-danger btn-circle " [disabled]="compra.anulado"
+                  (click)="mostrarModalAnulacion(compra.codCompra)" type="button">
+                  <i class="fa  fa-times"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ngb-pagination #pagination class="d-flex justify-content-center" *ngIf="compras?.length > 0" [size]="tamanhoPag"
+      [collectionSize]="totalElementos" [ellipses]="ellipses" [pageSize]="cantidadElementos" [(page)]="pagina"
+      [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+      <ng-template ngbPaginationPrevious>&laquo;</ng-template>
+      <ng-template ngbPaginationNext>&raquo;</ng-template>
+      <ng-template ngbPaginationFirst>Primera</ng-template>
+      <ng-template ngbPaginationLast>Última</ng-template>
+    </ngb-pagination>
+  </div>
+</div>
+<!--  ==================================================MOTIVO ANULACION=========================================================== -->
+<div class="fondo-negro animated fadeIn" [ngClass]="modalAnulacion">
+  <div class="modal" style="display: block;" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header label-themecolor">
+          <h4 class="text-white ">Motivo Anulación</h4>
+          <button (click)="cerrarModalAnulacion()" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="selectTerminal" class="col-form-label col-sm-2">Motivo
+            </label>
+            <div class="col-sm-6">
+              <select id="selectTerminal" class="custom-select-sm " style="width: 100%; height:36px;"
+                tabindex="-1" aria-hidden="true" [(ngModel)]="seleccionMotivo" #selectTerminal="ngModel"
+                name="seleccionterminales" (ngModelChange)="cambioTerminal($event)">
+                <option *ngFor="let m of motivosAnulacion" [value]="m.codMotivoAnulacion">
+                  {{ m.descripcion }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button (click)="enviarAnulacion()" type="button" class="btn btn-themecolor  text-white">
+              Enviar
+            </button>
+            <button (click)="cerrarModalAnulacion()" type="button" class="btn btn-secondary "
+              data-dismiss="modal">
+              cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

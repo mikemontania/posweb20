@@ -1,0 +1,195 @@
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!vehiculo.codVehiculo" class="m-b-0 text-white">Crear vehiculo</h4>
+        <h4 *ngIf="vehiculo.codVehiculo" class="m-b-0 text-white">Actualizar vehiculo</h4>
+    </div>
+    <div class="card-body">
+
+        <form #vehiculoForm="ngForm">
+
+            <div class="form-group row">
+                <label for="codVehiculoErp" class="col-form-label col-sm-2">Codigo Sap <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.codVehiculoErp"
+                        (ngModelChange)="vehiculo.codVehiculoErp =toUpeCaseEvent($event)" name="codVehiculoErp"
+                        #codVehiculoErp="ngModel" required minlength="1">
+                    <div class="alert alert-danger"
+                        *ngIf="codVehiculoErp.invalid && (codVehiculoErp.dirty || codVehiculoErp.touched)">
+                        <div *ngIf="codVehiculoErp.errors.required">
+                            codVehiculoErp es requerido
+                        </div>
+                        <div *ngIf="codVehiculoErp.errors.minlength">
+                            codVehiculoErp debe tener al menos 1 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="nroChasis" class="col-form-label col-sm-2">nroChasis <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.nroChasis" name="nroChasis"
+                        #nroChasis="ngModel" (ngModelChange)="vehiculo.nroChasis =toUpeCaseEvent($event)" required
+                        minlength="5">
+                    <div class="alert alert-danger" *ngIf="nroChasis.invalid && (nroChasis.dirty || nroChasis.touched)">
+                        <div *ngIf="nroChasis.errors.required">
+                            nroChasis es requerido
+                        </div>
+                        <div *ngIf="nroChasis.errors.minlength">
+                            nroChasis debe tener al menos 5 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="marca" class="col-form-label col-sm-2">marca <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.marca" name="marca" #marca="ngModel"
+                        (ngModelChange)="vehiculo.marca =toUpeCaseEvent($event)" required minlength="3">
+                    <div class="alert alert-danger" *ngIf="marca.invalid && (marca.dirty || marca.touched)">
+                        <div *ngIf="marca.errors.required">
+                            marca es requerido
+                        </div>
+                        <div *ngIf="marca.errors.minlength">
+                            marca debe tener al menos 3 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="modelo" class="col-form-label col-sm-2">modelo <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.modelo" name="modelo"
+                        #modelo="ngModel" (ngModelChange)="vehiculo.modelo =toUpeCaseEvent($event)" required
+                        minlength="2">
+                    <div class="alert alert-danger" *ngIf="modelo.invalid && (modelo.dirty || modelo.touched)">
+                        <div *ngIf="modelo.errors.required">
+                            modelo es requerido
+                        </div>
+                        <div *ngIf="modelo.errors.minlength">
+                            modelo debe tener al menos 2 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="nroChapa" class="col-form-label col-sm-2">nroChapa <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.nroChapa" name="nroChapa"
+                        #nroChapa="ngModel" (ngModelChange)="vehiculo.nroChapa = toUpeCaseEvent($event)" required
+                        minlength="5">
+                    <div class="alert alert-danger" *ngIf="nroChapa.invalid && (nroChapa.dirty || nroChapa.touched)">
+                        <div *ngIf="nroChapa.errors.required">
+                            nroChapa es requerido
+                        </div>
+                        <div *ngIf="modelo.errors.minlength">
+                            nroChapa debe tener al menos 5 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label for="color" class="col-form-label col-sm-2">color <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.color" name="color" #color="ngModel"
+                        (ngModelChange)="vehiculo.color = toUpeCaseEvent($event)" required minlength="3">
+                    <div class="alert alert-danger" *ngIf="color.invalid && (color.dirty || color.touched)">
+                        <div *ngIf="color.errors.required">
+                            color es requerido
+                        </div>
+                        <div *ngIf="color.errors.minlength">
+                            color debe tener al menos 3 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="combustible" class="col-form-label col-sm-2">combustible <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.combustible" name="combustible"
+                        #combustible="ngModel" (ngModelChange)="vehiculo.combustible = toUpeCaseEvent($event)" required
+                        minlength="3">
+                    <div class="alert alert-danger"
+                        *ngIf="combustible.invalid && (combustible.dirty || combustible.touched)">
+                        <div *ngIf="combustible.errors.required">
+                            combustible es requerido
+                        </div>
+                        <div *ngIf="combustible.errors.minlength">
+                            combustible debe tener al menos 3 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--   
+                  <div class="form-group row">
+                <label for="transmision" class="col-form-label col-sm-2">transmision <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="vehiculo.transmision" name="transmision" #transmision="ngModel" (ngModelChange)="vehiculo.transmision = $event.toUpperCase()" required minlength="3">
+                    <div class="alert alert-danger" *ngIf="transmision.invalid && (transmision.dirty || transmision.touched)">
+                        <div *ngIf="transmision.errors.required">
+                            transmision es requerido
+                        </div>
+                        <div *ngIf="transmision.errors.minlength">
+                            transmision debe tener al menos 3 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        -->
+
+
+            <div class="form-group row">
+                <label for="transmision" class="col-form-label col-sm-2">Transmision <span
+                        style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select class=" custom-select  form-control" name="transmision" id="transmision"
+                        [(ngModel)]="vehiculo.transmision">
+                        <option value="MECANICO" selected>MECANICO</option>
+                        <option value="AUTOMATICO">AUTOMATICO</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="activo" class="col-form-label col-sm-2">Activo <span style="color: red">(*)</span></label>
+                <div class="col-sm-6">
+                    <select class=" custom-select  form-control" name="activo" id="selectActivo"
+                        [(ngModel)]="vehiculo.activo">
+                        <option value="true">SI</option>
+                        <option value="false">NO</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row button-group">
+                <div class="col-sm-6">
+                    <button type="button" [routerLink]="['/vehiculos']"
+                        class="btn btn-danger waves-effect waves-light"><i class="fa  fa-arrow-circle-left"></i>
+                        Atrás</button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" role="button" (click)='create()'
+                        *ngIf="!vehiculo.codVehiculo else elseBlock" [disabled]="!vehiculoForm.form.valid"><i
+                            class="fa   fa-floppy-o"></i>Crear</button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-info waves-effect waves-light" type="button" role="button"
+                            (click)='update()' [disabled]="!vehiculoForm.form.valid"><i
+                                class="fa   fa-floppy-o"></i>Actualizar</button>
+                    </ng-template>
+                </div>
+            </div>
+
+
+        </form>
+
+    </div>
+</div>

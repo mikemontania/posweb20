@@ -1,0 +1,22 @@
+  <ng-template #rt let-r="result" let-t="term">
+  <ngb-highlight [result]="r.nombreSucursal" [term]="t"></ngb-highlight>
+</ng-template>  
+<div class="form-group"> 
+
+<div class="form-group input-group">
+ 
+  <input id="typeahead-sucursales"   
+  [class.is-invalid]="searchFailed" 
+  (selectItem)="selectedItem($event.item)" 
+  [inputFormatter]="formatter" 
+  (ngModel)="model" [resultTemplate]="rt"  
+  (focus)="onFocus($event)"
+  [resultTemplate]="rt"
+   type="text" class="form-control form-control-sm" [class.is-invalid]="searchFailed" [(ngModel)]="cargadorSucursal" [ngbTypeahead]="search" placeholder="Ingrese sucursal ..." />
+   <span class="input-group-btn">
+    <button class="btn btn-info  "   type="button" style="height: 31px" (click)="limpiar()" ><i class="fa fa-trash fa-xs"></i>
+    </button>
+  </span>
+</div>
+<!-- <span *ngIf="searching">Buscando...</span>
+<div class="invalid-feedback" *ngIf="searchFailed">No se ha encontrado usuario</div> -->

@@ -1,0 +1,220 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err.field + " " + err.defaultMessage }}
+    </li>
+</ul>
+
+<div class="card ">
+    <div class="card-header label-themecolor">
+        <h4 *ngIf="!proveedor.codProveedor" class="m-b-0 text-white">Crear proveedor</h4>
+        <h4 *ngIf="proveedor.codProveedor" class="m-b-0 text-white">
+            Actualizar proveedor
+        </h4>
+    </div>
+    <div class="card-body">
+        <form #proveedorForm="ngForm">
+            <div class="form-group row">
+                <div class="col-md-6 ">
+                    <div class="form-group row">
+                        <label for="razonSocial" class="col-form-label col-sm-4">Razon Social <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="proveedor.razonSocial"
+                                (ngModelChange)="proveedor.razonSocial =toUpeCaseEvent($event)" name="razonSocial"
+                                #razonSocial="ngModel" required minlength="4" />
+                            <div class="alert alert-danger" *ngIf="razonSocial.invalid && (razonSocial.dirty || razonSocial.touched)">
+                                <div *ngIf="!!razonSocial?.errors.required">
+                                    Razon Social es requerido
+                                </div>
+                                <div *ngIf="!!razonSocial?.errors.minlength">
+                                    Razon Social debe tener al menos 4 caracteres
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="tipoDoc" class="col-form-label col-sm-4">Tipo Documento <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <select class=" custom-select  form-control" name="tipoDoc" id="selectTipoDoc"
+                                [(ngModel)]="proveedor.tipoDoc" #tipoDoc="ngModel">
+                                <option value="RUC" selected>RUC</option>
+                                <option value="CI">CI</option>
+                                <option value="CE">CE</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="docNro" class="col-form-label col-sm-4">N° Documento <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="proveedor.docNro"
+                                (ngModelChange)="proveedor.docNro = toUpeCaseEvent($event)" name="docNro"
+                                #docNro="ngModel" required />
+                            <div class="alert alert-danger" *ngIf="docNro.invalid && (docNro.dirty || docNro.touched)">
+                                <div *ngIf="!!docNro?.errors.required">
+                                    Numero de Documento es requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="telefono" class="col-form-label col-sm-4">Telefono <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="proveedor.telefono"
+                                (ngModelChange)="proveedor.telefono = toUpeCaseEvent($event)" name="telefono"
+                                #telefono="ngModel" required minlength="6" />
+                            <div class="alert alert-danger"
+                                *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)">
+                                <div *ngIf="!!telefono?.errors.required">
+                                    telefono es requerido
+                                </div>
+                                <div *ngIf="!!telefono?.errors.minlength">
+                                    telefono debe tener al menos 6 caracteres
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="direccion" class="col-form-label col-sm-4">Direccion <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="proveedor.direccion"
+                                (ngModelChange)="proveedor.direccion = toUpeCaseEvent($event)" name="direccion"
+                                #direccion="ngModel" required minlength="3" />
+                            <div class="alert alert-danger"
+                                *ngIf="direccion.invalid && (direccion.dirty || direccion.touched)">
+                                <div *ngIf="!!direccion?.errors.required">
+                                    direccion es requerido
+                                </div>
+                                <div *ngIf="!!direccion?.errors.minlength">
+                                    direccion debe tener al menos 3 caracteres
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     
+
+               
+
+                    <div class="form-group row">
+                        <label for="activo" class="col-form-label col-sm-4">Activo <span
+                                style="color: red">(*)</span></label>
+                        <div class="col-sm-6">
+                            <select class=" custom-select  form-control" name="activo" id="selectActivo"
+                                [(ngModel)]="proveedor.activo" #activo="ngModel">
+                                <option value="true">SI</option>
+                                <option value="false">NO</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+ 
+                 
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <agm-map name="mapas" id="mapas" (mapClick)="agregarMarcador( $event )" [latitude]="lat"
+                                [longitude]="lng" [zoom]="10">
+                                <agm-marker [latitude]="proveedor.latitud" [longitude]="proveedor.longitud">
+                                    <agm-info-window>
+                                        <strong>{{ proveedor.razonSocial }}</strong>
+                                        <strong>{{ proveedor.docNro }}</strong>
+                                        <p>{{ proveedor.direccion }}</p>
+                                    </agm-info-window>
+                                </agm-marker>
+                            </agm-map>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row button-group">
+                        <div class="col-sm-6">
+                            <button type="button" [routerLink]="['/proveedors']"
+                                class="btn btn-danger waves-effect waves-light">
+                                <i class="fa  fa-arrow-circle-left"></i> Atrás
+                            </button>
+                            <button class="btn btn-info waves-effect waves-light" type="button" role="button"
+                                (click)="create()" *ngIf="!proveedor.codProveedor; else elseBlock"
+                                [disabled]="!proveedorForm.form.valid">
+                                <i class="fa   fa-floppy-o"></i>Crear
+                            </button>
+                            <ng-template #elseBlock>
+                                <button class="btn btn-info waves-effect waves-light" type="button" role="button"
+                                    (click)="update()" [disabled]="!proveedorForm.form.valid">
+                                    <i class="fa   fa-floppy-o"></i>Actualizar
+                                </button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                     
+  
+
+                    <div class="form-group row">
+                        <label for="codProveedorErp" class="col-form-label col-sm-4">Codigo Ref.
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="proveedor.codProveedorErp"
+                                (ngModelChange)="proveedor.codProveedorErp = toUpeCaseEvent($event)" name="codProveedorErp"
+                                #codProveedorErp="ngModel" />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="email" class="col-form-label col-sm-4">Email </label>
+                        <div class="col-sm-6">
+                            <input type="email"
+                                pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}"
+                                class="form-control" [(ngModel)]="proveedor.email" name="email" #email="ngModel" />
+                            <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+                                <div *ngIf="!!email.errors">
+                                    Email debe tener un formato válido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label for="obs" class="col-form-label col-sm-4">Observación</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" [(ngModel)]="proveedor.obs"
+                                (ngModelChange)="proveedor.obs = toUpeCaseEvent($event)" name="obs" #obs="ngModel" />
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label for="latitud" class="col-form-label col-sm-4">Latitud</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="latitud" name="latitud"
+                                [(ngModel)]="proveedor.latitud" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="longitud" class="col-form-label col-sm-4">Longitud</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="longitud" name="longitud"
+                                [(ngModel)]="proveedor.longitud" required>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </form>
+    </div>
+</div>

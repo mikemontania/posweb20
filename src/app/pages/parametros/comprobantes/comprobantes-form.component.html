@@ -1,0 +1,68 @@
+<div class="page-content page-form">
+  @if (loading()) { <div class="form-loading"><span class="spinner"></span> Cargando...</div> }
+  @if (!loading()) {
+    <div class="card form-card">
+      <div class="card-header form-card-header"><h2 class="form-title">{{ esEdicion() ? 'Actualizar Comprobante' : 'Nuevo Comprobante' }}</h2></div>
+      <div class="card-body"><form #f="ngForm" (ngSubmit)="guardar()">
+        <div class="form-fields form-grid-2">
+          <div class="form-group form-row"><label class="form-label">Timbrado <span class="req">*</span></label>
+            <input type="text" class="form-control" name="timbrado" required minlength="7"
+              [ngModel]="it.timbrado" (ngModelChange)="set('timbrado', $event)"></div>
+          <div class="form-group form-row"><label class="form-label">Serie <span class="req">*</span></label>
+            <input type="text" class="form-control" name="serie" required
+              [ngModel]="it.serie" (ngModelChange)="set('serie', toUpper($event))"></div>
+          <div class="form-group form-row"><label class="form-label">Tipo Comprobante <span class="req">*</span></label>
+            <select class="form-control" name="tipoComprobante" required
+              [ngModel]="it.tipoComprobante" (ngModelChange)="set('tipoComprobante', $event)">
+              <option value="">— Seleccione —</option>
+              @for (t of tiposComprobante; track t) { <option [value]="t">{{ t }}</option> }
+            </select></div>
+          <div class="form-group form-row"><label class="form-label">Tipo Impresión</label>
+            <select class="form-control" name="tipoImpresion"
+              [ngModel]="it.tipoImpresion" (ngModelChange)="set('tipoImpresion', $event)">
+              <option value="">— Seleccione —</option>
+              @for (t of tiposImpresion; track t) { <option [value]="t">{{ t }}</option> }
+            </select></div>
+          <div class="form-group form-row"><label class="form-label">Terminal</label>
+            <select class="form-control" name="terminal"
+              [ngModel]="codTermSel" (ngModelChange)="seleccionarTerminal($event)">
+              <option value="0">— Seleccione —</option>
+             @for (t of terminales(); track t.codTerminalVenta) {
+                <option [value]="t.codTerminalVenta">{{ t.descripcion }}</option>
+              }
+            </select></div>
+          <div class="form-group form-row"><label class="form-label">Fecha Inicio Timbrado</label>
+            <input type="date" class="form-control" name="inicioTimbrado"
+              [ngModel]="it.inicioTimbrado" (ngModelChange)="set('inicioTimbrado', $event)"></div>
+          <div class="form-group form-row"><label class="form-label">Fecha Fin Timbrado</label>
+            <input type="date" class="form-control" name="finTimbrado"
+              [ngModel]="it.finTimbrado" (ngModelChange)="set('finTimbrado', $event)"></div>
+          <div class="form-group form-row"><label class="form-label">Número Inicio</label>
+            <input type="number" class="form-control" name="numeroInicio"
+              [ngModel]="it.numeroInicio" (ngModelChange)="set('numeroInicio', +$event)"></div>
+          <div class="form-group form-row"><label class="form-label">Número Fin</label>
+            <input type="number" class="form-control" name="numeroFin"
+              [ngModel]="it.numeroFin" (ngModelChange)="set('numeroFin', +$event)"></div>
+          <div class="form-group form-row"><label class="form-label">Máx. Ítems</label>
+            <input type="number" class="form-control" name="maxItems"
+              [ngModel]="it.maxItems" (ngModelChange)="set('maxItems', +$event)"></div>
+          <div class="form-group form-row"><label class="form-label">Activo</label>
+            <select class="form-control" name="activo"
+              [ngModel]="it.activo" (ngModelChange)="set('activo', $event === 'true' || $event === true)">
+              <option [ngValue]="true">Sí</option><option [ngValue]="false">No</option></select></div>
+          <div class="form-group form-row"><label class="form-label">Auto Impresor</label>
+            <select class="form-control" name="autoImpresor"
+              [ngModel]="it.autoImpresor" (ngModelChange)="set('autoImpresor', $event === 'true' || $event === true)">
+              <option [ngValue]="true">Sí</option><option [ngValue]="false">No</option></select></div>
+        </div>
+        <div class="form-actions">
+          <a routerLink="/comprobantes" class="btn btn-secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Atrás</a>
+          <button type="submit" class="btn btn-primary" [disabled]="guardando()||f.invalid">
+            @if (guardando()) { <span class="spinner" style="width:16px;height:16px;border-width:2px"></span> }
+            {{ esEdicion() ? 'Actualizar' : 'Crear' }}
+          </button>
+        </div>
+      </form></div>
+    </div>
+  }
+</div>

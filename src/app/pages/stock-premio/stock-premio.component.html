@@ -1,0 +1,221 @@
+<div class="page-content">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Stock de Premios</h1>
+      @if (totalElements() > 0) {
+        <span class="page-count badge badge-primary">{{ totalElements() }} registros</span>
+      }
+    </div>
+    @if (isAdmin()) {
+      <div class="page-header-actions">
+        <button class="btn btn-primary" (click)="abrirIniciarModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Inicializar Stock
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Filtros -->
+  <div class="card" style="padding:1rem 1.25rem;margin-bottom:1rem">
+    <div class="form-grid-2" style="max-width:640px">
+      @if (isAdmin()) {
+        <div class="form-group">
+          <label class="form-label">Sucursal</label>
+          <app-select-search [items]="sucursales()" bindLabel="nombreSucursal"
+            bindValue="codSucursal" placeholder="Todas"
+            [selected]="selSucursal()" (changed)="selSucursal.set($any($event))"/>
+        </div>
+      }
+      <div class="form-group">
+        <label class="form-label">Premio</label>
+        <app-select-search [items]="premios()" bindLabel="descripcion"
+          bindValue="codPremio" placeholder="Todos"
+          [selected]="selPremio()" (changed)="selPremio.set($any($event))"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:.5rem">
+      <button class="btn btn-primary" (click)="buscar()" [disabled]="loading()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Buscar
+      </button>
+      <button class="btn btn-secondary" (click)="limpiar()" [disabled]="loading()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Limpiar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card tabla-card">
+    @if (loading()) {
+      <div class="table-loading"><span class="spinner"></span><span>Cargando...</span></div>
+    }
+    @if (!loading() && items().length === 0) {
+      <div class="table-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>No se encontraron registros de stock</p>
+      </div>
+    }
+    @if (!loading() && items().length > 0) {
+      <div class="table-responsive">
+        <table class="table tabla-parametros">
+          <thead>
+            <tr>
+              <th>Img</th>
+              <th>Premio</th>
+              <th>Sucursal</th>
+              <th class="text-right">Existencia</th>
+              <th class="text-right">Mínimo</th>
+              <th class="text-right">Comprometido</th>
+              <th class="th-acciones th-acciones-sticky">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.codStockPremio) {
+              <tr>
+                <td class="td-img text-center">
+                  @if (item.premio?.img) {
+                    <img [src]="item.premio.img | imagen:'premios' | async" class="img-tabla" alt=""/>
+                  } @else {
+                    <div class="img-placeholder">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/>
+                        <path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                      </svg>
+                    </div>
+                  }
+                </td>
+                <td><strong>{{ item.premio?.descripcion }}</strong></td>
+                <td>{{ item.sucursal?.nombreSucursal ?? ('Suc. ' + item.codSucursal) }}</td>
+                <td class="text-right">
+                  <strong [style.color]="item.existencia <= item.minimo ? 'var(--color-danger)' : 'inherit'">
+                    {{ item.existencia | number }}
+                  </strong>
+                </td>
+                <td class="text-right">{{ item.minimo | number }}</td>
+                <td class="text-right">{{ item.comprometido | number }}</td>
+                <td class="td-acciones td-acciones-sticky">
+                  <button class="btn-accion btn-editar" title="Ajustar Stock"
+                          (click)="abrirAjustarModal(item)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination-bar">
+        <span class="pagination-info">
+          Página {{ currentPage() + 1 }} de {{ totalPages() }}
+          &nbsp;·&nbsp; {{ totalElements() }} registros
+        </span>
+        <div class="pagination-controls">
+          <button class="pag-btn" [disabled]="currentPage() === 0"
+                  (click)="goToPage(currentPage() - 1)" title="Anterior">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          @for (p of pageNumbers(); track $index) {
+            @if (p === '...') {
+              <span class="pag-ellipsis">…</span>
+            } @else {
+              <button class="pag-btn" [class.active]="p === currentPage()"
+                      (click)="goToPage(p)">{{ +p + 1 }}</button>
+            }
+          }
+          <button class="pag-btn" [disabled]="currentPage() >= totalPages() - 1"
+                  (click)="goToPage(currentPage() + 1)" title="Siguiente">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>
+
+<!-- Modal Inicializar Stock -->
+@if (showIniciarModal()) {
+  <div class="modal-overlay" (click)="showIniciarModal.set(false)">
+    <div class="modal-box" style="max-width:420px" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Inicializar Stock de Premio</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Premio <span style="color:var(--color-danger)">*</span></label>
+          <app-select-search [items]="premios()" bindLabel="descripcion"
+            bindValue="codPremio" placeholder="Seleccione un premio"
+            [selected]="selNuevoPremio()" (changed)="selNuevoPremio.set($any($event))"/>
+        </div>
+        <p style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem">
+          Se creará un registro de stock para este premio en todas las sucursales de la empresa.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showIniciarModal.set(false)" [disabled]="guardando()">Cancelar</button>
+        <button class="btn btn-primary" (click)="iniciarStock()" [disabled]="guardando() || !selNuevoPremio()">
+          @if (guardando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+          Inicializar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal Ajustar Stock -->
+@if (showAjustarModal()) {
+  <div class="modal-overlay" (click)="showAjustarModal.set(false)">
+    <div class="modal-box" style="max-width:380px" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Ajustar Stock</h3>
+      </div>
+      <div class="modal-body">
+        @if (ajusteItem()) {
+          <div style="margin-bottom:1rem">
+            <div style="font-weight:600">{{ ajusteItem().premio?.descripcion }}</div>
+            <div style="font-size:.8rem;color:var(--text-muted)">
+              {{ ajusteItem().sucursal?.nombreSucursal ?? ('Suc. ' + ajusteItem().codSucursal) }}
+            </div>
+            <div style="display:flex;gap:1.5rem;margin-top:.5rem;font-size:.85rem">
+              <span>Existencia: <strong>{{ ajusteItem().existencia }}</strong></span>
+              <span>Comprometido: <strong>{{ ajusteItem().comprometido }}</strong></span>
+            </div>
+          </div>
+        }
+        <div class="form-group">
+          <label class="form-label">Cantidad a ingresar <span style="color:var(--color-danger)">*</span></label>
+          <input type="number" class="form-control"
+            [ngModel]="cantidad()" (ngModelChange)="cantidad.set(+$event)"
+            min="1" placeholder="0"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showAjustarModal.set(false)" [disabled]="guardando()">Cancelar</button>
+        <button class="btn btn-primary" (click)="ajustarStock()" [disabled]="guardando()">
+          @if (guardando()) { <span class="spinner" style="width:14px;height:14px;border-width:2px"></span> }
+          Ajustar
+        </button>
+      </div>
+    </div>
+  </div>
+}

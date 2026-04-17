@@ -1,0 +1,490 @@
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+<div class="container" align="center">
+  <div class="row col-xl-4 col-lg-5 col-md-7">
+    <div class="col-xl-12 col-xl-12">
+      <div class="card card-body printableArea" style="padding: 0.2rem;">
+
+        <div class="ticket printableArea centrado" id="documento" *ngIf="listo">
+          <table class="ticket">
+            <tbody>
+              <tr class="centrado">
+                <td> {{empresa.razonSocial}}</td>
+              </tr>
+              <tr class="centrado">
+                <td>R.U.C: {{empresa.ruc}}</td>
+              </tr>
+              <tr class="centrado">
+                <td>
+                  EXPRESS: {{sucursal.nombreSucursal}}
+                </td>
+              </tr>
+              <tr class="centrado">
+                <td>DIR: {{sucursal.direccion}}</td>
+              </tr>
+              <tr class="centrado">
+                <td>
+                  CEL: {{sucursal.telefono}}
+                </td>
+              </tr>
+              <tr class="centrado">
+                <td>COMPROBANTE INTERNO</td>
+              </tr>
+              <!--  <tr class="centrado">
+                                <td>I.V.A. INCLUIDO</td>
+                            </tr>    -->
+              <tr class="izquierda" *ngIf='sucursal.codEmpresa == 1'>
+                <td>CASA MATRIZ: CAPIATA RUTA 1 KM 18</td>
+              </tr>
+              <tr class="izquierda" *ngIf='sucursal.codEmpresa == 1'>
+                <td>TEL: (021) 588-9000</td>
+              </tr>
+              <!-- <tr class="izquierda">
+                                <td>TIMBRADO: {{venta.timbrado}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>FECHA INICIO:{{venta.inicioTimbrado | date:'dd/MM/y'}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>FECHA FIN: {{venta.finTimbrado | date:'dd/MM/y'}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>FACTURA {{formaVenta.descripcion}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>NRO: {{venta.nroComprobante}}</td>
+                            </tr> -->
+              <tr class="izquierda">
+                <td>NRO: {{venta.codVenta.toString().padStart(8,"00000000") }}</td>
+              </tr>
+
+
+              <tr class="izquierda">
+                <td>FECHA:{{venta.fechaVenta | date:'dd/MM/y'}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class=col-12>
+            <hr
+              style="border-top: 1px none black;                                                  border-collapse: collapse;">
+          </div>
+
+
+          <table>
+            <thead class="centrado">
+              <tr>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="cantidad">Cant.</th>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="producto">Descripcion</th>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="precio">Precio</th>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="total">Total</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let d of detalles" class="centrado">
+              <tr>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="cantidad">{{d.cantidad}}</td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="producto">
+                  {{d.producto.nombreProducto}}
+                
+                <small *ngIf="d.tipoDescuento && d.tipoDescuento === 'UNO_DE_DOS'">
+                  (2da uni) {{d.porcDescuento}}%
+                </small>
+
+                <small *ngIf="d.tipoDescuento && d.tipoDescuento !== 'UNO_DE_DOS'">
+                  {{d.porcDescuento}}%
+                </small>
+                
+                </td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="precio">
+                  {{d.importePrecio | number}}</td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="total">
+                  {{d.importeTotal | number}}</td>
+              </tr>
+              <tr *ngIf="cliente.codeBarra == true">
+                <td style="border: inset 0pt;font: 90% Georgia;" class="cantidad"> </td>
+                <td class="centrado" class="producto">
+                  <span class="centrado">
+                    {{d.producto.codBarra}}
+                  </span>
+                </td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="precio"> </td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="total"></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="cantidad"> &nbsp; &nbsp; &nbsp;</td>
+                <td class="producto"> &nbsp; &nbsp; &nbsp;</td>
+                <td class="precio"> &nbsp; &nbsp; &nbsp;</td>
+                <td class="total"> &nbsp; &nbsp; &nbsp;</td>
+              </tr>
+            </tfoot>
+
+          </table>
+          <div class="row">
+            <div class="col-5 izquierda">ARTICULOS</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda"> {{totalElementos | number}}</div>
+
+            <div class="col-5 izquierda">SUB TOTAL</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{ venta.subTotal | number}}</div>
+
+            <div class="col-5 izquierda">DESCUENTOS</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeDescuento | number}}</div>
+
+            <div class="col-5 izquierda">TOTAL A PAGAR</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeTotal | number}}</div>
+
+            <div class="col-5 izquierda">IVA 5%</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeIva5 | number}}</div>
+
+
+            <div class="col-5 izquierda">IVA 10%</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeIva10 | number}}</div>
+
+            <div class="col-5 izquierda">EXENTA</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeIvaExenta | number}}</div>
+
+            <div class=col-12>
+              <hr style="border-top: 1px dashed black;
+                                                   border-collapse: collapse;">
+            </div>
+          </div>
+          <div class="row" *ngIf="!mostrarForma">
+            <div class="col-5 izquierda">ABONADO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{cobranza.importeAbonado | number}}</div>
+
+            <div class="col-5 izquierda">VUELTO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{cobranza.importeAbonado - venta.importeTotal | number}}
+            </div>
+          </div>
+          <div class="row" *ngIf="mostrarForma">
+            <div class="col-5 izquierda">ABONADO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;0</div>
+
+            <div class="col-5 izquierda">VUELTO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;0</div>
+          </div>
+          <div class="row" *ngFor="let d of cobranzaDetalles" [hidden]="mostrarForma">
+            <div class="col-5 izquierda">{{d.medioPago.descripcion}}</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{d.importeAbonado | number}}</div>
+          </div>
+          <div class="row">
+            <div class=col-12>
+              <hr style="border-top: 1px dashed black;
+                                                            border-collapse: collapse;">
+            </div>
+          </div>
+          <div>
+            <div class="izquierda">RAZON SOCIAL: {{cliente.razonSocial}}</div>
+            <div class="izquierda">C.I./R.U.C.: {{cliente.docNro}} </div>
+            <div class="izquierda">TEL.: {{cliente.telefono}} </div>
+            <div class="izquierda">DIR: {{cliente.direccion}}</div>
+            <div class="izquierda">PUNTOS OBTENIDOS: {{venta.puntosObtenidos}}</div>
+            <div class="izquierda">PUNTOS ACUMULADOS: {{venta.totalPuntos}}</div>
+
+
+            <div *ngIf="venta && ( venta.importeDescuento + venta.descuentoProducto ) > 0" class="centrado mt-2">
+              <div class="row">
+                <div class=col-12>
+                  <hr style="border-top: 1px dashed black;
+                                                            border-collapse: collapse;">
+                </div>
+              </div>
+              <span style="font-size: 18px;">
+
+                USTED AHORRO GS.&nbsp;{{ (venta.importeDescuento + venta.descuentoProducto ) | number}}
+
+              </span>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class=col-12>
+              <hr style="border-top: 1px dashed black;
+                                                        border-collapse: collapse;">
+            </div>
+          </div>
+
+          <p class="centrado">
+            Original: Cliente - Comprador
+            <br>
+          </p>
+
+          <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+          <p class="centrado" style="border: inset 0pt;font: 90% Georgia;">
+            Los datos impresos requieren de cuidados especiales. Evite el contacto directo con plasticos,
+            sustancias quimicas, calor, humedad o luz solar.
+            <br>
+          </p>
+          <hr style="border-top: 1px dashed black;border-collapse: collapse;">
+          <p class="centrado">*** ¡GRACIAS POR SU COMPRA! ***
+            <br>
+          </p>
+          <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+
+
+        </div>
+        <div class="ticket printableArea centrado" id="documento2" [hidden]="true" *ngIf="listo">
+          <table class="ticket">
+
+            <tbody>
+              <tr class="centrado">
+                <td> {{empresa.razonSocial}}</td>
+              </tr>
+              <tr class="centrado">
+                <td>R.U.C: {{empresa.ruc}}</td>
+              </tr>
+              <tr class="centrado">
+                <td>
+                  EXPRESS: {{sucursal.nombreSucursal}}
+                </td>
+              </tr>
+              <tr class="centrado">
+                <td>DIR: {{sucursal.direccion}}</td>
+              </tr>
+              <tr class="centrado">
+                <td>
+                  CEL: {{sucursal.telefono}}
+                </td>
+              </tr>
+              <tr class="centrado">
+                <td>COMPROBANTE INTERNO</td>
+              </tr>
+              <!--  <tr class="centrado">
+                                <td>I.V.A. INCLUIDO</td>
+                            </tr>    -->
+              <tr class="izquierda" *ngIf='sucursal.codEmpresa == 1'>
+                <td>CASA MATRIZ: CAPIATA RUTA 1 KM 18</td>
+              </tr>
+              <tr class="izquierda" *ngIf='sucursal.codEmpresa == 1'>
+                <td>TEL: (021) 588-9000</td>
+              </tr>
+              <!-- <tr class="izquierda">
+                                <td>TIMBRADO: {{venta.timbrado}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>FECHA INICIO:{{venta.inicioTimbrado | date:'dd/MM/y'}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>FECHA FIN: {{venta.finTimbrado | date:'dd/MM/y'}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>FACTURA {{formaVenta.descripcion}}</td>
+                            </tr>
+                            <tr class="izquierda">
+                                <td>NRO: {{venta.nroComprobante}}</td>
+                            </tr> -->
+              <tr class="izquierda">
+                <td>NRO: {{venta.codVenta.toString().padStart(8,"00000000") }}</td>
+              </tr>
+              <tr class="izquierda">
+                <td>FECHA:{{venta.fechaVenta | date:'dd/MM/y'}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class=col-12>
+            <hr style="border-top: 1px none black;
+                                                                border-collapse: collapse;">
+          </div>
+
+
+          <table>
+            <thead class="centrado">
+              <tr>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="cantidad">Cant.</th>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="producto">Descripcion</th>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="precio">Precio</th>
+                <th style="border: inset 0pt;font: 90% Georgia;" class="total">Total</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let d of detalles" class="centrado">
+              <tr>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="cantidad">{{d.cantidad}}</td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="producto">
+                  {{d.producto.nombreProducto}}
+                
+                <small *ngIf="d.tipoDescuento && d.tipoDescuento === 'UNO_DE_DOS'">
+                  (2da uni) {{d.porcDescuento}}%
+                </small>
+
+                <small *ngIf="d.tipoDescuento && d.tipoDescuento !== 'UNO_DE_DOS'">
+                  {{d.porcDescuento}}%
+                </small>
+                
+                </td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="precio">
+                  {{d.importePrecio | number}}</td>
+                <td style="border: inset 0pt;font: 90% Georgia;" class="total">
+                  {{d.importeTotal | number}}</td>
+              </tr>
+
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="cantidad"> &nbsp; &nbsp; &nbsp;</td>
+                <td class="producto"> &nbsp; &nbsp; &nbsp;</td>
+                <td class="precio"> &nbsp; &nbsp; &nbsp;</td>
+                <td class="total"> &nbsp; &nbsp; &nbsp;</td>
+              </tr>
+            </tfoot>
+
+          </table>
+          <div class="row">
+            <div class="col-5 izquierda">ARTICULOS</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda"> {{totalElementos | number}}</div>
+
+            <div class="col-5 izquierda">SUB TOTAL</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{ venta.subTotal | number}}</div>
+
+            <div class="col-5 izquierda">DESCUENTOS</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeDescuento | number}}</div>
+
+            <div class="col-5 izquierda">TOTAL A PAGAR</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeTotal | number}}</div>
+
+            <div class="col-5 izquierda">IVA 5%</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeIva5 | number}}</div>
+
+
+            <div class="col-5 izquierda">IVA 10%</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeIva10 | number}}</div>
+
+            <div class="col-5 izquierda">EXENTA</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{venta.importeIvaExenta | number}}</div>
+
+            <div class=col-12>
+              <hr style="border-top: 1px dashed black;
+                                                   border-collapse: collapse;">
+            </div>
+          </div>
+          <div class="row" *ngIf="!mostrarForma">
+            <div class="col-5 izquierda">ABONADO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{cobranza.importeAbonado | number}}</div>
+
+            <div class="col-5 izquierda">VUELTO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{cobranza.importeAbonado - venta.importeTotal | number}}
+            </div>
+          </div>
+          <div class="row" *ngIf="mostrarForma">
+            <div class="col-5 izquierda">ABONADO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;0</div>
+
+            <div class="col-5 izquierda">VUELTO</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;0</div>
+          </div>
+          <div class="row" *ngFor="let d of cobranzaDetalles" [hidden]="mostrarForma">
+            <div class="col-5 izquierda">{{d.medioPago.descripcion}}</div>
+            <div class="col-2">:</div>
+            <div class="col-5 izquierda">GS.&nbsp;{{d.importeAbonado | number}}</div>
+          </div>
+          <div class="row">
+            <div class=col-12>
+              <hr style="border-top: 1px dashed black;
+                                                            border-collapse: collapse;">
+            </div>
+          </div>
+          <div>
+            <div class="izquierda">RAZON SOCIAL: {{cliente.razonSocial}}</div>
+            <div class="izquierda">C.I./R.U.C.: {{cliente.docNro}} </div>
+            <div class="izquierda">TEL.: {{cliente.telefono}} </div>
+            <div class="izquierda">DIR: {{cliente.direccion}}</div>
+            <div class="izquierda">PUNTOS OBTENIDOS: {{venta.puntosObtenidos}}</div>
+            <div class="izquierda">PUNTOS ACUMULADOS: {{venta.totalPuntos}}</div>
+          </div>
+
+
+          <div *ngIf="venta && ( venta.importeDescuento + venta.descuentoProducto ) > 0" class="centrado mt-2">
+            <div class="row">
+              <div class=col-12>
+                <hr style="border-top: 1px dashed black;
+                                                          border-collapse: collapse;">
+              </div>
+            </div>
+            <span style="font-size: 18px;">
+
+              USTED AHORRO GS.&nbsp;{{ (venta.importeDescuento + venta.descuentoProducto ) | number}}
+
+            </span>
+          </div>
+
+          <div class="row">
+            <div class=col-12>
+              <hr style="border-top: 1px dashed black;
+                                                        border-collapse: collapse;">
+            </div>
+          </div>
+
+
+          <p class="centrado">
+            Duplicado: comprobante tributario
+            <br>
+          </p>
+          <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+          <p class="centrado" style="border: inset 0pt;font: 90% Georgia;">
+            Los datos impresos requieren de cuidados especiales. Evite el contacto directo con plasticos,
+            sustancias quimicas, calor, humedad o luz solar.
+            <br>
+          </p>
+          <hr style="border-top: 1px dashed black;border-collapse: collapse;">
+          <p class="centrado">*** ¡GRACIAS POR SU COMPRA! ***
+            <br>
+          </p>
+          <hr style="border-top: 1px dashed black; border-collapse: collapse;">
+
+
+        </div>
+        <div class="button-group  oculto-impresion">
+
+          <button class="btn btn-success text-white" styleSheetFile="ticketVenta.css" (click)="atras()">
+            Atras
+          </button>
+          <button class="btn btn-success text-white" [useExistingCss]="true" styleSheetFile="ticketVenta.css"
+            printSectionId="documento" ngxPrint>
+            Original
+          </button>
+          <button class="btn btn-success text-white" [useExistingCss]="true" styleSheetFile="ticketVenta.css"
+            printSectionId="documento2" ngxPrint>
+            Duplicado
+          </button>
+
+        </div>
+        <div class="button-group  oculto-impresion">
+          <button class="btn btn-danger text-white" styleSheetFile="ticketVenta.css"
+            (click)="verTicketPdf(venta.codVenta,'Original: Cliente - Comprador')">
+            Original pdf
+          </button>
+          <button class="btn btn-danger text-white" styleSheetFile="ticketVenta.css"
+            (click)="verTicketPdf(venta.codVenta,'Duplicado: comprobante tributario')">
+            Duplicado pdf
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- End PAge Content -->
+  <!-- ============================================================== -->
+</div>

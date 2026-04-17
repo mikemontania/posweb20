@@ -1,0 +1,60 @@
+<div class="page-content page-form">
+  @if (loading()) {
+    <div class="form-loading"><span class="spinner"></span> Cargando...</div>
+  }
+  @if (!loading()) {
+    <div class="card form-card">
+      <div class="card-header form-card-header">
+        <h2 class="form-title">{{ esEdicion() ? 'Actualizar' : 'Nuevo' }} Forma de Venta</h2>
+      </div>
+      <div class="card-body">
+        <form #f="ngForm" (ngSubmit)="guardar()">
+          <div class="form-fields form-grid-2">
+
+        <div class="form-row">
+          <label class="form-label">Código ERP<span class="req">*</span></label>
+          <input type="text" class="form-control" name="codFormaVentaErp" required
+            [ngModel]="it.codFormaVentaErp"
+            (ngModelChange)="set('codFormaVentaErp', toUpper($event))"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Descripción<span class="req">*</span></label>
+          <input type="text" class="form-control" name="descripcion" required
+            [ngModel]="it.descripcion"
+            (ngModelChange)="set('descripcion', toUpper($event))"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Cantidad de Días<span class="req">*</span></label>
+          <input type="number" class="form-control" name="cantDias" required
+            [ngModel]="it.cantDias"
+            (ngModelChange)="set('cantDias', +$event)"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">¿Es Contado?<span class="req">*</span></label>
+          <select class="form-control" name="esContado"
+            [ngModel]="it.esContado"
+            (ngModelChange)="set('esContado', $event === 'true' || $event === true)">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+          </div>
+          <div class="form-actions">
+            <a routerLink="/forma-venta" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Atrás
+            </a>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando() || f.invalid">
+              @if (guardando()) {
+                <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+              }
+              {{ esEdicion() ? 'Actualizar' : 'Crear' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

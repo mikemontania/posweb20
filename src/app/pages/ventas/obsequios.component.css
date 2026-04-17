@@ -1,0 +1,242 @@
+/* ═══════════════════════════════════════════════════════
+   OBSEQUIOS — CSS
+   Extiende las clases de ventas.component.css que ya están
+   disponibles vía el layout compartido (pos-layout, etc.)
+   Sólo agrega lo específico de obsequios.
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Host idéntico a ventas ─────────────────────── */
+:host {
+  display: block;
+  margin: -1rem;
+  margin-top: 0;
+}
+
+/* ── Layout POS — idéntico a ventas ─────────────── */
+.pos-layout {
+  display: flex; gap: 0;
+  height: calc(100dvh - var(--header-height, 56px) - 3.5rem);
+  overflow: hidden;
+  background: var(--bg-page, #f4f6f8);
+}
+
+.pos-left {
+  width: 440px; min-width: 360px; max-width: 480px;
+  display: flex; flex-direction: column;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.pos-right {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  background: var(--bg-page);
+  overflow: hidden;
+}
+
+/* ── Cabecera ─────────────────────────────────────  */
+.pos-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .45rem .75rem;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.pos-header-left { display: flex; align-items: center; gap: .4rem; }
+.pos-icon  { font-size: 1.05rem; line-height: 1; }
+.pos-title { font-size: .9375rem; font-weight: 600; color: var(--text-primary); }
+
+/* ── Cliente propietario — fijo, sin buscador ────── */
+.obs-cliente {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .55rem .75rem;
+  background: var(--bg-surface-2, #f8f9fa);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.obs-cliente-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  opacity: .7;
+}
+.obs-cliente-info {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: .05rem;
+}
+.obs-cliente-label {
+  font-size: .6875rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.obs-cliente-nombre {
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.obs-lista-badge {
+  flex-shrink: 0;
+  font-size: .6875rem;
+  font-weight: 600;
+  padding: .15rem .45rem;
+  border-radius: 4px;
+  background: var(--status-info-bg, #EFF6FF);
+  color: var(--color-accent, #2563EB);
+  letter-spacing: .03em;
+}
+
+/* ── Detalle container ───────────────────────────── */
+.pos-detalle-container {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ── Nota precio costo ───────────────────────────── */
+.obs-nota {
+  display: flex; align-items: center; gap: .35rem;
+  padding: .35rem .75rem;
+  font-size: .6875rem;
+  color: var(--text-muted);
+  background: var(--bg-surface-2, #f8f9fa);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.obs-nota svg { flex-shrink: 0; opacity: .6; }
+
+/* ── Footer acciones ─────────────────────────────── */
+.pos-footer {
+  display: flex; gap: .5rem;
+  padding: .6rem .75rem;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.btn-cancelar {
+  flex: 0 0 auto;
+  padding: .45rem .9rem;
+  font-size: .8125rem; font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 120ms;
+}
+.btn-cancelar:hover { background: var(--bg-surface-2); }
+
+.btn-guardar {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .45rem .9rem;
+  font-size: .8125rem; font-weight: 600;
+  border: none; border-radius: 7px;
+  background: var(--color-accent, #2563EB);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 120ms;
+}
+.btn-guardar:disabled { opacity: .45; cursor: not-allowed; }
+.btn-guardar:not(:disabled):hover { opacity: .88; }
+
+/* Spinner inline */
+.spinner-sm {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .65s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Tab bar móvil ───────────────────────────────── */
+.pos-tabs {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  z-index: 100;
+}
+.pos-tab-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  font-size: .6875rem; font-weight: 500;
+  color: var(--text-muted);
+  border: none; background: none; cursor: pointer;
+  position: relative;
+}
+.pos-tab-btn.active { color: var(--color-accent, #2563EB); }
+.pos-tab-badge {
+  position: absolute; top: 4px; right: calc(50% - 18px);
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  background: var(--color-accent, #2563EB);
+  color: #fff; font-size: .625rem; font-weight: 700;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Modales — idénticos a ventas ────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.4);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal-box {
+  background: var(--bg-surface);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  width: 100%; max-width: 420px;
+  overflow: hidden;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.modal-header h3 { font-size: .9375rem; font-weight: 600; margin: 0; }
+.modal-body  { padding: 1rem; }
+.modal-footer {
+  padding: .75rem 1rem;
+  border-top: 1px solid var(--border-color);
+  display: flex; justify-content: flex-end; gap: .5rem;
+}
+
+.form-group  { display: flex; flex-direction: column; gap: .35rem; }
+.form-label  { font-size: .8125rem; font-weight: 500; color: var(--text-secondary); }
+.form-control {
+  padding: .4rem .6rem; font-size: .875rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.btn {
+  padding: .4rem .85rem; font-size: .8125rem; font-weight: 500;
+  border-radius: 6px; border: 1px solid transparent;
+  cursor: pointer; transition: opacity 120ms;
+}
+.btn-primary {
+  background: var(--color-accent, #2563EB);
+  color: #fff; border-color: transparent;
+}
+.btn-primary:hover { opacity: .88; }
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 640px) {
+  .pos-layout {
+    flex-direction: column;
+    height: calc(100dvh - var(--header-height, 56px) - 56px);
+  }
+  .pos-left, .pos-right { width: 100%; min-width: 0; max-width: none; }
+  .pos-tabs  { display: flex; }
+  .tab-hidden { display: none !important; }
+}
