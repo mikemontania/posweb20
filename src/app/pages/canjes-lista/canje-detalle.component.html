@@ -74,7 +74,7 @@
             <th>Premio</th><th>Cód. Ref.</th><th>Cant.</th><th>Puntos Unit.</th><th>Total Puntos</th>
           </tr></thead>
           <tbody>
-            @for (d of detalles(); track $index) {
+            @for (d of detalles(); track d.codCanjeDet) {
               <tr>
                 <td style="padding:.25rem .5rem;text-align:center;vertical-align:middle">
                   @if (d.premio?.img) {

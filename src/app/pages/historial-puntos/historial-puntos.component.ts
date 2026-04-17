@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService }             from '../../core/services/auth.service';
 import { HistorialPuntoService }   from '../../core/services/domain/historial-puntos.service';
@@ -10,7 +10,7 @@ import { SelectSearchComponent }   from '../../shared/components/select-search/s
 @Component({
   selector: 'app-historial-puntos',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectSearchComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './historial-puntos.component.html',
   styleUrl: './historial-puntos.component.css',

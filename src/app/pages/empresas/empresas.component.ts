@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService }    from '../../core/services/auth.service';
 import { EmpresasService } from '../../core/services/domain/empresas.service';
@@ -10,7 +10,7 @@ import { Empresas }       from '../../core/models/domain/empresas.model';
 @Component({
   selector: 'app-empresas',
   standalone: true,
-  imports: [CommonModule, FormsModule, ImagenPipe],
+  imports: [AsyncPipe, FormsModule, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './empresas.component.html',
   styleUrl: './empresas.component.css',

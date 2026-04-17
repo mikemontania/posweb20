@@ -2,7 +2,6 @@ import {
   Component, OnInit, OnDestroy, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
@@ -21,7 +20,7 @@ import { SelectSearchComponent } from '../../shared/components/select-search/sel
   selector: 'app-clientes-form',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, RouterModule,
+    ReactiveFormsModule, RouterModule,
     LeafletMapComponent, SelectSearchComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

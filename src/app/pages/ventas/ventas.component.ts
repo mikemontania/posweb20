@@ -4,7 +4,7 @@ import {
   Component, OnInit, OnDestroy, HostListener, inject,
   ChangeDetectionStrategy, ChangeDetectorRef
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
 import { Router }       from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
@@ -24,7 +24,7 @@ import { PosCobranzaComponent } from '../../shared/components/pos/pos-cobranza.c
   standalone: true,
   providers: [VentasStateService, VentasFacadeService],
   imports: [
-    CommonModule, FormsModule, SelectSearchComponent,
+    DatePipe, DecimalPipe, FormsModule, SelectSearchComponent,
     PosCatalogoComponent, PosDetalleComponent,
     PosTotalesComponent, PosClienteComponent, PosCobranzaComponent,
   ],

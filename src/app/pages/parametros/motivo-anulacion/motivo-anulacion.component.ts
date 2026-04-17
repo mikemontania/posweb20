@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService }  from '../../../core/services/auth.service';
@@ -12,7 +11,7 @@ import { DebounceSearchComponent } from '../../../shared/components/debounce-sea
 @Component({
   selector: 'app-motivo-anulacion',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
+  imports: [FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './motivo-anulacion.component.html',
   styleUrl: './motivo-anulacion.component.css',

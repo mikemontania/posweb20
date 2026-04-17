@@ -7,13 +7,12 @@ import {
   Component, Input, Output, EventEmitter,
   signal, computed, OnChanges, SimpleChanges, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-incrementador',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="incrementador">

@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +9,7 @@ import { MotivoAnulacionCompra } from '../../../core/models/domain/motivo-anulac
 @Component({
   selector: 'app-motivo-anulacion-compra-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './motivo-anulacion-compra-form.component.html',
   styleUrl: './motivo-anulacion-compra.component.css',

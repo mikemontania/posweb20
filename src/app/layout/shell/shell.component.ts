@@ -1,5 +1,4 @@
 import { Component, inject, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -9,7 +8,7 @@ import { SidebarService } from '../../core/services/sidebar.service';
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, BreadcrumbComponent],
+  imports: [RouterOutlet, HeaderComponent, SidebarComponent, BreadcrumbComponent],
   template: `
     <div class="app-shell"
       [class.sidebar-collapsed]="sidebar.isCollapsed()"

@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService }     from '../../core/services/auth.service';
@@ -18,7 +18,7 @@ import { SelectSearchComponent } from '../../shared/components/select-search/sel
 @Component({
   selector: 'app-pedidos-lista',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SelectSearchComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, RouterModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pedidos-lista.component.html',
   styleUrl: './pedidos-lista.component.css',

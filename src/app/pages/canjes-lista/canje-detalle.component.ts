@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -12,7 +12,7 @@ import { ImagenPipe }   from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-canje-detalle',
   standalone: true,
-  imports: [CommonModule, RouterModule, ImagenPipe],
+  imports: [DecimalPipe, AsyncPipe, RouterModule, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './canje-detalle.component.html',
   styleUrl: './canje-detalle.component.css',

@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe, AsyncPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -16,7 +16,7 @@ import { ImagenPipe }            from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-pedido-detalle',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SelectSearchComponent, ImagenPipe],
+  imports: [DatePipe, DecimalPipe, AsyncPipe, RouterModule, FormsModule, SelectSearchComponent, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pedido-detalle.component.html',
   styleUrl: './pedido-detalle.component.css',

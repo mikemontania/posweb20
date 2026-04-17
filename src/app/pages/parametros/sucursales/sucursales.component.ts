@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -9,8 +8,9 @@ import { Sucursal } from '../../../core/models/domain/sucursal.model';
 import { ModalConfirmComponent } from '../../../shared/components/modal-confirm/modal-confirm.component';
 
 import { DebounceSearchComponent } from '../../../shared/components/debounce-search/debounce-search.component';
+
 @Component({ selector: 'app-sucursales', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
+  imports: [FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sucursales.component.html', styleUrl: './sucursales.component.css' })
 export class SucursalesComponent implements OnInit {

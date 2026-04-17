@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -9,7 +8,7 @@ interface Crumb { label: string; url: string; }
 @Component({
   selector: 'app-breadcrumb',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a routerLink="/dashboard" class="breadcrumb-home" title="Dashboard">

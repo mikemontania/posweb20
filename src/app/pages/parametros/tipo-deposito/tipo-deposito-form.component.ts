@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +9,7 @@ import { TipoDeposito } from '../../../core/models/domain/tipo-deposito.model';
 @Component({
   selector: 'app-tipo-deposito-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tipo-deposito-form.component.html',
   styleUrl: './tipo-deposito.component.css',

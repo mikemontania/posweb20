@@ -12,7 +12,6 @@
 import {
   Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -42,7 +41,7 @@ type TipoVista = 'importe' | 'cantidad';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChartBarComponent, ChartPieComponent, SelectSearchComponent],
+  imports: [FormsModule, ChartBarComponent, ChartPieComponent, SelectSearchComponent],
   templateUrl: './dashboard.component.html',
   styleUrl:    './dashboard.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

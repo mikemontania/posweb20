@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -15,7 +15,7 @@ import { ImagenPipe } from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule,
+  imports: [AsyncPipe, FormsModule, RouterModule,
             ModalConfirmComponent, DebounceSearchComponent, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './productos.component.html',

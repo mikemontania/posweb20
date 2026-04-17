@@ -17,7 +17,6 @@ import {
   AfterViewInit, OnDestroy, OnChanges, SimpleChanges,
   ViewChild, ElementRef, ChangeDetectionStrategy, NgZone
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 export interface MapMarker {
   lat:    number;
@@ -31,7 +30,7 @@ export interface MapMarker {
 @Component({
   selector: 'app-mapa',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="mapa-wrap">

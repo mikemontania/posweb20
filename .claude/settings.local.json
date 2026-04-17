@@ -14,7 +14,9 @@
       "Bash(transferencia)",
       "Bash(motivo\")",
       "Bash(npx tsc *)",
-      "Bash(grep -rn 'track $index' '--include=*.html' .)"
+      "Bash(grep -rn 'track $index' '--include=*.html' .)",
+      "Bash(python3 process_common_module.py)",
+      "Bash(node process_common_module.mjs)"
     ]
   }
 }

@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +9,7 @@ import { GrupoDescuento } from '../../../core/models/domain/grupo-descuento.mode
 @Component({
   selector: 'app-grupo-descuento-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './grupo-descuento-form.component.html',
   styleUrl: './grupo-descuento.component.css',

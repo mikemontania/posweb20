@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +9,7 @@ import { ListaPrecio } from '../../../core/models/domain/lista-precio.model';
 
 import { DebounceSearchComponent } from '../../../shared/components/debounce-search/debounce-search.component';
 @Component({ selector: 'app-lista-precio', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent], changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent], changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './lista-precio.component.html', styleUrl: './lista-precio.component.css' })
 export class ListaPrecioComponent implements OnInit {
   private readonly auth  = inject(AuthService);

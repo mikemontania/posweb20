@@ -11,7 +11,6 @@ import {
   Component, OnInit, OnDestroy, ChangeDetectionStrategy,
   ChangeDetectorRef, inject, HostListener
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
 
 import { ObsequiosFacadeService } from './obsequios-facade.service';
@@ -24,7 +23,7 @@ import { PosTotalesComponent }    from '../../shared/components/pos/pos-totales.
   selector: 'app-obsequios',
   standalone: true,
   providers: [VentasStateService, ObsequiosFacadeService],
-  imports: [CommonModule, FormsModule,
+  imports: [FormsModule,
     PosCatalogoComponent, PosDetalleComponent, PosTotalesComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './obsequios.component.html',

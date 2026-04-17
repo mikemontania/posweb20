@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +9,7 @@ import { TipoMedioPago } from '../../../core/models/domain/tipo-medio-pago.model
 
 import { DebounceSearchComponent } from '../../../shared/components/debounce-search/debounce-search.component';
 @Component({ selector: 'app-tipo-medio-pago', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent], changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent], changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tipo-medio-pago.component.html', styleUrl: './tipo-medio-pago.component.css' })
 export class TipoMedioPagoComponent implements OnInit {
   private readonly auth  = inject(AuthService);

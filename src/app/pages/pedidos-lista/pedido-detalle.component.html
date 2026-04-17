@@ -181,7 +181,7 @@
             <th>Precio</th><th>% Desc.</th><th>Total</th>
           </tr></thead>
           <tbody>
-            @for (d of detalles(); track $index) {
+            @for (d of detalles(); track d.codPedidoDetalle) {
               <tr>
                 <td style="padding:.25rem .5rem;text-align:center;vertical-align:middle">
                   @if (d.producto?.img) {
@@ -230,7 +230,7 @@
             <table class="table tabla-parametros">
               <thead><tr><th>Medio de Pago</th><th>Importe</th><th>Referencia</th></tr></thead>
               <tbody>
-                @for (d of cobDet(); track $index) {
+                @for (d of cobDet(); track d.codCobranzaDetalle) {
                   <tr>
                     <td><span class="badge badge-info">{{ d.medioPago?.descripcion }}</span></td>
                     <td class="text-right"><strong>{{ d.importeAbonado | number:'1.0-0' }} Gs.</strong></td>

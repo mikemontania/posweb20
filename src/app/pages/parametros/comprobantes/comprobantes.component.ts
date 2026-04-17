@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common'; import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ComprobantesService } from '../../../core/services/domain/comprobantes.service';
@@ -7,8 +7,9 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ModalConfirmComponent } from '../../../shared/components/modal-confirm/modal-confirm.component';
 
 import { DebounceSearchComponent } from '../../../shared/components/debounce-search/debounce-search.component';
+
 @Component({ selector: 'app-comprobantes', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
+  imports: [FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './comprobantes.component.html', styleUrl: './comprobantes.component.css' })
 export class Comprobantes implements OnInit {

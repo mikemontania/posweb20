@@ -1,7 +1,6 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService }        from '../../core/services/auth.service';
@@ -15,7 +14,7 @@ import { SelectSearchComponent } from '../../shared/components/select-search/sel
 @Component({
   selector: 'app-puntos-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, SelectSearchComponent],
+  imports: [ReactiveFormsModule, RouterModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './puntos-form.component.html',
   styleUrl: './puntos.component.css',

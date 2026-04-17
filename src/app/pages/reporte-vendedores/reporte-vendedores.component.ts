@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService }       from '../../core/services/auth.service';
 import { VentasService }     from '../../core/services/domain/ventas.service';
@@ -11,7 +10,7 @@ import { SelectSearchComponent } from '../../shared/components/select-search/sel
 @Component({
   selector: 'app-reporte-vendedores',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectSearchComponent],
+  imports: [FormsModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reporte-vendedores.component.html',
   styleUrl: './reporte-vendedores.component.css',

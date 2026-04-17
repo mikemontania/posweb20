@@ -166,7 +166,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (det of detalleLineas(); track $index; let i = $index) {
+                @for (det of detalleLineas(); track det.codStockPremioDet; let i = $index) {
                   <tr>
                     <td>{{ i + 1 }}</td>
                     <td>{{ det.premio?.descripcion }}</td>

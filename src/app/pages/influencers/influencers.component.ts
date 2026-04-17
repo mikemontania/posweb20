@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService }      from '../../core/services/auth.service';
 import { InfluencerService } from '../../core/services/domain/influencer.service';
@@ -9,7 +9,7 @@ import { Influencer }       from '../../core/models/domain/influencer.model';
 @Component({
   selector: 'app-influencers',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [DatePipe, DecimalPipe, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './influencers.component.html',
   styleUrl: './influencers.component.css',

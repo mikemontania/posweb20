@@ -1,13 +1,15 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common'; import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { DepositoService } from '../../../core/services/domain/deposito.service';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { ModalConfirmComponent } from '../../../shared/components/modal-confirm/modal-confirm.component';
 
-import { DebounceSearchComponent } from '../../../shared/components/debounce-search/debounce-search.component';@Component({ selector: 'app-depositos', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
+import { DebounceSearchComponent } from '../../../shared/components/debounce-search/debounce-search.component';
+
+@Component({ selector: 'app-depositos', standalone: true,
+  imports: [FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './depositos.component.html', styleUrl: './depositos.component.css' })
 export class Depositos implements OnInit {

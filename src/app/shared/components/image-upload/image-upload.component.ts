@@ -2,12 +2,12 @@ import {
   Component, Input, Output, EventEmitter,
   signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-image-upload',
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="img-upload-wrap">

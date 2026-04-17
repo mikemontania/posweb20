@@ -137,7 +137,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (item of items(); track $index) {
+            @for (item of items(); track item.codCobranza) {
               <tr>
                 <td>{{ item.nroComprobante ?? '—' }}</td>
                 <td><strong>{{ item.razonSocial ?? item.cliente?.razonSocial ?? '—' }}</strong></td>

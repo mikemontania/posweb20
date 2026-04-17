@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService }          from '../../core/services/auth.service';
 import { StockPremioService }   from '../../core/services/domain/stock-premio.service';
@@ -12,7 +12,7 @@ import { SelectSearchComponent } from '../../shared/components/select-search/sel
 @Component({
   selector: 'app-mv-stock-premio-docs',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectSearchComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './mv-stock-premio-docs.component.html',
   styleUrl: './mv-stock-premio-docs.component.css',

@@ -15,12 +15,11 @@ import {
   Component, Input, Output, EventEmitter,
   ChangeDetectionStrategy, HostListener
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modal-confirm',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (open) {

@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService }            from '../../core/services/auth.service';
@@ -18,7 +18,7 @@ import { SelectSearchComponent }  from '../../shared/components/select-search/se
 @Component({
   selector: 'app-ventas-lista',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SelectSearchComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, RouterModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ventas-lista.component.html',
   styleUrl: './ventas-lista.component.css',

@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -16,7 +16,7 @@ import { ImagenPipe } from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-stock',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ImagenPipe],
+  imports: [AsyncPipe, FormsModule, RouterModule, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './stock.component.html',
   styleUrl: './stock.component.css',

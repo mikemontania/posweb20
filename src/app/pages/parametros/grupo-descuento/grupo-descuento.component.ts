@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +9,7 @@ import { GrupoDescuento } from '../../../core/models/domain/grupo-descuento.mode
 
 import { DebounceSearchComponent } from '../../../shared/components/debounce-search/debounce-search.component';
 @Component({ selector: 'app-grupo-descuento', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent], changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, RouterModule, ModalConfirmComponent, DebounceSearchComponent], changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './grupo-descuento.component.html', styleUrl: './grupo-descuento.component.css' })
 export class GrupoDescuentoComponent implements OnInit {
   private readonly auth  = inject(AuthService);

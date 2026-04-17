@@ -1,7 +1,6 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService }          from '../../core/services/auth.service';
@@ -15,7 +14,7 @@ import { SelectSearchComponent } from '../../shared/components/select-search/sel
 @Component({
   selector: 'app-bonificaciones-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, SelectSearchComponent],
+  imports: [ReactiveFormsModule, RouterModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bonificaciones-form.component.html',
   styleUrl: './bonificaciones.component.css',

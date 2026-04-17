@@ -6,14 +6,14 @@ import {
   ChangeDetectionStrategy, signal,
   ViewChild, ElementRef, AfterViewChecked
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
 import { ImagenPipe }  from '../../pipes/imagen.pipe';
 import { PosCantidadComponent } from './pos-cantidad.component';
 
 @Component({
   selector: 'app-pos-detalle',
   standalone: true,
-  imports: [CommonModule, ImagenPipe, PosCantidadComponent],
+  imports: [DecimalPipe, AsyncPipe, ImagenPipe, PosCantidadComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pos-detalle.component.html',
   styleUrl:    './pos-detalle.component.css',

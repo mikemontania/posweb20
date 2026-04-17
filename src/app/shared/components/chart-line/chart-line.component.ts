@@ -11,12 +11,11 @@ import {
   Component, Input, AfterViewInit, OnDestroy, OnChanges,
   SimpleChanges, ViewChild, ElementRef, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chart-line',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="chart-wrap">

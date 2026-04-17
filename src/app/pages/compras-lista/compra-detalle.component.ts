@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ComprasService } from '../../core/services/domain/compras.service';
 import { ToastService }   from '../../shared/components/toast/toast.service';
@@ -9,7 +9,7 @@ import { ToastService }   from '../../shared/components/toast/toast.service';
 @Component({
   selector: 'app-compra-detalle',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [DatePipe, DecimalPipe, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="page-content">

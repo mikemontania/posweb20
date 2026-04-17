@@ -20,7 +20,7 @@ import {
   Component, Input, Output, EventEmitter,
   signal, computed, ChangeDetectionStrategy, OnChanges, SimpleChanges
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 // ── Tipos públicos ────────────────────────────────────────
@@ -72,7 +72,7 @@ export interface DtSortEvent {
 @Component({
   selector: 'app-datatable',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [DecimalPipe, FormsModule, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './datatable.component.html',
   styleUrl:    './datatable.component.css',

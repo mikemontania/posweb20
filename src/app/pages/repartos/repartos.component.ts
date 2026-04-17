@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService }      from '../../core/services/auth.service';
@@ -19,7 +19,7 @@ type Modo = 'REPARTO' | 'PEDIDOS' | 'VENTAS';
 @Component({
   selector: 'app-repartos',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectSearchComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './repartos.component.html',
   styleUrl: './repartos.component.css',

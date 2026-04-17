@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common'; import { FormsModule } from '@angular/forms';
+import {  } from '@angular/common'; import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ComprobantesService } from '../../../core/services/domain/comprobantes.service';
@@ -8,7 +8,7 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { Terminales } from '../../../core/models/domain/terminales.model';
 
 @Component({ selector: 'app-comprobantes-form', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, RouterModule], changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './comprobantes-form.component.html', styleUrl: './comprobantes.component.css' })
 export class ComprobantesForm implements OnInit {
   private readonly auth    = inject(AuthService);

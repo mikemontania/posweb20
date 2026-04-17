@@ -1,12 +1,12 @@
 // pos-totales — muestra TOTAL VENTA / % DESCUENTO / TOTAL DESC / TOTAL A PAGAR
 // Input: venta (objeto con importeTotal, subTotal, importeDescuento, descuentoProducto)
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-pos-totales',
   standalone: true,
-  imports: [CommonModule],
+  imports: [DecimalPipe, AsyncPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="pt-wrap">

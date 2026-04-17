@@ -5,13 +5,12 @@ import {
   Component, Input, Output, EventEmitter,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SelectSearchComponent } from '../select-search/select-search.component';
 
 @Component({
   selector: 'app-pos-cliente',
   standalone: true,
-  imports: [CommonModule, SelectSearchComponent],
+  imports: [SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="pc-wrap">

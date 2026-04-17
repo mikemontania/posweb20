@@ -2,7 +2,6 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService }       from '../../core/services/auth.service';
@@ -17,7 +16,7 @@ import { ImagenPipe }             from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-productos-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule,
+  imports: [ReactiveFormsModule, RouterModule,
             SelectSearchComponent, ImageUploadComponent, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './productos-form.component.html',

@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TransferenciaService } from '../../core/services/domain/transferencia.service';
 import { ToastService }         from '../../shared/components/toast/toast.service';
@@ -9,7 +9,7 @@ import { ToastService }         from '../../shared/components/toast/toast.servic
 @Component({
   selector: 'app-transferencia-detalle',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [DatePipe, DecimalPipe, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="page-content">

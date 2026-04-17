@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -16,7 +16,7 @@ import { ImagenPipe } from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-precios',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule,
+  imports: [DecimalPipe, AsyncPipe, FormsModule, RouterModule,
             ModalConfirmComponent, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './precios.component.html',

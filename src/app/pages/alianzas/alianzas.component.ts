@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -8,7 +7,7 @@ import { ToastService } from '../../shared/components/toast/toast.service';
 import { ModalConfirmComponent } from '../../shared/components/modal-confirm/modal-confirm.component';
 
 @Component({ selector: 'app-alianzas', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalConfirmComponent],
+  imports: [FormsModule, RouterModule, ModalConfirmComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './alianzas.component.html', styleUrl: './alianzas.component.css' })
 export class AlianzasComponent implements OnInit {

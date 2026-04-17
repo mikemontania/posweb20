@@ -2,7 +2,6 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService }   from '../../../core/services/auth.service';
@@ -13,7 +12,7 @@ import { LeafletMapComponent } from '../../../shared/components/leaflet-map/leaf
 @Component({
   selector: 'app-sucursales-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LeafletMapComponent],
+  imports: [ReactiveFormsModule, RouterModule, LeafletMapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sucursales-form.component.html',
   styleUrl: './sucursales.component.css',

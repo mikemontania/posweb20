@@ -2,7 +2,7 @@ import {
   Component, OnInit, OnDestroy, HostListener,
   inject, signal, computed, ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, firstValueFrom } from 'rxjs';
@@ -24,7 +24,7 @@ import { StockPremio } from '../../core/models/domain/stock-premio.model';
 @Component({
   selector: 'app-canjes',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectSearchComponent, ImagenPipe],
+  imports: [DecimalPipe, AsyncPipe, FormsModule, SelectSearchComponent, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './canjes.component.html',
   styleUrl: './canjes.component.css',

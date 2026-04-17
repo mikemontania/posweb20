@@ -69,7 +69,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (d of detalles(); track $index) {
+          @for (d of detalles(); track d.codVentaDetalle) {
             <tr>
               <td class="cantidad">{{ d.cantidad }}</td>
               <td class="producto">
@@ -104,7 +104,7 @@
           <div class="row-label"><span>ABONADO</span><span>GS. {{ cobranza()?.importeAbonado | number }}</span></div>
           <div class="row-label"><span>VUELTO</span><span>GS. {{ (cobranza()?.importeAbonado ?? 0) - (venta()?.importeTotal ?? 0) | number }}</span></div>
         }
-        @for (d of cobranzaDet(); track $index) {
+        @for (d of cobranzaDet(); track d.codCobranzaDetalle) {
           <div class="row-label"><span>{{ d.medioPago?.descripcion }}</span><span>GS. {{ d.importeAbonado | number }}</span></div>
         }
       } @else {

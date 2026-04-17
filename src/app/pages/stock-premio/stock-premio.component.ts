@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService }          from '../../core/services/auth.service';
 import { StockPremioService }   from '../../core/services/domain/stock-premio.service';
@@ -14,7 +14,7 @@ import { ImagenPipe }           from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-stock-premio',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectSearchComponent, ImagenPipe],
+  imports: [DecimalPipe, AsyncPipe, FormsModule, SelectSearchComponent, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './stock-premio.component.html',
   styleUrl: './stock-premio.component.css',

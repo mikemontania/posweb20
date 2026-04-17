@@ -2,7 +2,6 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -14,7 +13,7 @@ import { ModalConfirmComponent } from '../../shared/components/modal-confirm/mod
 @Component({
   selector: 'app-vehiculos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule,
+  imports: [FormsModule, RouterModule,
             ModalConfirmComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vehiculos.component.html',

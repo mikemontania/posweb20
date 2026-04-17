@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService }              from '../../core/services/auth.service';
@@ -14,7 +14,7 @@ import { SelectSearchComponent }    from '../../shared/components/select-search/
 @Component({
   selector: 'app-transferencias-lista',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SelectSearchComponent],
+  imports: [DatePipe, FormsModule, RouterModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './transferencias-lista.component.html',
   styleUrl: './transferencias-lista.component.css',

@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RepartoService }  from '../../core/services/domain/reparto.service';
 import { SucursalService } from '../../core/services/domain/sucursal.service';
@@ -10,7 +10,7 @@ import { ToastService }    from '../../shared/components/toast/toast.service';
 @Component({
   selector: 'app-reparto-docs',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [DecimalPipe, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reparto-docs.component.html',
   styleUrl: './reparto-docs.component.css',

@@ -4,13 +4,12 @@
 import {
   Component, Input, Output, EventEmitter, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
 
 @Component({
   selector: 'app-pos-cantidad',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="pc" [class.pc-lg]="size === 'lg'" [class.pc-disabled]="disabled">

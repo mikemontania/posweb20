@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe, AsyncPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -12,7 +12,7 @@ import { ImagenPipe }    from '../../shared/pipes/imagen.pipe';
 @Component({
   selector: 'app-venta-detalle',
   standalone: true,
-  imports: [CommonModule, RouterModule, ImagenPipe],
+  imports: [DatePipe, DecimalPipe, AsyncPipe, RouterModule, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './venta-detalle.component.html',
   styleUrl: './venta-detalle.component.css',

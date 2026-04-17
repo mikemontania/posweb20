@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CuponService } from '../../core/services/domain/cupon.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
@@ -7,7 +7,7 @@ import { ToastService } from '../../shared/components/toast/toast.service';
 @Component({
   selector: 'app-cupones',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [DatePipe, DecimalPipe, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cupones.component.html',
   styleUrl: './cupones.component.css',

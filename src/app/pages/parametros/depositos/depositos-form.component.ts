@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common'; import { FormsModule } from '@angular/forms';
+import {  } from '@angular/common'; import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { DepositoService } from '../../../core/services/domain/deposito.service';
@@ -9,7 +9,7 @@ import { ToastService } from '../../../shared/components/toast/toast.service';
 import { Sucursal } from '../../../core/models/domain/sucursal.model';
 import { TipoDeposito } from '../../../core/models/domain/tipo-deposito.model';
 @Component({ selector: 'app-depositos-form', standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, RouterModule], changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './depositos-form.component.html', styleUrl: './depositos.component.css' })
 export class DepositosForm implements OnInit {
   private readonly auth   = inject(AuthService);

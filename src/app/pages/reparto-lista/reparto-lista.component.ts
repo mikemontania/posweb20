@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService }     from '../../core/services/auth.service';
@@ -18,7 +18,7 @@ import { ModalConfirmComponent } from '../../shared/components/modal-confirm/mod
 @Component({
   selector: 'app-reparto-lista',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SelectSearchComponent, ModalConfirmComponent],
+  imports: [DecimalPipe, FormsModule, RouterModule, SelectSearchComponent, ModalConfirmComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reparto-lista.component.html',
   styleUrl: './reparto-lista.component.css',

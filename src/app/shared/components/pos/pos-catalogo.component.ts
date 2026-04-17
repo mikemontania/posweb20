@@ -5,7 +5,7 @@ import {
   Component, Input, Output, EventEmitter,
   ChangeDetectionStrategy, OnInit, OnDestroy, signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ImagenPipe }            from '../../pipes/imagen.pipe';
@@ -14,7 +14,7 @@ import { PosCantidadComponent }  from './pos-cantidad.component';
 @Component({
   selector: 'app-pos-catalogo',
   standalone: true,
-  imports: [CommonModule, ImagenPipe, PosCantidadComponent],
+  imports: [DecimalPipe, AsyncPipe, ImagenPipe, PosCantidadComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="cat-wrap">

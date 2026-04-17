@@ -5,13 +5,13 @@ import {
   Component, Input, Output, EventEmitter,
   ChangeDetectionStrategy, OnChanges, SimpleChanges
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
 
 @Component({
   selector: 'app-pos-cobranza',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [DecimalPipe, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pos-cobranza.component.html',
   styleUrl:    './pos-cobranza.component.css',

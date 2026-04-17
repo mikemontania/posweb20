@@ -1,7 +1,7 @@
 import {
   Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
 import { SelectSearchComponent } from '../../shared/components/select-search/select-search.component';
 
@@ -19,7 +19,7 @@ import { ClientesForm }          from '../clientes/clientes-form.component';
   standalone: true,
   providers: [PedidosStateService, PedidosFacadeService],
   imports: [
-    CommonModule, FormsModule, SelectSearchComponent,
+    DatePipe, DecimalPipe, FormsModule, SelectSearchComponent,
     PosCatalogoComponent, PosDetalleComponent,
     PosTotalesComponent, PosClienteComponent, PosCobranzaComponent,
     ClientesForm,

@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,7 +11,7 @@ import { MedioPago } from '../../../core/models/domain/medio-pago.model';
 @Component({
   selector: 'app-tipo-medio-pago-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tipo-medio-pago-form.component.html',
   styleUrl: './tipo-medio-pago.component.css',

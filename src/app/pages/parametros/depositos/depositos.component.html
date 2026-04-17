@@ -1,7 +1,7 @@
 <div class="page-content">
   <div class="page-header">
     <div class="page-header-left"><h1 class="page-title">Depósitos</h1>
-      <span class="page-count badge badge-primary" *ngIf="!loading()">{{ itemsFiltrados.length }} registros</span></div>
+      @if (!loading()) { <span class="page-count badge badge-primary">{{ itemsFiltrados.length }} registros</span> }</div>
     <div class="page-header-actions">
       <a routerLink="/depositos/formulario" class="btn btn-primary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo

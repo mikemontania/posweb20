@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService }          from '../../core/services/auth.service';
 import { StockPremioService }   from '../../core/services/domain/stock-premio.service';
@@ -15,7 +15,7 @@ const OPERACIONES = ['ENTRADA', 'OBSEQUIO', 'INVENTARIO'];
 @Component({
   selector: 'app-mv-stock-premio',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectSearchComponent],
+  imports: [DecimalPipe, FormsModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './mv-stock-premio.component.html',
   styleUrl: './mv-stock-premio.component.css',

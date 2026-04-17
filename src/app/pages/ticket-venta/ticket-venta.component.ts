@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 import { VentasService }   from '../../core/services/domain/ventas.service';
@@ -13,7 +13,7 @@ import { ToastService }    from '../../shared/components/toast/toast.service';
 @Component({
   selector: 'app-ticket-venta',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [DatePipe, DecimalPipe, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ticket-venta.component.html',
   styleUrl: './ticket-venta.component.css',
