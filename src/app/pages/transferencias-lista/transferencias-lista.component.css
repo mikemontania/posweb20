@@ -1,1 +1,28 @@
 .row-anulado { opacity: .55; text-decoration: line-through; }
+
+/* ── KPI Mini Dashboard ───────────────────────────────── */
+.kpi-row { display:flex; gap:.875rem; flex-wrap:wrap; margin-bottom:1rem; }
+.kpi-card {
+  flex:1; min-width:165px;
+  background:var(--bg-surface); border:1px solid var(--border-color);
+  border-radius:var(--radius-lg); padding:.9rem 1.1rem .9rem 1.4rem;
+  box-shadow:var(--shadow-sm); position:relative; overflow:hidden;
+  transition:box-shadow 150ms,transform 120ms;
+}
+.kpi-card:hover { box-shadow:var(--shadow-md); transform:translateY(-1px); }
+.kpi-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+  background:var(--kpi-color,var(--color-accent));
+  border-radius:var(--radius-lg) 0 0 var(--radius-lg);
+}
+.kpi-icon {
+  width:32px; height:32px; border-radius:var(--radius-md);
+  background:color-mix(in srgb,var(--kpi-color,var(--color-accent)) 12%,transparent);
+  color:var(--kpi-color,var(--color-accent));
+  display:flex; align-items:center; justify-content:center; margin-bottom:.5rem;
+}
+.kpi-label { font-size:.67rem; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--text-muted); margin-bottom:.2rem; }
+.kpi-value { font-size:1.45rem; font-weight:800; color:var(--text-primary); letter-spacing:-.04em; line-height:1.1; }
+.kpi-unit  { font-size:.75rem; font-weight:500; color:var(--text-muted); margin-left:.15rem; }
+.kpi-items { --kpi-color: #2563EB; }
+.kpi-cant  { --kpi-color: var(--color-accent); }

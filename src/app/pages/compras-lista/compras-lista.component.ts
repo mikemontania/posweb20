@@ -35,6 +35,8 @@ export class ComprasListaComponent implements OnInit {
   totalPages    = signal(0);
   currentPage   = signal(0);
 
+  totalImporte = computed(() => this.items().reduce((s, c) => s + (c.importeTotal ?? 0), 0));
+
   pageNumbers = computed(() => {
     const total = this.totalPages(), cur = this.currentPage();
     if (total <= 7) return Array.from({ length: total }, (_, i) => i);

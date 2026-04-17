@@ -100,6 +100,124 @@
 }
 .header-logout:hover { opacity: 1; background: rgba(255,255,255,.12); }
 
+/* ── Notificación pedidos pendientes ────────────────── */
+.notif-wrap { position: relative; }
+
+.notif-btn {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  background: transparent; border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-header);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.notif-btn:hover, .notif-btn.active { background: rgba(255,255,255,.12); }
+
+.notif-badge {
+  position: absolute;
+  top: 2px; right: 2px;
+  min-width: 16px; height: 16px;
+  background: #ef4444;
+  color: #fff;
+  font-size: .6rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0 3px;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+  border: 1.5px solid var(--bg-header);
+  animation: pulse-badge 2s infinite;
+}
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
+}
+
+.notif-spinner {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 8px; height: 8px;
+  border: 1.5px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 600ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.notif-backdrop {
+  position: fixed; inset: 0; z-index: 198;
+}
+
+.notif-panel {
+  position: fixed;
+  top: calc(var(--header-height) + 4px);
+  right: 5.5rem;
+  width: 300px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 199;
+  overflow: hidden;
+  animation: fadeDown 150ms ease;
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.notif-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: .8125rem; font-weight: 600;
+  color: var(--text-primary);
+}
+
+.notif-empty {
+  padding: 1.25rem 1rem;
+  text-align: center;
+  font-size: .8125rem;
+  color: var(--text-muted);
+}
+
+.notif-item {
+  display: flex; align-items: flex-start; gap: .75rem;
+  padding: .65rem 1rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition);
+}
+.notif-item:hover { background: var(--bg-surface-2); }
+.notif-item:last-of-type { border-bottom: none; }
+
+.notif-item-icon {
+  width: 28px; height: 28px; flex-shrink: 0;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+
+.notif-item-title { font-size: .8125rem; font-weight: 600; }
+.notif-item-sub   { font-size: .75rem; color: var(--text-secondary); margin-top: 1px; }
+.notif-item-time  { font-size: .7rem; color: var(--text-muted); margin-top: 2px; }
+
+.notif-footer {
+  display: flex; align-items: center; justify-content: center; gap: .35rem;
+  padding: .65rem 1rem;
+  font-size: .8125rem; font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+  border-top: 1px solid var(--border-color);
+  transition: background var(--transition);
+}
+.notif-footer:hover { background: var(--bg-surface-2); }
+
 /* FAB Tema */
 .fab-theme {
   position: fixed;

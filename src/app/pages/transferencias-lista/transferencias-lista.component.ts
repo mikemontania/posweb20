@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, computed, ChangeDetectionStrategy
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService }              from '../../core/services/auth.service';
@@ -14,7 +14,7 @@ import { SelectSearchComponent }    from '../../shared/components/select-search/
 @Component({
   selector: 'app-transferencias-lista',
   standalone: true,
-  imports: [DatePipe, FormsModule, RouterModule, SelectSearchComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, RouterModule, SelectSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './transferencias-lista.component.html',
   styleUrl: './transferencias-lista.component.css',
@@ -32,6 +32,8 @@ export class TransferenciasListaComponent implements OnInit {
   totalElements = signal(0);
   totalPages    = signal(0);
   currentPage   = signal(0);
+
+  totalProductos = computed(() => this.items().reduce((s, t) => s + (t.totalProducto ?? 0), 0));
 
   pageNumbers = computed(() => {
     const total = this.totalPages(), cur = this.currentPage();

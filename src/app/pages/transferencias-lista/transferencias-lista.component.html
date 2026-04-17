@@ -63,6 +63,30 @@
     </div>
   </div>
 
+  <!-- ── KPIs ──────────────────────────────────────────── -->
+  @if (totalElements() > 0) {
+    <div class="kpi-row">
+      <div class="kpi-card kpi-items">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Total Productos (pág.)</div>
+        <div class="kpi-value">{{ totalProductos() | number:'1.0-0' }}<span class="kpi-unit"> uds.</span></div>
+      </div>
+      <div class="kpi-card kpi-cant">
+        <div class="kpi-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Cantidad</div>
+        <div class="kpi-value">{{ totalElements() | number }}</div>
+      </div>
+    </div>
+  }
+
   <!-- ── Tabla ────────────────────────────────────────── -->
   <div class="card tabla-card">
     @if (loading()) {

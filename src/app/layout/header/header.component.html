@@ -32,6 +32,24 @@
     TERMINAL: {{ auth.terminal.descripcion }}
   </span>
 
+  <!-- Pedidos pendientes -->
+  @if (canVerPendientes()) {
+    <div class="notif-wrap">
+      <button class="notif-btn" (click)="toggleNotif()" [class.active]="notifOpen()" title="Pedidos pendientes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        @if (pendientes().length > 0) {
+          <span class="notif-badge">{{ pendientes().length > 99 ? '99+' : pendientes().length }}</span>
+        }
+        @if (notifLoading()) {
+          <span class="notif-spinner"></span>
+        }
+      </button>
+    </div>
+  }
+
   <!-- User info -->
   <div class="header-user">
     <div class="header-avatar" [title]="auth.session?.nombre ?? ''">
@@ -47,6 +65,46 @@
     </button>
   </div>
 </header>
+
+<!-- Panel pedidos pendientes -->
+@if (notifOpen()) {
+  <div class="notif-backdrop" (click)="closeNotif()"></div>
+  <div class="notif-panel">
+    <div class="notif-panel-header">
+      <span>Pedidos pendientes ({{ pendientes().length }})</span>
+      <button class="btn-icon" (click)="refreshPendientes()" title="Actualizar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+      </button>
+    </div>
+    @if (pendientes().length === 0) {
+      <div class="notif-empty">No hay pedidos pendientes hoy</div>
+    }
+    @for (p of pendientes(); track p.codPedido) {
+      <a class="notif-item" [routerLink]="['/pedidos-lista/id', p.codPedido]" (click)="closeNotif()">
+        <div class="notif-item-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
+        <div class="notif-item-body">
+          <div class="notif-item-title"># {{ p.nroPedido?.toString().padStart(6, '0') }}</div>
+          <div class="notif-item-sub">{{ p.cliente?.concatDocNombre ?? p.cliente?.razonSocial ?? '—' }}</div>
+          <div class="notif-item-time">{{ p.fechaCreacion ?? p.fechaPedido }}</div>
+        </div>
+      </a>
+    }
+    <a class="notif-footer" routerLink="/pedidos-lista" (click)="closeNotif()">
+      Ver todos los pedidos
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </a>
+  </div>
+}
 
 <!-- FAB Tema -->
 <button class="fab-theme" (click)="toggleThemePanel()" [class.active]="themeOpen()" aria-label="Seleccionar tema">

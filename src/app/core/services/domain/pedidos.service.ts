@@ -50,6 +50,13 @@ export class PedidosService {
     return this.http.put<void>(`${this.base()}/entregar/${id}`, null).pipe(catchError(e => throwError(() => e)));
   }
 
+  /** Pedidos PENDIENTE (últimos 90 días) para el indicador del header */
+  findPendientes(codSucursal: number): Observable<any> {
+    const today = new Date().toISOString().slice(0, 10);
+    const from  = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    return this.findByFecha(0, from, today, null, null, codSucursal, 100, 'PENDIENTE', null, '', 0);
+  }
+
   // ── Búsqueda paginada ──────────────────────────────────
   findByFecha(
     page: number, fechainicio: string, fechafin: string,
