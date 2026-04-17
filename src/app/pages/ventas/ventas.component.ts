@@ -156,13 +156,11 @@ export class VentasComponent implements OnInit, OnDestroy {
   }
 
   onVerificarVenta(): void {
-    if ((this.st.venta()?.importeTotal ?? 0) > 0) {
-      if (!confirm('¿Desea cambiar de cliente? Los detalles se guardarán temporalmente.')) return;
-      this.facade.guardarDetallesTemporal().then(() => this.cdr.markForCheck());
-    } else {
-      this.facade.cambiarCliente();
-      this.cdr.markForCheck();
-    }
+    // Solo abre el buscador — nunca limpia el carrito al buscar.
+    // Si el usuario elige un cliente nuevo, seleccionarCliente() recalcula precios.
+    // Si cancela, el carrito queda intacto.
+    this.facade.mostrarBuscadorCliente();
+    this.cdr.markForCheck();
   }
 
   // ── Callbacks del catálogo ────────────────────────────────

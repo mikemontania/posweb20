@@ -221,6 +221,13 @@ export class VentasFacadeService {
     this.cargarProductos(0, '', 0);
   }
 
+  /** Solo muestra el buscador sin limpiar estado — para carrito vacío (cancelable sin pérdida) */
+  mostrarBuscadorCliente(): void {
+    this.st.mostrarCliente.set(false);
+    this.st.buscadorHabilitado.set(false);
+    this._cargarClientesIniciales();
+  }
+
   cambiarCliente(): void {
     this.st.mostrarCliente.set(false);
     this.st.buscadorHabilitado.set(false);  // bloquear catálogo hasta que se elija cliente
@@ -238,9 +245,12 @@ export class VentasFacadeService {
   }
 
   cancelarCambiocliente(): void {
-    // Volver al cliente anterior sin cambiar nada
     this.st.mostrarCliente.set(true);
     this.st.buscadorHabilitado.set(true);
+    // Si los productos se vaciaron (por cambiarCliente previo), recargar
+    if (this.st.productos().length === 0 && this.st.cliente()) {
+      this.cargarProductos(0, '', 0);
+    }
   }
 
   async guardarDetallesTemporal(): Promise<void> {

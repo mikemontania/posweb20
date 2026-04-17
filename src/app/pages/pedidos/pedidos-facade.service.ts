@@ -556,13 +556,11 @@ export class PedidosFacadeService {
 
   // ── verificarPedido — fiel al ng12 ───────────────────────────────────────
   verificarPedido(): void {
-    const total = this.st.pedido()?.importeTotal ?? 0;
-    if (total > 0) {
-      if (!confirm('¿Seguro que desea cambiar de cliente?')) return;
-      this.guardarDetalles();
-    } else {
-      this.cambiarCliente();
-    }
+    // Solo abre el buscador — nunca limpia el carrito al buscar.
+    // Si el usuario elige un cliente nuevo, seleccionarCliente() recalcula precios.
+    // Si cancela, el carrito queda intacto.
+    this.st.mostrarCliente.set(false);
+    this.cargarClientesIniciales();
   }
 
   // ── verificarTipoPedido — fiel al ng12 ────────────────────────────────────
@@ -845,7 +843,7 @@ export class PedidosFacadeService {
         this.limpiar();
         this.init();
       },
-      error: (err: any) => {
+      error: () => {
         this.st.guardando.set(false);
         this.invalido('Error al guardar cobranza.');
       }
@@ -971,9 +969,12 @@ export class PedidosFacadeService {
   }
 
   cancelarBusqueda(): void {
-    // Si hay cliente activo, volver a mostrarlo; si no, la búsqueda queda visible
-    if (this.st.cliente()) {
-      this.st.mostrarCliente.set(true);
+    if (!this.st.cliente()) return;
+    this.st.mostrarCliente.set(true);
+    this.st.deshabilitarBuscador.set(false);
+    // Si los productos se vaciaron (por cambiarCliente previo), recargar
+    if (this.st.productos().length === 0) {
+      this.traerProductos(0, '', this.st.categoriaSeleccionada()?.codCategoriaProducto ?? 0);
     }
   }
 
