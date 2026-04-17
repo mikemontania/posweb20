@@ -3,7 +3,7 @@
 // Basado en ng12: ventas tenía buscar + crear cliente + cargar pedido + cupón + influencer
 import {
   Component, Input, Output, EventEmitter,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy, ViewChild, SimpleChanges, OnChanges
 } from '@angular/core';
 import { SelectSearchComponent } from '../select-search/select-search.component';
 
@@ -122,7 +122,15 @@ import { SelectSearchComponent } from '../select-search/select-search.component'
     .pc-cancel-btn:hover { color: var(--status-danger-text); background: var(--status-danger-bg); }
   `]
 })
-export class PosClienteVentaComponent {
+export class PosClienteVentaComponent implements OnChanges {
+  @ViewChild(SelectSearchComponent) private sel?: SelectSearchComponent;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['mostrar'] && changes['mostrar'].previousValue === true && !this.mostrar) {
+      setTimeout(() => this.sel?.open(), 50);
+    }
+  }
+
   @Input() cliente:             any    = null;
   @Input() razonSocial          = '';
   @Input() mostrar              = false;

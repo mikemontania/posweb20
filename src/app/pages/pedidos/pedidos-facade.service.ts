@@ -545,6 +545,7 @@ export class PedidosFacadeService {
     this.st.mostrarCliente.set(false);
     this.pedidoInit();
     this.iniciarCobranza();
+    this.cargarClientesIniciales();
   }
 
   // ── guardarDetalles — fiel al ng12 (btoa localStorage) ───────────────────
@@ -961,6 +962,19 @@ export class PedidosFacadeService {
     this.cliSvc.getAll({ keyword: q.toUpperCase(), page: 0, size: 16 }).subscribe({
       next: (r: any) => this.st.clientes.set(Array.isArray(r) ? r : (r?.content ?? []))
     });
+  }
+
+  private cargarClientesIniciales(): void {
+    this.cliSvc.getAll({ keyword: '', page: 0, size: 16 }).subscribe({
+      next: (r: any) => this.st.clientes.set(Array.isArray(r) ? r : (r?.content ?? []))
+    });
+  }
+
+  cancelarBusqueda(): void {
+    // Si hay cliente activo, volver a mostrarlo; si no, la búsqueda queda visible
+    if (this.st.cliente()) {
+      this.st.mostrarCliente.set(true);
+    }
   }
 
   // ══════════════════════════════════════════════════════════════════════════

@@ -228,6 +228,13 @@ export class VentasFacadeService {
     this.st.descuentos.set([]);
     this.st.porcentajeDescuento.set(0);
     this._initVenta();
+    this._cargarClientesIniciales();
+  }
+
+  private _cargarClientesIniciales(): void {
+    this.cliSvc.getAll({ keyword: '', page: 0, size: 16 }).subscribe({
+      next: (r: any) => this.st.clientes.set(Array.isArray(r) ? r : (r?.content ?? []))
+    });
   }
 
   cancelarCambiocliente(): void {

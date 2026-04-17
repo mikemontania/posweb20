@@ -33,7 +33,9 @@
       (pedidoClick)="onPedidoClick()"
       (nuevoClienteClick)="onNuevoCliente()"
       (observacionClick)="onObservacion()"
-      (clienteSeleccionado)="onClienteSeleccionado($event)"/>
+      (clienteSeleccionado)="onClienteSeleccionado($event)"
+      (buscarChange)="f.buscarClientes($event)"
+      (cancelarBusqueda)="f.cancelarBusqueda()"/>
 
     <!-- Sucursal + Canal — fiel al ng12 -->
     @if (st.mostrarCliente()) {

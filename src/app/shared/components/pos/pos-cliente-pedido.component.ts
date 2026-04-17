@@ -4,7 +4,7 @@
 // Sin cupón ni influencer — esos son exclusivos del flujo de ventas
 import {
   Component, Input, Output, EventEmitter,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy, ViewChild, SimpleChanges, OnChanges
 } from '@angular/core';
 import { SelectSearchComponent } from '../select-search/select-search.component';
 
@@ -112,7 +112,15 @@ import { SelectSearchComponent } from '../select-search/select-search.component'
     .pc-cancel-btn:hover { color: var(--status-danger-text); background: var(--status-danger-bg); }
   `]
 })
-export class PosClientePedidoComponent {
+export class PosClientePedidoComponent implements OnChanges {
+  @ViewChild(SelectSearchComponent) private sel?: SelectSearchComponent;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['mostrar'] && changes['mostrar'].previousValue === true && !this.mostrar) {
+      setTimeout(() => this.sel?.open(), 50);
+    }
+  }
+
   @Input() cliente:             any    = null;
   @Input() razonSocial          = '';
   @Input() mostrar              = false;
