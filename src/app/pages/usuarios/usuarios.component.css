@@ -1,0 +1,21 @@
+.avatar-tabla {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+.avatar-inicial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-accent-light, #EFF6FF);
+  color: var(--color-accent, #2563EB);
+  font-size: .75rem;
+  font-weight: 700;
+  border: 2px solid var(--border-color);
+}

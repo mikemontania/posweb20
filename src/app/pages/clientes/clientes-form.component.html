@@ -167,14 +167,16 @@
             </div>
 
             <!-- Categoría ABC -->
-            <div class="form-group form-row">
-              <label class="form-label">Categoría ABC</label>
-              <select class="form-control" formControlName="catABC">
-                @for (c of catsABC; track c) {
-                  <option [value]="c">{{ c }}</option>
-                }
-              </select>
-            </div>
+            @if (isAdmin) {
+              <div class="form-group form-row">
+                <label class="form-label">Categoría ABC</label>
+                <select class="form-control" formControlName="catABC">
+                  @for (c of catsABC; track c) {
+                    <option [value]="c">{{ c }}</option>
+                  }
+                </select>
+              </div>
+            }
 
             <!-- Días de crédito -->
             <div class="form-group form-row">
@@ -201,13 +203,15 @@
           <div class="form-section-title">Configuración</div>
           <div class="form-grid-3">
 
-            <div class="form-group form-row">
-              <label class="form-label">Activo</label>
-              <select class="form-control" formControlName="activo">
-                <option [ngValue]="true">Sí</option>
-                <option [ngValue]="false">No</option>
-              </select>
-            </div>
+            @if (isAdmin) {
+              <div class="form-group form-row">
+                <label class="form-label">Activo</label>
+                <select class="form-control" formControlName="activo">
+                  <option [ngValue]="true">Sí</option>
+                  <option [ngValue]="false">No</option>
+                </select>
+              </div>
+            }
 
             <div class="form-group form-row">
               <label class="form-label">Excento IVA</label>
@@ -217,29 +221,35 @@
               </select>
             </div>
 
-            <div class="form-group form-row">
-              <label class="form-label">Predeterminado</label>
-              <select class="form-control" formControlName="predeterminado">
-                <option [ngValue]="false">No</option>
-                <option [ngValue]="true">Sí</option>
-              </select>
-            </div>
+            @if (isAdmin) {
+              <div class="form-group form-row">
+                <label class="form-label">Predeterminado</label>
+                <select class="form-control" formControlName="predeterminado">
+                  <option [ngValue]="false">No</option>
+                  <option [ngValue]="true">Sí</option>
+                </select>
+              </div>
+            }
 
-            <div class="form-group form-row">
-              <label class="form-label">Es Propietario</label>
-              <select class="form-control" formControlName="esPropietario">
-                <option [ngValue]="false">No</option>
-                <option [ngValue]="true">Sí</option>
-              </select>
-            </div>
+            @if (isAdmin) {
+              <div class="form-group form-row">
+                <label class="form-label">Es Propietario</label>
+                <select class="form-control" formControlName="esPropietario">
+                  <option [ngValue]="false">No</option>
+                  <option [ngValue]="true">Sí</option>
+                </select>
+              </div>
+            }
 
-            <div class="form-group form-row">
-              <label class="form-label">Empleado</label>
-              <select class="form-control" formControlName="empleado">
-                <option [ngValue]="false">No</option>
-                <option [ngValue]="true">Sí</option>
-              </select>
-            </div>
+            @if (isAdmin) {
+              <div class="form-group form-row">
+                <label class="form-label">Empleado</label>
+                <select class="form-control" formControlName="empleado">
+                  <option [ngValue]="false">No</option>
+                  <option [ngValue]="true">Sí</option>
+                </select>
+              </div>
+            }
 
             <div class="form-group form-row">
               <label class="form-label">Tiene Cód. Barra</label>

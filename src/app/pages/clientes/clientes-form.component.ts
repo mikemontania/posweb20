@@ -74,6 +74,10 @@ export class ClientesForm implements OnInit, OnDestroy {
   readonly tiposDoc = ['RUC', 'CI', 'CE', 'PAS'];
   readonly catsABC  = ['A', 'B', 'C'];
 
+  get isAdmin(): boolean {
+    return this.auth.session?.authorities?.includes('ROLE_ADMIN') ?? false;
+  }
+
   // ── formulario reactivo ───────────────────────────────────
   form = this.fb.group({
     codClienteErp:     [''],

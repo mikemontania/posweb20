@@ -2,8 +2,10 @@ import {
   Component, OnInit, inject, signal,
   ChangeDetectionStrategy, computed
 } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ImagenPipe } from '../../shared/pipes/imagen.pipe';
 import { AuthService } from '../../core/services/auth.service';
 import { UsuariosService } from '../../core/services/domain/usuarios.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
@@ -14,8 +16,8 @@ import { DebounceSearchComponent } from '../../shared/components/debounce-search
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [FormsModule, RouterModule,
-            ModalConfirmComponent, DebounceSearchComponent],
+  imports: [AsyncPipe, FormsModule, RouterModule,
+            ModalConfirmComponent, DebounceSearchComponent, ImagenPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.css',

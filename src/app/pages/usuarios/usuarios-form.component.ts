@@ -1,7 +1,7 @@
 import {
   Component, OnInit, inject, signal, ChangeDetectionStrategy
 } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService }      from '../../core/services/auth.service';
 import { UsuariosService }  from '../../core/services/domain/usuarios.service';
@@ -11,6 +11,13 @@ import { ToastService }     from '../../shared/components/toast/toast.service';
 import { SelectSearchComponent } from '../../shared/components/select-search/select-search.component';
 import { ImageUploadComponent }  from '../../shared/components/image-upload/image-upload.component';
 import { ImagenPipe }            from '../../shared/pipes/imagen.pipe';
+
+function passwordMatch(group: AbstractControl): ValidationErrors | null {
+  const pwd = (group.get('password')?.value as string) ?? '';
+  const cfr = (group.get('passwordCfr')?.value as string) ?? '';
+  if (!pwd && !cfr) return null;
+  return pwd === cfr ? null : { passwordMismatch: true };
+}
 
 @Component({
   selector: 'app-usuarios-form',
@@ -46,10 +53,17 @@ export class UsuariosForm implements OnInit {
     nombrePersona:  ['', Validators.required],
     username:       ['', [Validators.required, Validators.email]],
     password:       [''],
+    passwordCfr:    [''],
     codPersonaErp:  [''],
     enabled:        [true],
     bloqueado:      [false],
-  });
+    intentoFallido: [{ value: 0, disabled: true }],
+  }, { validators: passwordMatch });
+
+  get passwordMismatch(): boolean {
+    return this.form.hasError('passwordMismatch') &&
+           !!(this.form.get('passwordCfr')?.touched);
+  }
 
   ngOnInit(): void {
     const codEmp = this.auth.session?.codEmpresa ?? 1;
@@ -66,11 +80,12 @@ export class UsuariosForm implements OnInit {
       this.svc.getById(+id).subscribe({
         next: (u: any) => {
           this.form.patchValue({
-            nombrePersona: u.nombrePersona ?? '',
-            username:      u.username ?? '',
-            codPersonaErp: u.codPersonaErp ?? '',
-            enabled:       u.enabled ?? true,
-            bloqueado:     u.bloqueado ?? false,
+            nombrePersona:  u.nombrePersona ?? '',
+            username:       u.username ?? '',
+            codPersonaErp:  u.codPersonaErp ?? '',
+            enabled:        u.enabled ?? true,
+            bloqueado:      u.bloqueado ?? false,
+            intentoFallido: u.intentoFallido ?? 0,
           });
           this.selRol.set(u.rol ?? null);
           this.selSucursal.set(u.sucursal ?? null);
@@ -82,6 +97,8 @@ export class UsuariosForm implements OnInit {
     } else {
       this.form.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
       this.form.get('password')?.updateValueAndValidity();
+      this.form.get('passwordCfr')?.setValidators([Validators.required]);
+      this.form.get('passwordCfr')?.updateValueAndValidity();
     }
   }
 
@@ -106,6 +123,7 @@ export class UsuariosForm implements OnInit {
       sucursal:   this.selSucursal(),
     };
     if (!v.password) delete payload.password;
+    delete payload.passwordCfr;
 
     const id = this.route.snapshot.paramMap.get('id');
     const op = id ? this.svc.update(+id, payload) : this.svc.create(payload);

@@ -77,6 +77,21 @@
               }
             </div>
 
+            @if (!esEdicion()) {
+              <div class="form-group form-row">
+                <label class="form-label">Confirmar Contraseña <span class="req">*</span></label>
+                <input type="password" class="form-control" formControlName="passwordCfr"
+                       [class.is-invalid]="hasError('passwordCfr') || passwordMismatch"
+                       autocomplete="new-password"/>
+                @if (hasError('passwordCfr','required')) {
+                  <div class="field-error">Confirmar contraseña es requerida</div>
+                }
+                @if (passwordMismatch) {
+                  <div class="field-error">Las contraseñas no coinciden</div>
+                }
+              </div>
+            }
+
           </div>
 
           <div class="form-section-title">Rol y Sucursal</div>
@@ -124,6 +139,13 @@
                 <option [ngValue]="true">Sí</option>
               </select>
             </div>
+
+            @if (esEdicion()) {
+              <div class="form-group form-row">
+                <label class="form-label">Intentos fallidos</label>
+                <input type="number" class="form-control" formControlName="intentoFallido"/>
+              </div>
+            }
 
           </div>
 

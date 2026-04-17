@@ -64,6 +64,9 @@ export class ProductosForm implements OnInit {
     sinDescuento:    [false],
     inventariable:   [true],
     ivaEspecial:     [false],
+    destacado:       [false],
+    cantidadMin:     [0],
+    cantidadMax:     [0],
     obs:             [''],
   });
 
@@ -94,6 +97,9 @@ export class ProductosForm implements OnInit {
             sinDescuento:   p.sinDescuento ?? false,
             inventariable:  p.inventariable ?? true,
             ivaEspecial:    p.ivaEspecial ?? false,
+            destacado:      p.destacado ?? false,
+            cantidadMin:    p.cantidadMin ?? 0,
+            cantidadMax:    p.cantidadMax ?? 0,
             obs:            p.obs ?? '',
           });
           this.selCategoria.set(p.categoriaProducto ?? null);

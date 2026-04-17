@@ -40,6 +40,7 @@ export class VendedoresForm implements OnInit {
     email:              ['', Validators.email],
     direccion:          [''],
     porcentajeComision: [0],
+    tarjeta:            [''],
     obs:                [''],
     activo:             [true],
   });
@@ -60,6 +61,7 @@ export class VendedoresForm implements OnInit {
             email:              r.email ?? '',
             direccion:          r.direccion ?? '',
             porcentajeComision: r.porcentajeComision ?? 0,
+            tarjeta:            r.tarjeta ?? '',
             obs:                r.obs ?? '',
             activo:             r.activo ?? true,
           });
